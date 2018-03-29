@@ -1,27 +1,28 @@
 // @flow
-import type { ProviderInterface } from 'Providers';
-import type { PreprocessorInterface } from 'Preprocessors';
+import type { ProviderInterface } from 'ProviderTypes';
+import type { PreprocessorInterface } from 'PreprocessorTypes';
 
 type GlobalConfiguration = {
-  provider : ProviderInterface,
-  preprocessors : {
-    [string] : {},
+  provider: ProviderInterface,
+  breakpoints: ?Array<number>,
+  preprocessors: {
+    [string]: {},
   },
 
-  globalAdOptions? : AdConfiguration,
+  globalAdOptions?: AdConfiguration,
 }
 
 type AdConfiguration = {
-  adPath : string,
-  targeting? : {},
-  sizes? : [],
-  offset? : number,
-  refreshInterval? : number,
-  refreshOnBreakpoint? : boolean,
+  adPath: string,
+  targeting?: {},
+  sizes?: [],
+  offset?: number,
+  refreshInterval?: number,
+  refreshOnBreakpoint?: boolean,
 };
 
 // Private Keys
-const private : {} = {
+const private: {} = {
   state: Symbol('Ad/state'),
   isReady: Symbol('Ad/isReady'),
   events: Symbol('Ad/events'),
@@ -34,7 +35,7 @@ const private : {} = {
 };
 
 // Event Bus options
-export const EVENTS : {} = {
+export const EVENTS: {} = {
   CREATED: 'created',
 
   REQUEST: 'request',
@@ -50,44 +51,52 @@ export const EVENTS : {} = {
   DESTROYED: 'destroyed',
 };
 
-const seriallyResolvePromises : (Array<Promise<void>>) => <void> = promises =>
+const seriallyResolvePromises: (Array<Promise<void>>) => <void> = promises =>
   promises.reduce((promise, fn) =>
     promise.then(result =>
       fn().then(Array.prototype.concat.bind(result))),
       Promise.resolve([]))
 
 class Ad {
-  static [private.ready] : Promise<void> = Promise.resolve();
-  static [private.configuration] : ?GlobalConfiguration;
-  static [private.provider] : ?ProviderInterface;
+  static [private.ready]: Promise<void> = Promise.resolve();
+  static [private.configuration]: ?GlobalConfiguration;
+  static [private.provider]: ?ProviderInterface;
 
-  static async onReady(fn : () => void) : Promise<void> {
+  static breakpoints: Array<number> = [];
+
+  static async onReady(fn: () => void): Promise<void> {
     await this[private.ready];
     await fn();
   }
 
-  static configure : (GlobalConfiguration) => void = (options = {}) => {
-    this[private.ready] : Promise<void> = Promise.resolve();
+  static configure: (GlobalConfiguration) => void = (options = {}) => {
+    this[private.ready]: Promise<void> = Promise.resolve();
+
+    const {
+      breakpoints: Array<number> = [],
+    } = options;
+
+    this.breakpoints = breakpoints,
 
     this.onReady(() => {
       this[private.configuration] = options;
     });
   }
 
-  get [private.isConfigured] : boolean = () =>
+  get [private.isConfigured]: boolean = () =>
     !!this.constructor[private.configuration];
 
-  get [private.provider] : ?ProviderInterface = () =>
+  get [private.provider]: ?ProviderInterface = () =>
     this.constructor[private.provider];
 
-  [private.ready] : Array<Promise<void>> = [];
-  [private.ad] : ?any;
+  [private.ready]: Array<Promise<void>> = [];
+  [private.ad]: ?any;
 
-  [private.events] : {} = {
+  [private.events]: {} = {
     __cache: {},
   };
 
-  [private.state] : {} = {
+  [private.state]: {} = {
     creating: false,
     created: false,
     rendering: false,
@@ -108,23 +117,23 @@ class Ad {
   //
   //  destroy must always happen after render has completed.
   //
-  async onReady(fn : () => void) : Promise<void> {
+  async onReady(fn: () => void) : Promise<void> {
     await seriallyResolvePromises(this[private.ready]);
 
-    const execution : Promise<void> = Promise.resolve(fn());
+    const execution: Promise<void> = Promise.resolve(fn());
 
     this[private.ready].push(execution);
   }
 
-  element : HTMLElement;
-  slot : string;
+  element: HTMLElement;
+  slot: string;
 
   constructor(el: HTMLElement, slot: string, options : AdConfiguration = {}) {
     if (!this.isConfigured) {
       throw new Error('Not configured properly. Please see README.md');
     }
 
-    this[private.ready] : Promise<void> = Promise.resolve();
+    this[private.ready]: Promise<void> = Promise.resolve();
 
     this.element = el;
     this.slot = slot;
@@ -135,7 +144,7 @@ class Ad {
     });
   }
 
-  async render() : Promise<void> {
+  async render(): Promise<void> {
     if (this[private.state].rendering || this[private.state].rendered) {
       return;
     }
@@ -154,7 +163,7 @@ class Ad {
     });
   }
 
-  async refresh() : Promise<void> {
+  async refresh(): Promise<void> {
     if (this[private.state].refreshing) {
       return;
     }
@@ -164,7 +173,7 @@ class Ad {
     await this.onReady(Function.prototype);
   }
 
-  async destroy() : Promise<void> {
+  async destroy(): Promise<void> {
     if (this[private.state].destroying) {
       return;
     }
@@ -174,16 +183,16 @@ class Ad {
     await this.onReady(Function.prototype);
   }
 
-  on(key : string, fn : () => void) : void {
+  on(key: string, fn: () => void): void {
     if (!this[private.events][key]) {
-      this[private.events][key] : Array<() => void> = [];
+      this[private.events][key]: Array<() => void> = [];
     }
 
     this[private.events][key].push(fn);
   }
 
-  [private.emit](key : string, event) {
-    const events : Array<() => void> = this[private.events][key];
+  [private.emit](key: string, event) {
+    const events: Array<() => void> = this[private.events][key];
 
     if (!events) {
       return;
