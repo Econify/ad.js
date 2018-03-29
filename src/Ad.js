@@ -22,6 +22,7 @@ type AdConfiguration = {
 
 // Private Keys
 const private : {} = {
+  state: Symbol('Ad/state'),
   isReady: Symbol('Ad/isReady'),
   events: Symbol('Ad/events'),
   ad: Symbol('Ad/ad'),
@@ -49,6 +50,12 @@ export const EVENTS : {} = {
   DESTROYED: 'destroyed',
 };
 
+const seriallyResolvePromises : (Array<Promise<void>>) => <void> = promises =>
+  promises.reduce((promise, fn) =>
+    promise.then(result =>
+      fn().then(Array.prototype.concat.bind(result))),
+      Promise.resolve([]))
+
 class Ad {
   static [private.ready] : Promise<void> = Promise.resolve();
   static [private.configuration] : ?GlobalConfiguration;
@@ -73,11 +80,41 @@ class Ad {
   get [private.provider] : ?ProviderInterface = () =>
     this.constructor[private.provider];
 
-  [private.ready] : Promise<void> = Promise.resolve();
+  [private.ready] : Array<Promise<void>> = [];
   [private.ad] : ?any;
+
   [private.events] : {} = {
     __cache: {},
   };
+
+  [private.state] : {} = {
+    creating: false,
+    created: false,
+    rendering: false,
+    rendered: false,
+    refreshing: false,
+    destroying: false,
+    destroyed: false,
+  };
+
+  // onReady will queue up additional execution calls to onReady
+  // ensuring that commands called in sequence will in fact be executed
+  // in sequence.
+  //
+  // Example:
+  // ---
+  //  ad.render();
+  //  ad.destroy();
+  //
+  //  destroy must always happen after render has completed.
+  //
+  async onReady(fn : () => void) : Promise<void> {
+    await seriallyResolvePromises(this[private.ready]);
+
+    const execution : Promise<void> = Promise.resolve(fn());
+
+    this[private.ready].push(execution);
+  }
 
   element : HTMLElement;
   slot : string;
@@ -92,20 +129,48 @@ class Ad {
     this.element = el;
     this.slot = slot;
 
-    this.onReady(() => {
+    this.onReady(async () => {
+      this[private.ad] = await this[private.provider].createAd();
       console.log('ready to play');
     });
   }
 
   async render() : Promise<void> {
-    await this.onReady(Function.prototype);
+    if (this[private.state].rendering || this[private.state].rendered) {
+      return;
+    }
+
+    this[private.state].rendering = true;
+
+    this.emit(EVENTS.RENDER);
+
+    await this.onReady(async () => {
+      await this[private.provider].renderAd(this[private.ad]);
+
+      this[private.state].rendering = false;
+      this[private.state].rendered = true;
+
+      this.emit(EVENTS.RENDERED);
+    });
   }
 
   async refresh() : Promise<void> {
+    if (this[private.state].refreshing) {
+      return;
+    }
+
+    this[private.state].refreshing = true;
+
     await this.onReady(Function.prototype);
   }
 
   async destroy() : Promise<void> {
+    if (this[private.state].destroying) {
+      return;
+    }
+
+    this[private.state].destroying = true;
+
     await this.onReady(Function.prototype);
   }
 
@@ -115,11 +180,6 @@ class Ad {
     }
 
     this[private.events][key].push(fn);
-  }
-
-  async onReady(fn : () => void) : Promise<void> {
-    await this[private.ready];
-    await fn();
   }
 
   [private.emit](key : string, event) {
