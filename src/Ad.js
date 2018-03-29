@@ -1,19 +1,35 @@
+// @flow
 import type { ProviderInterface } from 'Providers';
+import type { PreprocessorInterface } from 'Preprocessors';
 
-type AdInstanceOptions = {
-  targeting?: {},
-  sizes?: [],
-  offset?: number,
-  refreshInterval?: number,
-  refreshOnBreakpoint?: boolean,
+type GlobalConfiguration = {
+  provider : ProviderInterface,
+  preprocessors : {
+    [string] : {},
+  },
+
+  globalAdOptions? : AdConfiguration,
+}
+
+type AdConfiguration = {
+  adPath : string,
+  targeting? : {},
+  sizes? : [],
+  offset? : number,
+  refreshInterval? : number,
+  refreshOnBreakpoint? : boolean,
 };
 
 // Private Keys
 const private : {} = {
+  isReady: Symbol('Ad/isReady'),
+  events: Symbol('Ad/events'),
+  ad: Symbol('Ad/ad'),
   emit: Symbol('Ad/emit'),
   provider: Symbol('Ad/provider'),
 
   onInViewport: Symbol('Ad/onInViewport'),
+  onBreakpointChange: Symbol('Ad/onBreakpointChange'),
 };
 
 // Event Bus options
@@ -34,26 +50,63 @@ export const EVENTS : {} = {
 };
 
 class Ad {
-  static [private.provider] : ?ProviderInterface = undefined;
-  get [private.provider] = () : ?ProviderInterface =>
+  static [private.ready] : Promise<void> = Promise.resolve();
+  static [private.configuration] : ?GlobalConfiguration;
+  static [private.provider] : ?ProviderInterface;
+
+  static async onReady(fn : () => void) : Promise<void> {
+    await this[private.ready];
+    await fn();
+  }
+
+  static configure : (GlobalConfiguration) => void = (options = {}) => {
+    this[private.ready] : Promise<void> = Promise.resolve();
+
+    this.onReady(() => {
+      this[private.configuration] = options;
+    });
+  }
+
+  get [private.isConfigured] : boolean = () =>
+    !!this.constructor[private.configuration];
+
+  get [private.provider] : ?ProviderInterface = () =>
     this.constructor[private.provider];
 
-  [private.events] = {
+  [private.ready] : Promise<void> = Promise.resolve();
+  [private.ad] : ?any;
+  [private.events] : {} = {
     __cache: {},
   };
 
-  [private.ad] : ?any = undefined;
+  element : HTMLElement;
+  slot : string;
 
-  constructor(el: HTMLElement, slot: string, options : AdInstanceOptions = {}) {
+  constructor(el: HTMLElement, slot: string, options : AdConfiguration = {}) {
+    if (!this.isConfigured) {
+      throw new Error('Not configured properly. Please see README.md');
+    }
+
+    this[private.ready] : Promise<void> = Promise.resolve();
+
+    this.element = el;
+    this.slot = slot;
+
+    this.onReady(() => {
+      console.log('ready to play');
+    });
   }
 
-  render() : void {
+  async render() : Promise<void> {
+    await this.onReady(Function.prototype);
   }
 
-  refresh() : void {
+  async refresh() : Promise<void> {
+    await this.onReady(Function.prototype);
   }
 
-  destroy() : void {
+  async destroy() : Promise<void> {
+    await this.onReady(Function.prototype);
   }
 
   on(key : string, fn : () => void) : void {
@@ -62,6 +115,11 @@ class Ad {
     }
 
     this[private.events][key].push(fn);
+  }
+
+  async onReady(fn : () => void) : Promise<void> {
+    await this[private.ready];
+    await fn();
   }
 
   [private.emit](key : string, event) {
@@ -75,5 +133,8 @@ class Ad {
   }
 
   [private.onInViewport]() {
+  }
+
+  [private.onBreakpointChange]() {
   }
 }
