@@ -1,12 +1,12 @@
 import type {
-  ProviderInterface,
-  ProviderArguments,
-  ProviderInstance,
-} from './ProviderTypes';
+  NetworkInterface,
+  NetworkArguments,
+  NetworkInstance,
+} from './NetworkTypes';
 
 import loadScript from 'lib/loadScript';
 
-class GPT implements ProviderInterface {
+class GPT implements NetworkInterface {
   constructor() {
     loadScript('https://www.googletagservices.com/tag/js/gpt.js');
   }

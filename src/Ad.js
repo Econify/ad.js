@@ -1,37 +1,44 @@
 // @flow
-import type { ProviderInterface } from 'ProviderTypes';
-import type { PreprocessorInterface } from 'PreprocessorTypes';
+import type { NetworkInterface } from 'NetworkTypes';
+import type { PluginInterface } from 'PluginTypes';
 
 type GlobalConfiguration = {
-  provider: ProviderInterface,
-  breakpoints: ?Array<number>,
-  preprocessors: {
-    [string]: {},
-  },
+  network: NetworkInterface,
+  plugins: Array<PluginInterface>,
 
-  globalAdOptions?: AdConfiguration,
+  defaults?: AdConfiguration,
 }
 
 type AdConfiguration = {
   adPath: string,
+
   targeting?: {},
   sizes?: [],
+
   offset?: number,
-  refreshInterval?: number,
-  refreshOnBreakpoint?: boolean,
+
+  autoRender?: boolean,
+
+  autoRefresh?: boolean,
+  refreshRate?: number,
+
+  refreshOnBreakpoint?: boolean
+  breakpoints?: Array<number>,
 };
 
 // Private Keys
 const private: {} = {
-  state: Symbol('Ad/state'),
-  isReady: Symbol('Ad/isReady'),
-  events: Symbol('Ad/events'),
-  ad: Symbol('Ad/ad'),
-  emit: Symbol('Ad/emit'),
-  provider: Symbol('Ad/provider'),
+  state: Symbol('@@Ad/state'),
+  isReady: Symbol('@@Ad/isReady'),
+  events: Symbol('@@Ad/events'),
+  ad: Symbol('@@Ad/ad'),
+  emit: Symbol('@@Ad/emit'),
+  network: Symbol('@@Ad/network'),
 
-  onInViewport: Symbol('Ad/onInViewport'),
-  onBreakpointChange: Symbol('Ad/onBreakpointChange'),
+  onInViewport: Symbol('@@Ad/onInViewport'),
+  onBreakpointChange: Symbol('@@Ad/onBreakpointChange'),
+
+  generateID: Symbol('@@Ad/generateID'),
 };
 
 // Event Bus options
@@ -52,15 +59,27 @@ export const EVENTS: {} = {
 };
 
 const seriallyResolvePromises: (Array<Promise<void>>) => <void> = promises =>
-  promises.reduce((promise, fn) =>
-    promise.then(result =>
-      fn().then(Array.prototype.concat.bind(result))),
-      Promise.resolve([]))
+  promises.reduce((promise, fn = Promise.resolve([])) =>
+    promise.then(result => fn().then(Array.prototype.concat.bind(result)))
+  );
 
 class Ad {
   static [private.ready]: Promise<void> = Promise.resolve();
   static [private.configuration]: ?GlobalConfiguration;
-  static [private.provider]: ?ProviderInterface;
+  static [private.network]: ?NetworkInterface;
+  static [private.instances]: Array<Ad> = [];
+
+  static [private.generateID](): string {
+    const randomNumber: number = Math.ceil(Math.random() * 100000);
+
+    const suggestedID = `randomId${randomNumber}`;
+
+    if (!this[private.instances][suggestedID]) {
+      return suggestedID;
+    }
+
+    return this[private.generateID]();
+  }
 
   static breakpoints: Array<number> = [];
 
@@ -86,8 +105,8 @@ class Ad {
   get [private.isConfigured]: boolean = () =>
     !!this.constructor[private.configuration];
 
-  get [private.provider]: ?ProviderInterface = () =>
-    this.constructor[private.provider];
+  get [private.network]: ?NetworkInterface = () =>
+    this.constructor[private.network];
 
   [private.ready]: Array<Promise<void>> = [];
   [private.ad]: ?any;
@@ -118,6 +137,7 @@ class Ad {
   //  destroy must always happen after render has completed.
   //
   async onReady(fn: () => void) : Promise<void> {
+    await this.constructor[private.ready];
     await seriallyResolvePromises(this[private.ready]);
 
     const execution: Promise<void> = Promise.resolve(fn());
@@ -128,18 +148,25 @@ class Ad {
   element: HTMLElement;
   slot: string;
 
-  constructor(el: HTMLElement, slot: string, options : AdConfiguration = {}) {
+  declare function constructor(el: HTMLElement, id: string, options : AdConfiguration = {})
+  declare function constructor(el: HTMLElement: string, options : AdConfiguration = {})
+  constructor(el, idOrOptions = {}, optionsOrNothing = {}) {
     if (!this.isConfigured) {
       throw new Error('Not configured properly. Please see README.md');
     }
 
     this[private.ready]: Promise<void> = Promise.resolve();
 
+    const id = arguments.length > 2 ? idOrOptions : this[private.generateID]();
+    const options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
+
     this.element = el;
-    this.slot = slot;
+    this.id = id;
+
+    this[private.instances][id] = this;
 
     this.onReady(async () => {
-      this[private.ad] = await this[private.provider].createAd();
+      this[private.ad] = await this[private.network].createAd();
       console.log('ready to play');
     });
   }
@@ -154,7 +181,7 @@ class Ad {
     this.emit(EVENTS.RENDER);
 
     await this.onReady(async () => {
-      await this[private.provider].renderAd(this[private.ad]);
+      await this[private.network].renderAd(this[private.ad]);
 
       this[private.state].rendering = false;
       this[private.state].rendered = true;
@@ -205,5 +232,20 @@ class Ad {
   }
 
   [private.onBreakpointChange]() {
+  }
+
+  [private.validateParameters](params: {}) {
+    const providedParams = Object.keys(params);
+    const { requiredParams, name: networkName } = this.constructor[private.network];
+
+    if (!params.adPath) {
+      throw new Error('adPath is required for all networks');
+    }
+
+    requiredParams.forEach(param => {
+      if (providedParams.indexOf(param) === -1) {
+        throw new Error(`'${param}' is a required parameter in '${networkName}'`);
+      }
+    });
   }
 }
