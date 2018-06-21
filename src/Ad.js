@@ -67,7 +67,7 @@ class Ad {
   static [private.ready]: Promise<void> = Promise.resolve();
   static [private.configuration]: ?GlobalConfiguration;
   static [private.network]: ?NetworkInterface;
-  static [private.instances]: Array<Ad> = [];
+  static [private.instances]: { [string]: <Ad> } = {};
 
   static [private.generateID](): string {
     const randomNumber: number = Math.ceil(Math.random() * 100000);
