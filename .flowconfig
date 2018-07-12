@@ -1,0 +1,14 @@
+[ignore]
+.*/node_modules/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+suppress_type=$FlowFIX
+suppress_type=$FlowTODO
+
+[strict]

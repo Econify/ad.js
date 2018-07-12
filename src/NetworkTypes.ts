@@ -1,3 +1,5 @@
+// @flow
+
 export type NetworkArguments = {
   el: HTMLElement,
   slot: string,
@@ -11,7 +13,7 @@ export type NetworkInstance = {
   slot: string,
 }
 
-export interface NetworkInterface = {
+export interface NetworkInterface {
   createAd(NetworkArguments): Promise<NetworkInstance>,
   renderAd(NetworkInstance): Promise<void>,
   refreshAd(NetworkInstance): Promise<void>,

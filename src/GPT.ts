@@ -1,10 +1,12 @@
-import type {
+// @flow
+
+import {
   NetworkInterface,
   NetworkArguments,
   NetworkInstance,
 } from './NetworkTypes';
 
-import loadScript from 'lib/loadScript';
+import loadScript from './lib/loadScript';
 
 class GPT implements NetworkInterface {
   constructor() {
@@ -12,6 +14,7 @@ class GPT implements NetworkInterface {
   }
 
   async createAd() {}
+  async renderAd() {}
   async refreshAd() {}
   async destroyAd() {}
 }

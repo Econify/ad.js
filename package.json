@@ -1,13 +1,15 @@
 {
   "name": "ippyrus",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Ad Library that allows configuration with multiple providers",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf ./lib && babel src --out-dir ./lib --copy-files",
+    "build": "webpack",
     "lint": "eslint ./src",
-    "prepublish": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "_prepublish": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "flow": "flow status",
+    "ts": "tsc"
   },
   "repository": {
     "type": "git",
@@ -25,7 +27,15 @@
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.51",
     "@babel/preset-env": "^7.0.0-beta.51",
+    "awesome-typescript-loader": "^5.2.0",
     "babel-loader": "^8.0.0-beta.3",
-    "webpack": "^4.12.0"
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.76.0",
+    "source-map-loader": "^0.2.3",
+    "ts-loader": "^4.4.2",
+    "typescript": "^3.0.0-dev.20180712",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8"
   }
 }

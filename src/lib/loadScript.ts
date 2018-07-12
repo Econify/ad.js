@@ -1,7 +1,11 @@
+// @flow
+
 export default function loadScript(url: string, attributes: {} = {}): Promise<void> {
   return new Promise((resolve) => {
     const scriptTag: HTMLElement = document.createElement('script');
 
+    // TODO: fix flow issue here:
+    // Cannot assign url to scriptTag.src because property src is missing in HTMLElement
     scriptTag.src = url;
     scriptTag.onload = resolve;
 
@@ -17,11 +21,9 @@ export default function loadScript(url: string, attributes: {} = {}): Promise<vo
         return;
       }
 
-
       scriptTag.setAttribute(key, value);
     });
 
     document.getElementsByTagName('head')[0].appendChild(scriptTag);
   }).catch(err => console.error(err));
 }
-

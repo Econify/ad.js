@@ -1,8 +1,10 @@
+// @flow
+
 export default function (
-    tag: string,
-    attributes: {} = {},
-    elementToInsertInto: ?HTMLElement,
-    html: ?string
+  tag: string,
+  attributes: object = {},
+  elementToInsertInto: HTMLElement,
+  html?: string
 ): HTMLElement {
   const element: HTMLElement = document.createElement(tag);
 
@@ -29,4 +31,3 @@ export default function (
 
   return element;
 }
-
