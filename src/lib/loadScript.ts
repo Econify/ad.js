@@ -1,5 +1,3 @@
-// @flow
-
 export default function loadScript(url: string, attributes: {} = {}): Promise<void> {
   return new Promise((resolve) => {
     const scriptTag: HTMLElement = document.createElement('script');

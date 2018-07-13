@@ -1,4 +1,2 @@
-// @flow
-
 export interface PluginInterface {
 }

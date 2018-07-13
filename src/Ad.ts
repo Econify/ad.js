@@ -1,7 +1,6 @@
-// @flow
-
 import { NetworkInterface } from './NetworkTypes';
 import { PluginInterface } from './PluginTypes';
+import { Maybe } from './types/maybe'
 
 type GlobalConfiguration = {
   network: NetworkInterface,
@@ -27,28 +26,6 @@ type AdConfiguration = {
   breakpoints?: Array<number>,
 };
 
-// Private Keys
-const PRIVATE = {
-  configuration: Symbol('@@Ad/configuration'),
-  instances: Symbol('@@Ad/instances'),
-  validateParameters: Symbol('@@Ad/validateParameters'),
-
-  state: Symbol('@@Ad/state'),
-  ready: Symbol('@@Ad/ready'),
-  events: Symbol('@@Ad/events'),
-  ad: Symbol('@@Ad/ad'),
-  emit: Symbol('@@Ad/emit'),
-  network: Symbol('@@Ad/network'),
-
-  onInViewport: Symbol('@@Ad/onInViewport'),
-  onBreakpointChange: Symbol('@@Ad/onBreakpointChange'),
-
-  generateID: Symbol('@@Ad/generateID'),
-
-  isReady: Symbol('@@Ad/isReady'),
-  isConfigured: Symbol('@@Ad/isConfigured'),
-};
-
 // Event Bus Options
 export const EVENTS: { [key: string]: string} = {
   CREATED: 'created',
@@ -66,74 +43,71 @@ export const EVENTS: { [key: string]: string} = {
   DESTROYED: 'destroyed',
 };
 
-const seriallyResolvePromises = (promises: Array<Promise<void>>): Array<Promise<void>> => {
-  return promises.reduce((promise, fn = Promise.resolve([])) =>
-    promise.then(result => fn().then(Array.prototype.concat.bind(result)))
-  );
-}
-
-// const seriallyResolvePromises: (Array<Promise<void>>) => <void> = promises => {
-//   promises.reduce((promise, fn = Promise.resolve([])) =>
+// const seriallyResolvePromises = (promises: Array<Promise<void>>): Array<Promise<void>> => {
+//   return promises.reduce((promise, fn = Promise.resolve([])) =>
 //     promise.then(result => fn().then(Array.prototype.concat.bind(result)))
 //   );
 // }
 
-class Ad {
-  static [PRIVATE.ready]: Promise<void> = Promise.resolve();
-  static [PRIVATE.configuration]: GlobalConfiguration;
-  static [PRIVATE.network]: NetworkInterface;
-  static [PRIVATE.instances]: { [id: string]: Ad } = {};
+function seriallyResolvePromises(promises: Array<Promise<void>>) => <void> {
+  promises.reduce((promise, fn = Promise.resolve([])) =>
+    promise.then(result => fn().then(Array.prototype.concat.bind(result)))
+  );
+}
 
-  static [PRIVATE.generateID](): string {
+class Ad {
+  private static ready: Promise<void> = Promise.resolve();
+  private static configuration: GlobalConfiguration
+  private static network: NetworkInterface;
+  private static instances: { [id: string]: Ad } = {};
+
+  static generateID(): string {
     const randomNumber: number = Math.ceil(Math.random() * 100000);
 
     const suggestedID = `randomId${randomNumber}`;
 
-    if (!this[PRIVATE.instances][suggestedID]) {
+    if (!this.instances[suggestedID]) {
       return suggestedID;
     }
 
-    return this[PRIVATE.generateID]();
+    return this.generateID();
   }
 
   static breakpoints: Array<number> = [];
 
   static async onReady(fn: () => void): Promise<void> {
-    await this[PRIVATE.ready];
+    await this.ready;
     await fn();
   }
 
-  static configure(GlobalConfiguration, options = { breakpoints: []}): void {
-    this[PRIVATE.ready] = Promise.resolve();
+  static configure(GlobalConfiguration, options = {}): void {
+    this.ready = Promise.resolve();
 
-    // TODO: fix flow type/destructuring issue (@see https://github.com/facebook/flow/issues/235)
-    // const {
-    //   breakpoints: Array<number> = [],
-    // } = options;
+    const { breakpoints = [] } : { breakpoints?: Array<number> } = options;
 
-    this.breakpoints = options.breakpoints || [];
+    this.breakpoints = breakpoints;
 
     this.onReady(() => {
-      this[PRIVATE.configuration] = options;
+      this.configuration = options;
     });
   }
 
-  get [PRIVATE.isConfigured](): boolean {
-    return !!this.constructor[PRIVATE.configuration];
+  get isConfigured(): boolean {
+    return !!(this.constructor as typeof Ad).configuration;
   }
 
-  get [PRIVATE.network](): NetworkInterface | void {
-    return this.constructor[PRIVATE.network];
+  get network(): Maybe<NetworkInterface> {
+    return (this.constructor as typeof Ad).network;
   }
 
-  [PRIVATE.ready]: Array<Promise<void>> = [];
-  [PRIVATE.ad]?: any;
+  ready: Array<Promise<void>> = [];
+  ad?: any;
 
-  [PRIVATE.events]: {} = {
+  events: {} = {
     __cache: {},
   };
 
-  [PRIVATE.state]: {} = {
+  state: { [key: string]: boolean } = {
     creating: false,
     created: false,
     rendering: false,
@@ -155,12 +129,12 @@ class Ad {
   //  destroy must always happen after render has completed.
   //
   async onReady(fn: () => void): Promise<void> {
-    await this.constructor[PRIVATE.ready];
-    await seriallyResolvePromises(this[PRIVATE.ready]);
+    await (this.constructor as typeof Ad).ready;
+    await seriallyResolvePromises(this.ready);
 
     const execution: Promise<void> = Promise.resolve(fn());
 
-    this[PRIVATE.ready].push(execution);
+    this.ready.push(execution);
   }
 
   element: HTMLElement;
@@ -168,76 +142,76 @@ class Ad {
   id: string;
   name: string;
 
-  constructor(el: HTMLElement, idOrOptions: string | AdConfiguration, optionsOrNothing: AdConfiguration) {
-    if (!this[PRIVATE.isConfigured]) {
+  constructor(el: HTMLElement, idOrOptions: string | AdConfiguration, optionsOrNothing: Maybe<AdConfiguration>) {
+    if (!this.isConfigured) {
       throw new Error('Not configured properly. Please see README.md');
     }
 
-    this[PRIVATE.ready] = Promise.resolve();
+    this.ready = [Promise.resolve()];
 
-    const id = arguments.length > 2 ? idOrOptions : this[PRIVATE.generateID]();
+    const id = arguments.length > 2 ? idOrOptions : (this.constructor as typeof Ad).generateID();
     const options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
 
     this.element = el;
     this.id = id;
 
-    this[PRIVATE.instances][id] = this;
+    (this.constructor as typeof Ad).instances[id] = this;
 
     this.onReady(async () => {
-      this[PRIVATE.ad] = await this[PRIVATE.network].createAd();
+      this.ad = await this.network.createAd();
       console.log('ready to play');
     });
   }
 
   async render(): Promise<void> {
-    if (this[PRIVATE.state].rendering || this[PRIVATE.state].rendered) {
+    if (this.state.rendering || this.state.rendered) {
       return;
     }
 
-    this[PRIVATE.state].rendering = true;
+    this.state.rendering = true;
 
-    this[PRIVATE.emit](EVENTS.RENDER);
+    this.emit(EVENTS.RENDER);
 
     await this.onReady(async () => {
-      await this[PRIVATE.network].renderAd(this[PRIVATE.ad]);
+      await this.network.renderAd(this.ad);
 
-      this[PRIVATE.state].rendering = false;
-      this[PRIVATE.state].rendered = true;
+      this.state.rendering = false;
+      this.state.rendered = true;
 
-      this[PRIVATE.emit](EVENTS.RENDERED);
+      this.emit(EVENTS.RENDERED);
     });
   }
 
   async refresh(): Promise<void> {
-    if (this[PRIVATE.state].refreshing) {
+    if (this.state.refreshing) {
       return;
     }
 
-    this[PRIVATE.state].refreshing = true;
+    this.state.refreshing = true;
 
     await this.onReady(() => {});
   }
 
   async destroy(): Promise<void> {
-    if (this[PRIVATE.state].destroying) {
+    if (this.state.destroying) {
       return;
     }
 
-    this[PRIVATE.state].destroying = true;
+    this.state.destroying = true;
 
     await this.onReady(() => {});
   }
 
   on(key: string, fn: () => void): void {
-    if (!this[PRIVATE.events][key]) {
-      this[PRIVATE.events][key] = [];
+    if (!this.events[key]) {
+      this.events[key] = [];
     }
 
-    this[PRIVATE.events][key].push(fn);
+    this.events[key].push(fn);
   }
 
-  [PRIVATE.emit](key: string, event) {
-    const events: Array<() => void> = this[PRIVATE.events][key];
+  emit(key: string, event? /* TODO: resolve event (currently optional for tsc) */) {
+    const events: Array<() => void> = this.events[key];
 
     if (!events) {
       return;
@@ -246,15 +220,15 @@ class Ad {
     events.forEach(fn => fn.call(this, event, this));
   }
 
-  [PRIVATE.onInViewport]() {
+  onInViewport() {
   }
 
-  [PRIVATE.onBreakpointChange]() {
+  onBreakpointChange() {
   }
 
-  [PRIVATE.validateParameters](params: {}) {
+  validateParameters(params: { adPath?: string }) {
     const providedParams = Object.keys(params);
-    const { requiredParams, name: networkName } = this.constructor[PRIVATE.network];
+    const { requiredParams, name: networkName } = (this.constructor as typeof Ad).network;
 
     if (!params.adPath) {
       throw new Error('adPath is required for all networks');

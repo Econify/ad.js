@@ -1,5 +1,3 @@
-// @flow
-
 import isServer from './isServer';
 import { Maybe } from '../types/maybe'
 

@@ -8,8 +8,7 @@
     "lint": "eslint ./src",
     "_prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "flow": "flow status",
-    "ts": "tsc"
+    "ts": "tsc --pretty"
   },
   "repository": {
     "type": "git",
@@ -25,13 +24,6 @@
     "scrollmonitor": "^1.2.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.51",
-    "@babel/preset-env": "^7.0.0-beta.51",
-    "awesome-typescript-loader": "^5.2.0",
-    "babel-loader": "^8.0.0-beta.3",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-preset-flow": "^6.23.0",
-    "flow-bin": "^0.76.0",
     "source-map-loader": "^0.2.3",
     "ts-loader": "^4.4.2",
     "typescript": "^3.0.0-dev.20180712",
