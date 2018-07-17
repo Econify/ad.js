@@ -21,5 +21,5 @@ export default function loadScript(url: string, attributes: {} = {}): Promise<vo
     });
 
     document.getElementsByTagName('head')[0].appendChild(scriptTag);
-  }).catch(err => console.error(err));
+  }).catch((err) => console.error(err));
 }

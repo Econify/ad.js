@@ -1,11 +1,11 @@
 import { Ad } from './Ad';
 
 class ADJS {
-  static Ad = Ad;
+  public static Ad = Ad;
 
-  static configure() {}
-  static find() {}
-  static newPage() {}
+  public static configure() {}
+  public static find() {}
+  public static newPage() {}
 }
 
 export default ADJS;

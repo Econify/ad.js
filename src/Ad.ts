@@ -1,30 +1,30 @@
 import { NetworkInterface } from './NetworkTypes';
 import { PluginInterface } from './PluginTypes';
-import { Maybe } from './types/maybe'
+import { Maybe } from './types/maybe';
 
-type GlobalConfiguration = {
-  network: NetworkInterface,
-  plugins: Array<PluginInterface>,
+interface GlobalConfiguration {
+  network: NetworkInterface;
+  plugins: PluginInterface[];
 
-  defaults?: AdConfiguration,
+  defaults?: AdConfiguration;
 }
 
-type AdConfiguration = {
-  adPath: string,
+interface AdConfiguration {
+  adPath: string;
 
-  targeting?: object,
-  sizes?: Array<any>,
+  targeting?: object;
+  sizes?: any[];
 
-  offset?: number,
+  offset?: number;
 
-  autoRender?: boolean,
+  autoRender?: boolean;
 
-  autoRefresh?: boolean,
-  refreshRate?: number,
+  autoRefresh?: boolean;
+  refreshRate?: number;
 
-  refreshOnBreakpoint?: boolean,
-  breakpoints?: Array<number>,
-};
+  refreshOnBreakpoint?: boolean;
+  breakpoints?: number[];
+}
 
 // Event Bus Options
 export const EVENTS: { [key: string]: string } = {
@@ -43,20 +43,25 @@ export const EVENTS: { [key: string]: string } = {
   DESTROYED: 'destroyed',
 };
 
-const seriallyResolvePromises = (thunks: Array<() => any>): Promise<Array<any>> => {
-  return thunks.reduce(async (accumulator: Promise<Array<any>>, currentThunk: () => any): Promise<Array<any>> => {
+const seriallyResolvePromises = (thunks: Array<() => any>): Promise<any[]> => {
+  return thunks.reduce(async (accumulator: Promise<any[]>, currentThunk: () => any): Promise<any[]> => {
     (await accumulator).push(await currentThunk());
     return accumulator;
-  }, new Promise(resolve => resolve([])));
-}
+  }, Promise.resolve([]));
+};
 
 export class Ad {
-  private static ready: Promise<void> = Promise.resolve();
-  private static configuration: GlobalConfiguration
-  private static network: NetworkInterface;
-  private static instances: { [id: string]: Ad } = {};
+  get isConfigured(): boolean {
+    return !!(this.constructor as typeof Ad).configuration;
+  }
 
-  static generateID(): string {
+  get network(): Maybe<NetworkInterface> {
+    return (this.constructor as typeof Ad).network;
+  }
+
+  public static breakpoints: number[] = [];
+
+  public static generateID(): string {
     const randomNumber: number = Math.ceil(Math.random() * 100000);
 
     const suggestedID = `randomId${randomNumber}`;
@@ -68,17 +73,15 @@ export class Ad {
     return this.generateID();
   }
 
-  static breakpoints: Array<number> = [];
-
-  static async onReady(fn: () => void): Promise<void> {
+  public static async onReady(fn: () => void): Promise<void> {
     await this.ready;
     await fn();
   }
 
-  static configure(GlobalConfiguration, options: any = {}): void {
+  public static configure(config: GlobalConfiguration, options: any = {}): void {
     this.ready = Promise.resolve();
 
-    const { breakpoints = [] } : { breakpoints?: Array<number> } = options;
+    const { breakpoints = [] }: { breakpoints?: number[] } = options;
 
     this.breakpoints = breakpoints;
 
@@ -86,23 +89,19 @@ export class Ad {
       this.configuration = options;
     });
   }
+  private static ready: Promise<void> = Promise.resolve();
+  private static configuration: GlobalConfiguration;
+  private static network: NetworkInterface;
+  private static instances: { [id: string]: Ad } = {};
 
-  get isConfigured(): boolean {
-    return !!(this.constructor as typeof Ad).configuration;
-  }
+  public ready: Array<() => Promise<any>> = [];
+  public ad?: any;
 
-  get network(): Maybe<NetworkInterface> {
-    return (this.constructor as typeof Ad).network;
-  }
-
-  ready: Array<() => Promise<any>> = [];
-  ad?: any;
-
-  events: {} = {
+  public events: {} = {
     __cache: {},
   };
 
-  state: { [key: string]: boolean } = {
+  public state: { [key: string]: boolean } = {
     creating: false,
     created: false,
     rendering: false,
@@ -112,31 +111,10 @@ export class Ad {
     destroyed: false,
   };
 
-  // onReady will queue up additional execution calls to onReady
-  // ensuring that commands called in sequence will in fact be executed
-  // in sequence.
-  //
-  // Example:
-  // ---
-  //  ad.render();
-  //  ad.destroy();
-  //
-  //  destroy must always happen after render has completed.
-  //
-  async onReady(fn: () => void): Promise<void> {
-    await (this.constructor as typeof Ad).ready;
-    await seriallyResolvePromises(this.ready);
-
-    const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
-
-    // TODO: should we reset 'this.ready' before pushing to? and/or move above seriallyResolvePromises?
-    this.ready.push(executionThunk);
-  }
-
-  element: HTMLElement;
-  slot: string;
-  id: string;
-  name: string;
+  public element: HTMLElement;
+  public slot: string;
+  public id: string;
+  public name: string;
 
   constructor(el: HTMLElement, idOrOptions: string | AdConfiguration, optionsOrNothing: Maybe<AdConfiguration>) {
     if (!this.isConfigured) {
@@ -154,13 +132,34 @@ export class Ad {
     (this.constructor as typeof Ad).instances[id] = this;
 
     this.onReady(async () => {
-      if (!this.network) throw new Error('Misconfigured network.'); // for typescript
+      if (!this.network) { throw new Error('Misconfigured network.'); } // for typescript
       this.ad = await this.network.createAd(this);
       console.log('ready to play');
     });
   }
 
-  async render(): Promise<void> {
+  // onReady will queue up additional execution calls to onReady
+  // ensuring that commands called in sequence will in fact be executed
+  // in sequence.
+  //
+  // Example:
+  // ---
+  //  ad.render();
+  //  ad.destroy();
+  //
+  //  destroy must always happen after render has completed.
+  //
+  public async onReady(fn: () => void): Promise<void> {
+    await (this.constructor as typeof Ad).ready;
+    await seriallyResolvePromises(this.ready);
+
+    const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
+
+    // TODO: should we reset 'this.ready' before pushing to? and/or move above seriallyResolvePromises?
+    this.ready.push(executionThunk);
+  }
+
+  public async render(): Promise<void> {
     if (this.state.rendering || this.state.rendered) {
       return;
     }
@@ -170,7 +169,7 @@ export class Ad {
     this.emit(EVENTS.RENDER);
 
     await this.onReady(async () => {
-      if (!this.network) throw new Error('Misconfigured network.'); // for typescript
+      if (!this.network) { throw new Error('Misconfigured network.'); } // for typescript
       await this.network.renderAd(this);
 
       this.state.rendering = false;
@@ -180,7 +179,7 @@ export class Ad {
     });
   }
 
-  async refresh(): Promise<void> {
+  public async refresh(): Promise<void> {
     if (this.state.refreshing) {
       return;
     }
@@ -190,7 +189,7 @@ export class Ad {
     await this.onReady(() => {});
   }
 
-  async destroy(): Promise<void> {
+  public async destroy(): Promise<void> {
     if (this.state.destroying) {
       return;
     }
@@ -200,7 +199,7 @@ export class Ad {
     await this.onReady(() => {});
   }
 
-  on(key: string, fn: () => void): void {
+  public on(key: string, fn: () => void): void {
     if (!this.events[key]) {
       this.events[key] = [];
     }
@@ -208,23 +207,23 @@ export class Ad {
     this.events[key].push(fn);
   }
 
-  emit(key: string, event? /* TODO: resolve event (currently optional for tsc) */) {
+  public emit(key: string, event? /* TODO: resolve event (currently optional for tsc) */) {
     const events: Array<() => void> = this.events[key];
 
     if (!events) {
       return;
     }
 
-    events.forEach(fn => fn.call(this, event, this));
+    events.forEach((fn) => fn.call(this, event, this));
   }
 
-  onInViewport() {
+  public onInViewport() {
   }
 
-  onBreakpointChange() {
+  public onBreakpointChange() {
   }
 
-  validateParameters(params: { adPath?: string }) {
+  public validateParameters(params: { adPath?: string }) {
     const providedParams = Object.keys(params);
     const { requiredParams = [], name: networkName } = (this.constructor as typeof Ad).network;
 
@@ -232,7 +231,7 @@ export class Ad {
       throw new Error('adPath is required for all networks');
     }
 
-    requiredParams.forEach(param => {
+    requiredParams.forEach((param) => {
       if (providedParams.indexOf(param) === -1) {
         throw new Error(`'${param}' is a required parameter in '${networkName}'`);
       }

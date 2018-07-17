@@ -1,8 +1,8 @@
-export default function (
+export default function(
   tag: string,
   attributes: object = {},
   elementToInsertInto: HTMLElement,
-  html?: string
+  html?: string,
 ): HTMLElement {
   const element: HTMLElement = document.createElement(tag);
 

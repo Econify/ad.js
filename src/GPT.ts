@@ -1,7 +1,7 @@
 import {
-  NetworkInterface,
   NetworkArguments,
   NetworkInstance,
+  NetworkInterface,
 } from './NetworkTypes';
 
 import loadScript from './lib/loadScript';
@@ -11,8 +11,8 @@ class GPT implements NetworkInterface {
     loadScript('https://www.googletagservices.com/tag/js/gpt.js');
   }
 
-  async createAd({ id, el, slot }) { return { id, el, slot }; }
-  async renderAd() {}
-  async refreshAd() {}
-  async destroyAd() {}
+  public async createAd({ id, el, slot }) { return { id, el, slot }; }
+  public async renderAd() {}
+  public async refreshAd() {}
+  public async destroyAd() {}
 }
