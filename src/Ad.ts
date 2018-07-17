@@ -27,7 +27,7 @@ type AdConfiguration = {
 };
 
 // Event Bus Options
-export const EVENTS: { [key: string]: string} = {
+export const EVENTS: { [key: string]: string } = {
   CREATED: 'created',
 
   REQUEST: 'request',
@@ -43,19 +43,14 @@ export const EVENTS: { [key: string]: string} = {
   DESTROYED: 'destroyed',
 };
 
-// const seriallyResolvePromises = (promises: Array<Promise<void>>): Array<Promise<void>> => {
-//   return promises.reduce((promise, fn = Promise.resolve([])) =>
-//     promise.then(result => fn().then(Array.prototype.concat.bind(result)))
-//   );
-// }
-
-function seriallyResolvePromises(promises: Array<Promise<void>>) => <void> {
-  promises.reduce((promise, fn = Promise.resolve([])) =>
-    promise.then(result => fn().then(Array.prototype.concat.bind(result)))
-  );
+const seriallyResolvePromises = (thunks: Array<() => any>): Promise<Array<any>> => {
+  return thunks.reduce(async (accumulator: Promise<Array<any>>, currentThunk: () => any): Promise<Array<any>> => {
+    (await accumulator).push(await currentThunk());
+    return accumulator;
+  }, new Promise(resolve => resolve([])));
 }
 
-class Ad {
+export class Ad {
   private static ready: Promise<void> = Promise.resolve();
   private static configuration: GlobalConfiguration
   private static network: NetworkInterface;
@@ -80,7 +75,7 @@ class Ad {
     await fn();
   }
 
-  static configure(GlobalConfiguration, options = {}): void {
+  static configure(GlobalConfiguration, options: any = {}): void {
     this.ready = Promise.resolve();
 
     const { breakpoints = [] } : { breakpoints?: Array<number> } = options;
@@ -100,7 +95,7 @@ class Ad {
     return (this.constructor as typeof Ad).network;
   }
 
-  ready: Array<Promise<void>> = [];
+  ready: Array<() => Promise<any>> = [];
   ad?: any;
 
   events: {} = {
@@ -132,9 +127,10 @@ class Ad {
     await (this.constructor as typeof Ad).ready;
     await seriallyResolvePromises(this.ready);
 
-    const execution: Promise<void> = Promise.resolve(fn());
+    const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
 
-    this.ready.push(execution);
+    // TODO: should we reset 'this.ready' before pushing to? and/or move above seriallyResolvePromises?
+    this.ready.push(executionThunk);
   }
 
   element: HTMLElement;
@@ -147,9 +143,9 @@ class Ad {
       throw new Error('Not configured properly. Please see README.md');
     }
 
-    this.ready = [Promise.resolve()];
+    this.ready = [];
 
-    const id = arguments.length > 2 ? idOrOptions : (this.constructor as typeof Ad).generateID();
+    const id = typeof(idOrOptions) === 'string' ? idOrOptions : (this.constructor as typeof Ad).generateID();
     const options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
 
     this.element = el;
@@ -158,7 +154,8 @@ class Ad {
     (this.constructor as typeof Ad).instances[id] = this;
 
     this.onReady(async () => {
-      this.ad = await this.network.createAd();
+      if (!this.network) throw new Error('Misconfigured network.'); // for typescript
+      this.ad = await this.network.createAd(this);
       console.log('ready to play');
     });
   }
@@ -173,7 +170,8 @@ class Ad {
     this.emit(EVENTS.RENDER);
 
     await this.onReady(async () => {
-      await this.network.renderAd(this.ad);
+      if (!this.network) throw new Error('Misconfigured network.'); // for typescript
+      await this.network.renderAd(this);
 
       this.state.rendering = false;
       this.state.rendered = true;
@@ -228,7 +226,7 @@ class Ad {
 
   validateParameters(params: { adPath?: string }) {
     const providedParams = Object.keys(params);
-    const { requiredParams, name: networkName } = (this.constructor as typeof Ad).network;
+    const { requiredParams = [], name: networkName } = (this.constructor as typeof Ad).network;
 
     if (!params.adPath) {
       throw new Error('adPath is required for all networks');

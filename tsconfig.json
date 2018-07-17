@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist/",
-      "sourceMap": true,
-      "strictNullChecks": true,
-      "module": "es6",
-      "jsx": "react",
-      "target": "es5",
-      "allowJs": true,
-      "lib": [
-        "es2015",
-        "dom"
-      ]
-    },
-    "include": [
-      "./src/"
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "module": "es6",
+    "jsx": "react",
+    "target": "es5",
+    "allowJs": true,
+    "lib": [
+      "es2015",
+      "dom"
     ]
+  },
+  "include": [
+    "./src/"
+  ]
 }

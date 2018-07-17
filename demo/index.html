@@ -30,7 +30,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Demo | Ad.js by Econify</title>
   </head>
-  <body id="" onload="">
+  <body>
     <header>
       <h1>The most profitable, easy to use, open source display ad solution in the world.</h1>
     </header>
@@ -41,9 +41,20 @@
     </div>
     <footer>
       <hr>
-      <blockquote>"Do you want to keep making pennies and dimes all day or do you want to start generating some real ad revenue?"</blockquote>
       <img src="http://www.econify.com/assets/econify_logo.png">
       <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
     </div>
+    <script type="text/javascript" src="http://localhost:8080/adjs.bundle.js"></script>
+    <script type="text/javascript">
+      // import. (manipulated)
+      ADJS = ADJS.default;
+
+      // initialize.
+      ADJS.configure({});
+
+      // monetize.
+      const ad = new ADJS.Ad(document.getElementById("ad-slot-1"));
+      ad.render();
+    </script>
   </body>
 </html>

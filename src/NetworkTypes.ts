@@ -12,8 +12,8 @@ export type NetworkInstance = {
 }
 
 export interface NetworkInterface {
-  name: string,
-  requiredParams: Array<string>,
+  name?: string,
+  requiredParams?: Array<string>,
   createAd(NetworkArguments): Promise<NetworkInstance>,
   renderAd(NetworkInstance): Promise<void>,
   refreshAd(NetworkInstance): Promise<void>,

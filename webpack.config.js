@@ -1,10 +1,11 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'adjs.bundle.js',
+    library: 'ADJS'
   },
   resolve: {
     extensions: [".ts", ".js"]

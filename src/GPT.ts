@@ -11,7 +11,7 @@ class GPT implements NetworkInterface {
     loadScript('https://www.googletagservices.com/tag/js/gpt.js');
   }
 
-  async createAd() {}
+  async createAd({ id, el, slot }) { return { id, el, slot }; }
   async renderAd() {}
   async refreshAd() {}
   async destroyAd() {}

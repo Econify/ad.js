@@ -4,6 +4,7 @@
   "description": "Ad Library that allows configuration with multiple providers",
   "main": "index.js",
   "scripts": {
+    "start:dev": "concurrently -k \"webpack-dev-server --port 8080\" \"http-server ./demo -p 8081\"",
     "build": "webpack",
     "lint": "eslint ./src",
     "_prepublish": "npm run build",
@@ -24,10 +25,13 @@
     "scrollmonitor": "^1.2.4"
   },
   "devDependencies": {
+    "concurrently": "^3.6.0",
+    "http-server": "^0.11.1",
     "source-map-loader": "^0.2.3",
     "ts-loader": "^4.4.2",
     "typescript": "^3.0.0-dev.20180712",
     "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4"
   }
 }

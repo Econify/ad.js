@@ -1,9 +1,7 @@
-export default function loadScript(url: string, attributes: {} = {}): Promise<void> {
+export default function loadScript(url: string, attributes: {} = {}): Promise<void | {}> {
   return new Promise((resolve) => {
-    const scriptTag: HTMLElement = document.createElement('script');
+    const scriptTag: HTMLScriptElement = document.createElement('script');
 
-    // TODO: fix flow issue here:
-    // Cannot assign url to scriptTag.src because property src is missing in HTMLElement
     scriptTag.src = url;
     scriptTag.onload = resolve;
 
