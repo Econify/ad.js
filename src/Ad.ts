@@ -1,16 +1,10 @@
+import ADJS from './index';
 import { NetworkInterface } from './NetworkTypes';
 import { PluginInterface } from './PluginTypes';
 import { Maybe } from './types/maybe';
 
-interface GlobalConfiguration {
-  network: NetworkInterface;
-  plugins: PluginInterface[];
-
-  defaults?: AdConfiguration;
-}
-
-interface AdConfiguration {
-  adPath: string;
+export interface AdConfiguration {
+  adPath?: string;
 
   targeting?: object;
   sizes?: any[];
@@ -24,6 +18,8 @@ interface AdConfiguration {
 
   refreshOnBreakpoint?: boolean;
   breakpoints?: number[];
+
+  page?: Maybe<string>;
 }
 
 // Event Bus Options
@@ -41,6 +37,11 @@ export const EVENTS: { [key: string]: string } = {
 
   DESTROY: 'destroy',
   DESTROYED: 'destroyed',
+
+  FREEZE: 'freeze',
+  FROZEN: 'frozen',
+  UNFREEZE: 'unfreeze',
+  UNFROZEN: 'unfrozen',
 };
 
 const seriallyResolvePromises = (thunks: Array<() => any>): Promise<any[]> => {
@@ -52,10 +53,10 @@ const seriallyResolvePromises = (thunks: Array<() => any>): Promise<any[]> => {
 
 export class Ad {
   get isConfigured(): boolean {
-    return !!(this.constructor as typeof Ad).configuration;
+    return !!this.configuration;
   }
 
-  get network(): Maybe<NetworkInterface> {
+  get network(): NetworkInterface {
     return (this.constructor as typeof Ad).network;
   }
 
@@ -77,26 +78,14 @@ export class Ad {
     await this.ready;
     await fn();
   }
-
-  public static configure(config: GlobalConfiguration, options: any = {}): void {
-    this.ready = Promise.resolve();
-
-    const { breakpoints = [] }: { breakpoints?: number[] } = options;
-
-    this.breakpoints = breakpoints;
-
-    this.onReady(() => {
-      this.configuration = options;
-    });
-  }
   private static ready: Promise<void> = Promise.resolve();
-  private static configuration: GlobalConfiguration;
   private static network: NetworkInterface;
   private static instances: { [id: string]: Ad } = {};
 
   public ready: Array<() => Promise<any>> = [];
   public ad?: any;
 
+  // Event Queue
   public events: {} = {
     __cache: {},
   };
@@ -109,6 +98,10 @@ export class Ad {
     refreshing: false,
     destroying: false,
     destroyed: false,
+    freezing: false,
+    frozen: false,
+    unfreezing: false,
+    unfrozen: false,
   };
 
   public element: HTMLElement;
@@ -116,15 +109,20 @@ export class Ad {
   public id: string;
   public name: string;
 
+  private configuration: AdConfiguration;
+
   constructor(el: HTMLElement, idOrOptions: string | AdConfiguration, optionsOrNothing: Maybe<AdConfiguration>) {
-    if (!this.isConfigured) {
+    if (!ADJS.isConfigured) {
       throw new Error('Not configured properly. Please see README.md');
     }
 
     this.ready = [];
 
     const id = typeof(idOrOptions) === 'string' ? idOrOptions : (this.constructor as typeof Ad).generateID();
-    const options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
+
+    let options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
+    options = typeof(options) === 'object' ? options : {};
+    this.configure(options);
 
     this.element = el;
     this.id = id;
@@ -132,7 +130,6 @@ export class Ad {
     (this.constructor as typeof Ad).instances[id] = this;
 
     this.onReady(async () => {
-      if (!this.network) { throw new Error('Misconfigured network.'); } // for typescript
       this.ad = await this.network.createAd(this);
       console.log('ready to play');
     });
@@ -169,7 +166,6 @@ export class Ad {
     this.emit(EVENTS.RENDER);
 
     await this.onReady(async () => {
-      if (!this.network) { throw new Error('Misconfigured network.'); } // for typescript
       await this.network.renderAd(this);
 
       this.state.rendering = false;
@@ -195,6 +191,24 @@ export class Ad {
     }
 
     this.state.destroying = true;
+
+    await this.onReady(() => {});
+  }
+
+  public async freeze(): Promise<void> {
+    if (this.state.freezing) {
+      return;
+    }
+
+    this.state.freezing = true;
+  }
+
+  public async unfreeze(): Promise<void> {
+    if (this.state.unfreezing) {
+      return;
+    }
+
+    this.state.unfreezing = true;
 
     await this.onReady(() => {});
   }
@@ -236,5 +250,25 @@ export class Ad {
         throw new Error(`'${param}' is a required parameter in '${networkName}'`);
       }
     });
+  }
+
+  private configure(configuration: AdConfiguration) {
+    this.configuration = {
+      // Lib Defaults
+      autoRender: true,
+      autoRefresh: true,
+      offset: 0,
+      refreshRate: 60000,
+      targeting: {},
+      breakpoints: [],
+      refreshOnBreakpoint: true,
+      page: undefined,
+
+      // Global Defaults (set by ADJS.configure)
+      ...ADJS.defaults,
+
+      // Constructor Overrides
+      ...configuration,
+    };
   }
 }
