@@ -16,7 +16,7 @@ export class ADJS {
     return !!this.configuration;
   }
 
-  private static get network(): NetworkInterface {
+  public static get network(): NetworkInterface {
     return this.configuration.network;
   }
 

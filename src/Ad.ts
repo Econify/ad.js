@@ -44,9 +44,10 @@ export const EVENTS: { [key: string]: string } = {
   UNFROZEN: 'unfrozen',
 };
 
-const seriallyResolvePromises = (thunks: Array<() => any>): Promise<any[]> => {
+const seriallyResolvePromises = (thunks: Array<() => any>, removeAfterResolve: boolean): Promise<any[]> => {
   return thunks.reduce(async (accumulator: Promise<any[]>, currentThunk: () => any): Promise<any[]> => {
     (await accumulator).push(await currentThunk());
+    if (removeAfterResolve) { thunks.shift(); } // empties item from queue
     return accumulator;
   }, Promise.resolve([]));
 };
@@ -57,7 +58,7 @@ export class Ad {
   }
 
   get network(): NetworkInterface {
-    return (this.constructor as typeof Ad).network;
+    return ADJS.network;
   }
 
   public static breakpoints: number[] = [];
@@ -101,7 +102,7 @@ export class Ad {
     freezing: false,
     frozen: false,
     unfreezing: false,
-    unfrozen: false,
+    processing: false, // ready queue status
   };
 
   public element: HTMLElement;
@@ -148,12 +149,15 @@ export class Ad {
   //
   public async onReady(fn: () => void): Promise<void> {
     await (this.constructor as typeof Ad).ready;
-    await seriallyResolvePromises(this.ready);
 
     const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
-
-    // TODO: should we reset 'this.ready' before pushing to? and/or move above seriallyResolvePromises?
     this.ready.push(executionThunk);
+
+    if (!this.state.frozen && !this.state.processing) {
+      this.state.processing = true;
+      await seriallyResolvePromises(this.ready, true);
+      this.state.processing = false;
+    }
   }
 
   public async render(): Promise<void> {
@@ -161,17 +165,17 @@ export class Ad {
       return;
     }
 
-    this.state.rendering = true;
-
-    this.emit(EVENTS.RENDER);
-
     await this.onReady(async () => {
+      await this.emit(EVENTS.RENDER, () => {
+        this.state.rendering = true;
+      });
+
       await this.network.renderAd(this);
 
-      this.state.rendering = false;
-      this.state.rendered = true;
-
-      this.emit(EVENTS.RENDERED);
+      await this.emit(EVENTS.RENDERED, () => {
+        this.state.rendering = false;
+        this.state.rendered = true;
+      });
     });
   }
 
@@ -180,37 +184,69 @@ export class Ad {
       return;
     }
 
-    this.state.refreshing = true;
+    await this.onReady(async () => {
+      await this.emit(EVENTS.REFRESH, () => {
+        this.state.refreshing = true;
+      });
 
-    await this.onReady(() => {});
+      await this.emit(EVENTS.REFRESHED, () => {
+        this.state.refreshing = false;
+        this.state.refreshed = true;
+      });
+    });
   }
 
   public async destroy(): Promise<void> {
-    if (this.state.destroying) {
+    if (this.state.destroying || this.state.destroyed) {
       return;
     }
 
-    this.state.destroying = true;
+    await this.onReady(async () => {
+      await this.emit(EVENTS.DESTROY, () => {
+        this.state.destroying = true;
+        this.state.destroying = false;
+      });
 
-    await this.onReady(() => {});
+      await this.emit(EVENTS.DESTROYED, () => {
+        this.state.destroyed = true;
+      });
+    });
   }
 
   public async freeze(): Promise<void> {
-    if (this.state.freezing) {
+    if (this.state.freezing || this.state.frozen) {
       return;
     }
 
-    this.state.freezing = true;
+    await this.onReady(async () => {
+      await this.emit(EVENTS.FREEZE, () => {
+        this.state.freezing = true;
+      });
+
+      await this.emit(EVENTS.FROZEN, () => {
+        this.state.freezing = false;
+        this.state.frozen = true;
+      });
+    });
   }
 
   public async unfreeze(): Promise<void> {
-    if (this.state.unfreezing) {
+    if (this.state.unfreezing || !this.state.frozen) {
       return;
     }
 
-    this.state.unfreezing = true;
+    // unfreeze is the exception to the evented workflow because if it were
+    // enqueued, it would be pushed to the end of the queue (after backlogged
+    // events). Thus, leaving the ad in a limbo state. As such, we must bypass
+    // the queue for this event.
+    await this.emit(EVENTS.UNFREEZE, () => {
+      this.state.unfreezing = true;
+    });
 
-    await this.onReady(() => {});
+    await this.emit(EVENTS.UNFROZEN, () => {
+      this.state.frozen = false;
+      this.state.unfreezing = false;
+    });
   }
 
   public on(key: string, fn: () => void): void {
@@ -221,14 +257,20 @@ export class Ad {
     this.events[key].push(fn);
   }
 
-  public emit(key: string, event? /* TODO: resolve event (currently optional for tsc) */) {
+  public async emit(key: string, callback?: () => any) {
     const events: Array<() => void> = this.events[key];
+
+    // trigger callback (typically associated state changes)
+    if (callback) {
+      await callback.call(this);
+    }
 
     if (!events) {
       return;
     }
 
-    events.forEach((fn) => fn.call(this, event, this));
+    // trigger on('event') hooks
+    await seriallyResolvePromises(events, false);
   }
 
   public onInViewport() {

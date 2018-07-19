@@ -29,13 +29,6 @@
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>Demo | Ad.js by Econify</title>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-8940355591378339",
-        enable_page_level_ads: true
-      });
-    </script>
   </head>
   <body>
     <header>
@@ -58,7 +51,7 @@
 
       // initialize.
       ADJS.configure({
-        network: new ADJS.Networks.DFP(),
+        network: new ADJS.Networks.Default(),
         defaults: {
           breakpoints: [1200, 800, 400],
           refreshRate: 1000,
@@ -69,6 +62,12 @@
 
       // monetize.
       const ad = new ADJS.Ad(document.getElementById('ad-slot-1'), 'slot1');
+      ad.on('render', () => console.info('[STATE CHANGED] rendering'));
+      ad.on('rendered', () => console.info('[STATE CHANGED] rendered'));
+      ad.on('refresh', () => console.info('[STATE CHANGED] refreshing'));
+      ad.on('refreshed', () => console.info('[STATE CHANGED] refreshed'));
+      ad.on('destroy', () => console.info('[STATE CHANGED] destroying'));
+      ad.on('destroyed', () => console.info('[STATE CHANGED] destroyed'));
       ad.render();
     </script>
   </body>

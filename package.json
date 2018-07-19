@@ -7,7 +7,7 @@
     "start:dev": "concurrently -k \"webpack-dev-server --port 8080\" \"http-server ./demo -p 8081\"",
     "build": "webpack",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest ./tests --no-cache",
     "ts": "tsc --pretty"
   },
   "repository": {
@@ -24,14 +24,31 @@
     "scrollmonitor": "^1.2.4"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.0",
     "concurrently": "^3.6.0",
     "http-server": "^0.11.1",
+    "jest": "^23.4.1",
     "source-map-loader": "^0.2.3",
+    "ts-jest": "^23.0.1",
     "ts-loader": "^4.4.2",
     "tslint": "^5.11.0",
     "typescript": "^3.0.0-dev.20180712",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(t|j)sx?$": "ts-jest"
+    },
+    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
