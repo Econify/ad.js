@@ -153,6 +153,13 @@ export class Ad {
     const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
     this.ready.push(executionThunk);
 
+    // FIXME: the processing logic/flow below may not scale (not as-is anyway).
+    // However we needed something to tie us over because if you don't stop or
+    // pause processing between calls, duplicate processing can occur (it's a
+    // side effect of these calls being queued up and javascript's async
+    // nature). To reproduce, chain a bunch of ad events and comment out
+    // `&& !this.state.processing`. The demo will print 'ready to play' for
+    // every emit/onReady event call.
     if (!this.state.frozen && !this.state.processing) {
       this.state.processing = true;
       await seriallyResolvePromises(this.ready, true);

@@ -68,7 +68,41 @@
       ad.on('refreshed', () => console.info('[STATE CHANGED] refreshed'));
       ad.on('destroy', () => console.info('[STATE CHANGED] destroying'));
       ad.on('destroyed', () => console.info('[STATE CHANGED] destroyed'));
-      ad.render();
+
+      //////////////////////////////////////////////////////////////////////////
+
+      // Initialization Method 1:
+
+      // These 3 events get enqueued and don't immediately fire because the lib
+      // calls onReady in the Ad constructor which marks Ad state as processing:
+
+      // ad.render();
+      // ad.refresh();
+      // ad.destroy();
+
+      // The following actually triggers initial queue processing (NOTE: not sure
+      // this is desired but describes WIP state of current sync/async event flow):
+
+      // setTimeout(() => {
+      //   console.log('trigger queue processing');
+      //   ad.onReady(() => {});
+      // }, 1500);
+
+      //////////////////////////////////////////////////////////////////////////
+
+      /* Initialization Method 2 */
+
+      // However, if we await events, things work as expected onload:
+
+      // async function setup() {
+      //   await ad.render();
+      //   await ad.refresh();
+      //   await ad.destroy();
+      // }
+
+      // setup();
+
+      //////////////////////////////////////////////////////////////////////////
     </script>
   </body>
 </html>
