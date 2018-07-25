@@ -196,6 +196,8 @@ export class Ad {
         this.state.refreshing = true;
       });
 
+      await this.network.refreshAd(this);
+
       await this.emit(EVENTS.REFRESHED, () => {
         this.state.refreshing = false;
         this.state.refreshed = true;
@@ -213,6 +215,8 @@ export class Ad {
         this.state.destroying = true;
         this.state.destroying = false;
       });
+
+      await this.network.destroyAd(this);
 
       await this.emit(EVENTS.DESTROYED, () => {
         this.state.destroyed = true;
@@ -237,7 +241,7 @@ export class Ad {
     });
   }
 
-  public async unfreeze(): Promise<void> {
+  public async unfreeze(options: { replayEventsWhileFrozen?: boolean } = {}): Promise<void> {
     if (this.state.unfreezing || !this.state.frozen) {
       return;
     }
@@ -254,6 +258,11 @@ export class Ad {
       this.state.frozen = false;
       this.state.unfreezing = false;
     });
+
+    // processes backlogged events in queue on('unfreeze')
+    if (options.replayEventsWhileFrozen) {
+      await this.onReady(() => { /* noop */ });
+    }
   }
 
   public on(key: string, fn: () => void): void {

@@ -50,12 +50,31 @@ describe('Ad', () => {
 
   describe('unfreeze()', () => {
     it('should unfreeze ad & trigger async hooks', async () => {
+      await ad.onReady(() => {})
       let unfrozen;
       ad.on('unfrozen', () => { unfrozen = true; });
-      await ad.unfreeze();
+      await ad.unfreeze({ replayEventsWhileFrozen: true });
       expect(unfrozen).toEqual(true);
       expect(ad.state.unfreezing).toEqual(false);
       expect(ad.state.frozen).toEqual(false);
+    });
+
+    it('should trigger backlogged events when provided replayEventsWhileFrozen option', async () => {
+      let backlogged = true;
+      ad.on('refresh', () => { backlogged = false; });
+      await ad.freeze();
+      await ad.refresh();
+      await ad.unfreeze({ replayEventsWhileFrozen: true });
+      expect(backlogged).toEqual(false);
+    });
+
+    it('should not trigger backlogged events when not provided replayEventsWhileFrozen option', async () => {
+      let backlogged = true;
+      ad.on('refresh', () => { backlogged = false; });
+      await ad.freeze();
+      await ad.refresh();
+      await ad.unfreeze();
+      expect(backlogged).toEqual(true);
     });
   });
 });
