@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    body {
+      margin: 50px;
+      background-color: #f2f2ed;
+      color: #33322e;
+      font-family: Helvetica;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 50px;
+    }
+    blockquote {
+      color: #777;
+    }
+    #ad-slot-1 {
+      min-width: 300px;
+      min-height: 600px;
+      background-color: #fff;
+    }
+    footer img {
+      display: block;
+      margin: 30px auto;
+      max-width: 150px;
+    }
+  </style>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Demo | Ad.js by Econify</title>
+  </head>
+  <body>
+    <header>
+      <h1>The most profitable, easy to use, open source display ad solution in the world.</h1>
+    </header>
+    <div class="container">
+      <hr>
+      <h2>It all starts with <code>npm install adjs</code>.</h2>
+      <div id="ad-slot-1"></div>
+    </div>
+    <footer>
+      <hr>
+      <img src="http://www.econify.com/assets/econify_logo.png">
+      <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
+    </div>
+    <script type="text/javascript" src="http://localhost:8080/adjs.bundle.js"></script>
+    <script type="text/javascript">
+      // import. (manipulated)
+      ADJS = ADJS.default;
+
+      // initialize.
+      ADJS.configure({
+        network: new ADJS.Networks.Default(),
+        defaults: {
+          breakpoints: [1200, 800, 400],
+          refreshRate: 1000,
+          offset: -100,
+          targeting: { example: 'true' },
+        },
+      });
+
+      // monetize.
+      const ad = new ADJS.Ad(document.getElementById('ad-slot-1'), 'slot1');
+      ad.on('render', () => console.info('[STATE CHANGED] rendering'));
+      ad.on('rendered', () => console.info('[STATE CHANGED] rendered'));
+      ad.on('refresh', () => console.info('[STATE CHANGED] refreshing'));
+      ad.on('refreshed', () => console.info('[STATE CHANGED] refreshed'));
+      ad.on('destroy', () => console.info('[STATE CHANGED] destroying'));
+      ad.on('destroyed', () => console.info('[STATE CHANGED] destroyed'));
+
+      //////////////////////////////////////////////////////////////////////////
+
+      // Initialization Method 1:
+
+      // These 3 events get enqueued and don't immediately fire because the lib
+      // calls onReady in the Ad constructor which marks Ad state as processing:
+
+      // ad.render();
+      // ad.refresh();
+      // ad.destroy();
+
+      // The following actually triggers initial queue processing (NOTE: not sure
+      // this is desired but describes WIP state of current sync/async event flow):
+
+      // setTimeout(() => {
+      //   console.log('trigger queue processing');
+      //   ad.onReady(() => {});
+      // }, 1500);
+
+      //////////////////////////////////////////////////////////////////////////
+
+      /* Initialization Method 2 */
+
+      // However, if we await events, things work as expected onload:
+
+      // async function setup() {
+      //   await ad.render();
+      //   await ad.refresh();
+      //   await ad.destroy();
+      // }
+
+      // setup();
+
+      //////////////////////////////////////////////////////////////////////////
+    </script>
+  </body>
+</html>

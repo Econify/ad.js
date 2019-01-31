@@ -1,8 +1,8 @@
-export default function (
-    tag: string,
-    attributes: {} = {},
-    elementToInsertInto: ?HTMLElement,
-    html: ?string
+export default function(
+  tag: string,
+  attributes: object = {},
+  elementToInsertInto: HTMLElement,
+  html?: string,
 ): HTMLElement {
   const element: HTMLElement = document.createElement(tag);
 
@@ -29,4 +29,3 @@ export default function (
 
   return element;
 }
-
