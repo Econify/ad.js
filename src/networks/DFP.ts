@@ -1,9 +1,9 @@
-import { INetwork, INetworkInstance } from '../../';
 import { googletag } from '@types/doubleclick-gpt';
-
+import { INetwork, INetworkInstance } from '../../';
 import loadScript from '../utils/loadScript';
 
 declare global {
+  // tslint:disable-next-line
   interface Window { googletag: any; }
 }
 
@@ -19,7 +19,7 @@ class DfpAd implements INetworkInstance {
       googletag.defineSlot('/1234567/sports', [160, 600], id);
   }
 
-  render() {
+  public render() {
     return new Promise(
       (resolve) => {
         const { slot } = this;
@@ -31,7 +31,7 @@ class DfpAd implements INetworkInstance {
             if (event.slot === slot) {
               console.log('SLOT RENDERED');
             }
-          }
+          },
         );
 
         googletag.pubads().addEventListener(
@@ -41,7 +41,7 @@ class DfpAd implements INetworkInstance {
             if (event.slot === slot) {
               console.log('SLOT LOADED');
             }
-          }
+          },
         );
 
         slot.display();
@@ -51,20 +51,20 @@ class DfpAd implements INetworkInstance {
     });
   }
 
-  clear() {
+  public clear() {
     const { slot } = this;
 
     googletag.pubads().clear([slot]);
   }
 
-  refresh() {
+  public refresh() {
     const { slot } = this;
 
     googletag.pubads().refresh([slot], { changeCorrelator: false });
   }
 
   // Cannot undo this action
-  destroy() {
+  public destroy() {
     const { slot } = this;
 
     googletag.destroySlots([slot]);
@@ -97,6 +97,6 @@ const DoubleClickForPublishers: INetwork = {
   async resetCorrelator() {
     googletag.pubads().updateCorrelator();
   },
-}
+};
 
 export default DoubleClickForPublishers;

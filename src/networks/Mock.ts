@@ -14,7 +14,7 @@ const MockAdInstance: INetworkInstance = {
 
   async clear() {
   },
-}
+};
 
 const MockAdNetwork: INetwork = {
   name: 'Mock Network',
@@ -25,7 +25,7 @@ const MockAdNetwork: INetwork = {
 
   async resetCorrelator() {
     return Promise.resolve();
-  }
-}
+  },
+};
 
 export default MockAdNetwork;

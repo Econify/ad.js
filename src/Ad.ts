@@ -1,6 +1,6 @@
 import {
-  IAdConfiguration, IExtension, INetwork,
-  IPlugin, IEventType, Maybe, IBucket,
+  IAdConfiguration, IBucket, IEventType,
+  IExtension, INetwork, IPlugin, Maybe,
 } from '../';
 
 import AdJS from '.';
@@ -42,29 +42,13 @@ export const EVENTS: IEventType = {
   FROZEN: 'frozen',
   UNFREEZE: 'unfreeze',
   UNFROZEN: 'unfrozen',
-
   CLEARED: 'cleared',
 };
 
-const seriallyResolvePromises = (thunks: Array<() => any>): Promise<any[]> => {
-  return thunks.reduce(async (accumulator: Promise<any[]>, currentThunk: () => any): Promise<any[]> => {
-    (await accumulator).push(await currentThunk());
-    // if (removeAfterResolve) { thunks.shift(); } // empties item from queue
-    return accumulator;
-  }, Promise.resolve([]));
-};
-
-export class Ad {
+export default class Ad {
   get network(): INetwork {
     return this.bucket.network;
   }
-  
-  this.networkInstance: INetworkInstance;
-
-  public breakpoints: number[] = [];
-
-  private localExtensions: IExtension[] = [];
-  private localPlugins: IPlugin[] = [];
 
   private get extensions() {
     return [
@@ -80,26 +64,7 @@ export class Ad {
     ];
   }
 
-  /*
-  public generateID(): string {
-    const randomNumber: number = Math.ceil(Math.random() * 100000);
-
-    const suggestedID = `randomId${randomNumber}`;
-
-    if (!this.instances[suggestedID]) {
-      return suggestedID;
-    }
-
-    return this.generateID();
-  }
-   */
-
-  private ready: Array<() => Promise<any>> = [];
-
-  // Event Queue
-  private events: {} = {
-    __cache: {},
-  };
+  public breakpoints: number[] = [];
 
   public state: { [key: string]: boolean } = {
     creating: false,
@@ -116,12 +81,25 @@ export class Ad {
 
   public container: HTMLElement;
 
+  private networkInstance: INetworkInstance;
+
+  private localExtensions: IExtension[] = [];
+  private localPlugins: IPlugin[] = [];
+
+  private ready: Array<() => Promise<any>> = [];
+
+  // Event Queue
+  private events: {} = {
+    __cache: {},
+  };
+
   private configuration: IAdConfiguration;
 
   constructor(private bucket: IBucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
     this.bucket = bucket;
     this.container = insertElement('div', { 'data-ad-id': nextId() }, el);
-    this.configuration: IAdConfiguration = {
+
+    this.configuration = {
       // Bucket Defaults
       ...this.bucket.defaults,
 
@@ -169,7 +147,7 @@ export class Ad {
     if (this.state.rendering || this.state.rendered) {
       return;
     }
-    
+
     this.state.rendering = true;
 
     await this.onReady(async () => {
@@ -286,7 +264,7 @@ export class Ad {
 
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
-      await this.events.__cache
+      await this.events.__cache;
     }
   }
 
@@ -300,15 +278,15 @@ export class Ad {
 
   public async emit(key: string, callback?: (ad: this) => void) {
     const events: Array<() => void> = this.events[key];
-    
+
     if (!events) {
       return;
     }
 
     await Promise.all(
       events.map(
-        (event) => event(this)
-      )
+        (event) => event(this),
+      ),
     );
   }
 
@@ -327,5 +305,3 @@ export class Ad {
     });
   }
 }
-
-export default Ad;

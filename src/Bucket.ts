@@ -1,7 +1,6 @@
-import AdJS from '.';
+import MainSingleton from '.';
+import { IAdConfiguration, IBucketConfiguration, IExtension, INetwork, IPlugin } from '../';
 import Ad from './Ad';
-
-import { IBucketConfiguration } from '../';
 
 const DEFAULT_CONFIGURATION: IBucketConfiguration = {
   plugins: [],
@@ -58,15 +57,15 @@ class Bucket {
   public async setAsActive() {
     const { correlatorId: bucketCorrelatorId } = this.ads[0];
 
-    if (AdJS.activeCorrelatorId === bucketCorrelatorId) {
+    if (MainSingleton.activeCorrelatorId === bucketCorrelatorId) {
       return;
     }
 
     this.ads.forEach(
-      (ad) => {
+      (ad: Ad) => {
         ad.clear();
-      }
-    )
+      },
+    );
 
     await this.network.resetCorrelator();
   }

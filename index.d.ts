@@ -8,6 +8,11 @@ export interface IExtension {
   name: string;
 }
 
+export interface IBucketConfiguration {
+  plugins: IPlugin[];
+  extensions: IExtension[];
+}
+
 export interface IBucket {
   network: INetwork;
   plugins?: IPlugin[];
