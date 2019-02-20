@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'adjs.bundle.js',
-    library: 'ADJS'
+    library: 'AdJS'
   },
   resolve: {
     extensions: [".ts", ".js"]

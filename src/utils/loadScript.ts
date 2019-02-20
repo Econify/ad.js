@@ -1,4 +1,4 @@
-export default function loadScript(url: string, attributes: {} = {}): Promise<void | {}> {
+export default function loadScript(url: string, attributes: { [key: string]: boolean | string } = {}): Promise<void | {}> {
   return new Promise((resolve) => {
     const scriptTag: HTMLScriptElement = document.createElement('script');
 
@@ -6,7 +6,7 @@ export default function loadScript(url: string, attributes: {} = {}): Promise<vo
     scriptTag.onload = resolve;
 
     Object.keys(attributes).forEach((key) => {
-      const value = attributes[key];
+      const value: boolean | string = attributes[key];
 
       if (typeof value === 'boolean') {
         if (!value) {

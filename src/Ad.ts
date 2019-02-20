@@ -1,29 +1,29 @@
-import ADJS from './index';
-import { NetworkInterface } from './NetworkTypes';
-import { PluginInterface } from './PluginTypes';
-import { Maybe } from './types/maybe';
+import {
+  IAdConfiguration, IExtension, INetwork,
+  IPlugin, IEventType, Maybe, IBucket,
+} from '../';
 
-export interface AdConfiguration {
-  adPath?: string;
+import AdJS from '.';
+import insertElement from './utils/insertElement';
 
-  targeting?: object;
-  sizes?: any[];
+let adId = 1;
 
-  offset?: number;
-
-  autoRender?: boolean;
-
-  autoRefresh?: boolean;
-  refreshRate?: number;
-
-  refreshOnBreakpoint?: boolean;
-  breakpoints?: number[];
-
-  page?: Maybe<string>;
+function nextId(): number {
+  return ++adId;
 }
 
+const DEFAULT_CONFIGURATION: IAdConfiguration = {
+  autoRender: true,
+  autoRefresh: true,
+  offset: 0,
+  refreshRate: 60000,
+  targeting: {},
+  breakpoints: [],
+  refreshOnBreakpoint: true,
+};
+
 // Event Bus Options
-export const EVENTS: { [key: string]: string } = {
+export const EVENTS: IEventType = {
   CREATED: 'created',
 
   REQUEST: 'request',
@@ -42,28 +42,46 @@ export const EVENTS: { [key: string]: string } = {
   FROZEN: 'frozen',
   UNFREEZE: 'unfreeze',
   UNFROZEN: 'unfrozen',
+
+  CLEARED: 'cleared',
 };
 
-const seriallyResolvePromises = (thunks: Array<() => any>, removeAfterResolve: boolean): Promise<any[]> => {
+const seriallyResolvePromises = (thunks: Array<() => any>): Promise<any[]> => {
   return thunks.reduce(async (accumulator: Promise<any[]>, currentThunk: () => any): Promise<any[]> => {
     (await accumulator).push(await currentThunk());
-    if (removeAfterResolve) { thunks.shift(); } // empties item from queue
+    // if (removeAfterResolve) { thunks.shift(); } // empties item from queue
     return accumulator;
   }, Promise.resolve([]));
 };
 
 export class Ad {
-  get isConfigured(): boolean {
-    return !!this.configuration;
+  get network(): INetwork {
+    return this.bucket.network;
+  }
+  
+  this.networkInstance: INetworkInstance;
+
+  public breakpoints: number[] = [];
+
+  private localExtensions: IExtension[] = [];
+  private localPlugins: IPlugin[] = [];
+
+  private get extensions() {
+    return [
+      ...this.bucket.extensions,
+      ...this.localExtensions,
+    ];
   }
 
-  get network(): NetworkInterface {
-    return ADJS.network;
+  private get plugins() {
+    return [
+      ...this.bucket.plugins,
+      ...this.localPlugins,
+    ];
   }
 
-  public static breakpoints: number[] = [];
-
-  public static generateID(): string {
+  /*
+  public generateID(): string {
     const randomNumber: number = Math.ceil(Math.random() * 100000);
 
     const suggestedID = `randomId${randomNumber}`;
@@ -74,20 +92,12 @@ export class Ad {
 
     return this.generateID();
   }
+   */
 
-  public static async onReady(fn: () => void): Promise<void> {
-    await this.ready;
-    await fn();
-  }
-  private static ready: Promise<void> = Promise.resolve();
-  private static network: NetworkInterface;
-  private static instances: { [id: string]: Ad } = {};
-
-  public ready: Array<() => Promise<any>> = [];
-  public ad?: any;
+  private ready: Array<() => Promise<any>> = [];
 
   // Event Queue
-  public events: {} = {
+  private events: {} = {
     __cache: {},
   };
 
@@ -96,43 +106,33 @@ export class Ad {
     created: false,
     rendering: false,
     rendered: false,
-    refreshing: false,
     destroying: false,
     destroyed: false,
     freezing: false,
     frozen: false,
     unfreezing: false,
-    processing: false, // ready queue status
+    unfrozen: false,
   };
 
-  public element: HTMLElement;
-  public slot: string;
-  public id: string;
-  public name: string;
+  public container: HTMLElement;
 
-  private configuration: AdConfiguration;
+  private configuration: IAdConfiguration;
 
-  constructor(el: HTMLElement, idOrOptions: string | AdConfiguration, optionsOrNothing: Maybe<AdConfiguration>) {
-    if (!ADJS.isConfigured) {
-      throw new Error('Not configured properly. Please see README.md');
-    }
+  constructor(private bucket: IBucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
+    this.bucket = bucket;
+    this.container = insertElement('div', { 'data-ad-id': nextId() }, el);
+    this.configuration: IAdConfiguration = {
+      // Bucket Defaults
+      ...this.bucket.defaults,
 
-    this.ready = [];
+      // Constructor Overrides
+      ...localConfiguration,
+    };
 
-    const id = typeof(idOrOptions) === 'string' ? idOrOptions : (this.constructor as typeof Ad).generateID();
+    this.onReady(() => {
+      this.networkInstance = this.network.createAd(this);
 
-    let options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
-    options = typeof(options) === 'object' ? options : {};
-    this.configure(options);
-
-    this.element = el;
-    this.id = id;
-
-    (this.constructor as typeof Ad).instances[id] = this;
-
-    this.onReady(async () => {
-      this.ad = await this.network.createAd(this);
-      console.log('ready to play');
+      console.log('ready to play with', this.networkInstance);
     });
   }
 
@@ -148,9 +148,9 @@ export class Ad {
   //  destroy must always happen after render has completed.
   //
   public async onReady(fn: () => void): Promise<void> {
-    await (this.constructor as typeof Ad).ready;
+    await this.bucket.prepare();
 
-    const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
+    const executionThunk: () => Promise<void> = () => Promise.resolve(fn(this));
     this.ready.push(executionThunk);
 
     // FIXME: the processing logic/flow below may not scale (not as-is anyway).
@@ -160,48 +160,78 @@ export class Ad {
     // nature). To reproduce, chain a bunch of ad events and comment out
     // `&& !this.state.processing`. The demo will print 'ready to play' for
     // every emit/onReady event call.
-    if (!this.state.frozen && !this.state.processing) {
-      this.state.processing = true;
-      await seriallyResolvePromises(this.ready, true);
-      this.state.processing = false;
-    }
+    //
+    // We'll see Sky-Sky, we'll see...
+    await seriallyResolvePromises(this.ready);
   }
 
   public async render(): Promise<void> {
     if (this.state.rendering || this.state.rendered) {
       return;
     }
+    
+    this.state.rendering = true;
 
     await this.onReady(async () => {
-      await this.emit(EVENTS.RENDER, () => {
-        this.state.rendering = true;
-      });
+      this.bucket.setAsActive();
 
-      await this.network.renderAd(this);
+      this.emit(EVENTS.RENDER);
 
-      await this.emit(EVENTS.RENDERED, () => {
-        this.state.rendering = false;
-        this.state.rendered = true;
-      });
+      await this.network.renderAd(this.ad);
+
+      this.state.rendering = false;
+      this.state.rendered = true;
+      this.emit(EVENTS.RENDERED);
     });
   }
 
-  public async refresh(): Promise<void> {
+  public async refresh(forceRender: boolean = true): Promise<void> {
     if (this.state.refreshing) {
       return;
     }
 
+    this.state.refreshing = true;
+
     await this.onReady(async () => {
-      await this.emit(EVENTS.REFRESH, () => {
-        this.state.refreshing = true;
-      });
+      this.bucket.setAsActive();
 
-      await this.network.refreshAd(this);
+      this.emit(EVENTS.REFRESH);
 
-      await this.emit(EVENTS.REFRESHED, () => {
-        this.state.refreshing = false;
-        this.state.refreshed = true;
-      });
+      if (typeof this.networkInstance.refresh !== 'undefined') {
+        await this.networkInstance.refresh();
+      } else {
+        console.warn(`
+          ${this.network.name} Network does not support ad refreshing natively.
+          Destroying and Recreating the ad. Make sure this is what you intended.
+        `);
+
+        await this.networkInstance.destroy();
+        this.networkInstance = this.network.createAd(this);
+
+        if (forceRender) {
+          this.networkInstance.render();
+        }
+      }
+
+      this.state.refreshing = false;
+      this.state.refreshed = true;
+      this.emit(EVENTS.REFRESHED);
+    });
+  }
+
+  public async clear(): Promise<void> {
+    if (this.state.clearing || !this.state.rendered) {
+      return;
+    }
+
+    this.state.clearing = true;
+
+    await this.onReady(async () => {
+      await this.networkInstance.clear();
+
+      this.state.clearing = true;
+      this.state.rendered = false;
+      this.emit(EVENTS.CLEARED);
     });
   }
 
@@ -211,16 +241,13 @@ export class Ad {
     }
 
     await this.onReady(async () => {
-      await this.emit(EVENTS.DESTROY, () => {
-        this.state.destroying = true;
-        this.state.destroying = false;
-      });
+      this.state.destroying = true;
+      this.emit(EVENTS.DESTROY);
 
-      await this.network.destroyAd(this);
+      await this.networkInstance.destroy();
 
-      await this.emit(EVENTS.DESTROYED, () => {
-        this.state.destroyed = true;
-      });
+      this.state.destroyed = true;
+      this.emit(EVENTS.DESTROYED);
     });
   }
 
@@ -250,18 +277,16 @@ export class Ad {
     // enqueued, it would be pushed to the end of the queue (after backlogged
     // events). Thus, leaving the ad in a limbo state. As such, we must bypass
     // the queue for this event.
-    await this.emit(EVENTS.UNFREEZE, () => {
-      this.state.unfreezing = true;
-    });
+    this.state.unfreezing = true;
+    this.emit(EVENTS.UNFREEZE);
 
-    await this.emit(EVENTS.UNFROZEN, () => {
-      this.state.frozen = false;
-      this.state.unfreezing = false;
-    });
+    this.state.frozen = false;
+    this.state.unfreezing = false;
+    this.emit(EVENTS.UNFROZEN);
 
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
-      await this.onReady(() => { /* noop */ });
+      await this.events.__cache
     }
   }
 
@@ -273,26 +298,18 @@ export class Ad {
     this.events[key].push(fn);
   }
 
-  public async emit(key: string, callback?: () => any) {
+  public async emit(key: string, callback?: (ad: this) => void) {
     const events: Array<() => void> = this.events[key];
-
-    // trigger callback (typically associated state changes)
-    if (callback) {
-      await callback.call(this);
-    }
-
+    
     if (!events) {
       return;
     }
 
-    // trigger on('event') hooks
-    await seriallyResolvePromises(events, false);
-  }
-
-  public onInViewport() {
-  }
-
-  public onBreakpointChange() {
+    await Promise.all(
+      events.map(
+        (event) => event(this)
+      )
+    );
   }
 
   public validateParameters(params: { adPath?: string }) {
@@ -309,24 +326,6 @@ export class Ad {
       }
     });
   }
-
-  private configure(configuration: AdConfiguration) {
-    this.configuration = {
-      // Lib Defaults
-      autoRender: true,
-      autoRefresh: true,
-      offset: 0,
-      refreshRate: 60000,
-      targeting: {},
-      breakpoints: [],
-      refreshOnBreakpoint: true,
-      page: undefined,
-
-      // Global Defaults (set by ADJS.configure)
-      ...ADJS.defaults,
-
-      // Constructor Overrides
-      ...configuration,
-    };
-  }
 }
+
+export default Ad;
