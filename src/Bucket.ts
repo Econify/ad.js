@@ -9,11 +9,13 @@ const DEFAULT_CONFIGURATION: IBucketConfiguration = {
 
 class Bucket {
   public ads: Ad[] = [];
+
+  public promiseStack: Promise<void> = Promise.resolve();
   private plugins: IPlugin[] = [];
   private extensions: IExtension[] = [];
   private defaults: IAdConfiguration;
 
-  constructor(private network: INetwork, providedConfiguration: IBucketConfiguration) {
+  constructor(public network: INetwork, providedConfiguration: IBucketConfiguration) {
     const configuration = {
       ...DEFAULT_CONFIGURATION,
       ...providedConfiguration,
@@ -46,7 +48,11 @@ class Bucket {
   }
   */
 
-  public Ad(el: HTMLElement, options: IAdConfiguration): Ad {
+  public Ad(el: HTMLElement, options?: IAdConfiguration): Ad {
+    return this.createAd(el, options);
+  }
+
+  public createAd(el: HTMLElement, options?: IAdConfiguration): Ad {
     const ad = new Ad(this, el, options);
 
     this.ads.push(ad);

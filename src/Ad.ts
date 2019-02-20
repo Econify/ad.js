@@ -5,6 +5,7 @@ import {
 
 import AdJS from '.';
 import insertElement from './utils/insertElement';
+import seriallyResolvePromises from './utils/seriallyResolvePromises';
 
 let adId = 1;
 
@@ -39,9 +40,8 @@ export const EVENTS: IEventType = {
   DESTROYED: 'destroyed',
 
   FREEZE: 'freeze',
-  FROZEN: 'frozen',
   UNFREEZE: 'unfreeze',
-  UNFROZEN: 'unfrozen',
+
   CLEARED: 'cleared',
 };
 
@@ -73,10 +73,8 @@ export default class Ad {
     rendered: false,
     destroying: false,
     destroyed: false,
-    freezing: false,
+
     frozen: false,
-    unfreezing: false,
-    unfrozen: false,
   };
 
   public container: HTMLElement;
@@ -86,18 +84,19 @@ export default class Ad {
   private localExtensions: IExtension[] = [];
   private localPlugins: IPlugin[] = [];
 
-  private ready: Array<() => Promise<any>> = [];
+  private promiseStack: Promise<void> = Promise.resolve();
 
   // Event Queue
   private events: {} = {
-    __cache: {},
+    __cache: [],
   };
 
   private configuration: IAdConfiguration;
 
   constructor(private bucket: IBucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
-    this.bucket = bucket;
     this.container = insertElement('div', { 'data-ad-id': nextId() }, el);
+
+    this.promiseStack = this.promiseStack.then(() => this.bucket.promiseStack);
 
     this.configuration = {
       // Bucket Defaults
@@ -110,7 +109,7 @@ export default class Ad {
     this.onReady(() => {
       this.networkInstance = this.network.createAd(this);
 
-      console.log('ready to play with', this.networkInstance);
+      // TODO INCLUDE A DEBUGGER
     });
   }
 
@@ -126,21 +125,7 @@ export default class Ad {
   //  destroy must always happen after render has completed.
   //
   public async onReady(fn: () => void): Promise<void> {
-    await this.bucket.prepare();
-
-    const executionThunk: () => Promise<void> = () => Promise.resolve(fn(this));
-    this.ready.push(executionThunk);
-
-    // FIXME: the processing logic/flow below may not scale (not as-is anyway).
-    // However we needed something to tie us over because if you don't stop or
-    // pause processing between calls, duplicate processing can occur (it's a
-    // side effect of these calls being queued up and javascript's async
-    // nature). To reproduce, chain a bunch of ad events and comment out
-    // `&& !this.state.processing`. The demo will print 'ready to play' for
-    // every emit/onReady event call.
-    //
-    // We'll see Sky-Sky, we'll see...
-    await seriallyResolvePromises(this.ready);
+    this.promiseStack = this.promiseStack.then(() => fn());
   }
 
   public async render(): Promise<void> {
@@ -155,7 +140,7 @@ export default class Ad {
 
       this.emit(EVENTS.RENDER);
 
-      await this.network.renderAd(this.ad);
+      await this.networkInstance.render();
 
       this.state.rendering = false;
       this.state.rendered = true;
@@ -218,36 +203,30 @@ export default class Ad {
       return;
     }
 
+    this.state.destroying = true;
+
     await this.onReady(async () => {
-      this.state.destroying = true;
       this.emit(EVENTS.DESTROY);
 
       await this.networkInstance.destroy();
 
       this.state.destroyed = true;
+      this.state.destroying = false;
       this.emit(EVENTS.DESTROYED);
     });
   }
 
-  public async freeze(): Promise<void> {
-    if (this.state.freezing || this.state.frozen) {
+  public freeze(): Promise<void> {
+    if (this.state.frozen) {
       return;
     }
 
-    await this.onReady(async () => {
-      await this.emit(EVENTS.FREEZE, () => {
-        this.state.freezing = true;
-      });
-
-      await this.emit(EVENTS.FROZEN, () => {
-        this.state.freezing = false;
-        this.state.frozen = true;
-      });
-    });
+    this.state.frozen = true;
+    this.emit(EVENTS.FREEZE);
   }
 
   public async unfreeze(options: { replayEventsWhileFrozen?: boolean } = {}): Promise<void> {
-    if (this.state.unfreezing || !this.state.frozen) {
+    if (!this.state.frozen) {
       return;
     }
 
@@ -255,17 +234,18 @@ export default class Ad {
     // enqueued, it would be pushed to the end of the queue (after backlogged
     // events). Thus, leaving the ad in a limbo state. As such, we must bypass
     // the queue for this event.
-    this.state.unfreezing = true;
-    this.emit(EVENTS.UNFREEZE);
-
     this.state.frozen = false;
-    this.state.unfreezing = false;
-    this.emit(EVENTS.UNFROZEN);
 
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
-      await this.events.__cache;
+      const events = this.getCachedEventsAndEmptyCache();
+
+      this.addToPromiseStack(
+        () => seriallyResolvePromises(events),
+      );
     }
+
+    this.emit(EVENTS.UNFREEZE);
   }
 
   public on(key: string, fn: () => void): void {
@@ -276,6 +256,8 @@ export default class Ad {
     this.events[key].push(fn);
   }
 
+  // You really shouldn't await this, but it's useful to know
+  // when all of the binded events have fired
   public async emit(key: string, callback?: (ad: this) => void) {
     const events: Array<() => void> = this.events[key];
 
@@ -290,9 +272,15 @@ export default class Ad {
     );
   }
 
-  public validateParameters(params: { adPath?: string }) {
+  private getCachedEventsAndEmptyCache() {
+    const events = this.events.__cache;
+
+    this.events.__cache = [];
+  }
+
+  private validateParameters(params: { adPath?: string }) {
     const providedParams = Object.keys(params);
-    const { requiredParams = [], name: networkName } = (this.constructor as typeof Ad).network;
+    const { requiredParams = [], name: networkName } = this.network;
 
     if (!params.adPath) {
       throw new Error('adPath is required for all networks');
