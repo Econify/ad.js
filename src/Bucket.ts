@@ -16,7 +16,7 @@ class Bucket {
   public extensions: IExtension[] = [];
   public defaults: IAdConfiguration;
 
-  constructor(public network: INetwork, providedConfiguration: IBucketConfiguration) {
+  constructor(public network: INetwork, providedConfiguration: IBucketConfiguration = {}) {
     this.defaults =
       providedConfiguration.defaults || DEFAULT_CONFIGURATION.defaults;
 
