@@ -1,9 +1,11 @@
 import {
-  IAdConfiguration, IBucket, IEventType,
-  IExtension, INetwork, IPlugin, Maybe,
+  IAdConfiguration, IEventType,
+  IExtension, INetwork, INetworkInstance, IPlugin,
+  Maybe,
 } from '../';
 
 import AdJS from '.';
+import Bucket from './Bucket';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 
@@ -46,6 +48,9 @@ export const EVENTS: IEventType = {
 };
 
 export default class Ad {
+  // TODO: Rethink
+  public correlatorId?: string;
+
   get network(): INetwork {
     return this.bucket.network;
   }
@@ -79,7 +84,7 @@ export default class Ad {
 
   public container: HTMLElement;
 
-  private networkInstance: INetworkInstance;
+  private networkInstance!: INetworkInstance;
 
   private localExtensions: IExtension[] = [];
   private localPlugins: IPlugin[] = [];
@@ -87,14 +92,16 @@ export default class Ad {
   private promiseStack: Promise<void> = Promise.resolve();
 
   // Event Queue
-  private events: {} = {
+  private events: {
+    [key: string]: Array<(ad?: Ad) => void>;
+  } = {
     __cache: [],
   };
 
   private configuration: IAdConfiguration;
 
-  constructor(private bucket: IBucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
-    this.container = insertElement('div', { 'data-ad-id': nextId() }, el);
+  constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
+    this.container = insertElement('div', { 'data-ad-id': String(nextId()) }, el);
 
     this.promiseStack = this.promiseStack.then(() => this.bucket.promiseStack);
 
@@ -216,7 +223,7 @@ export default class Ad {
     });
   }
 
-  public freeze(): Promise<void> {
+  public freeze(): void {
     if (this.state.frozen) {
       return;
     }
@@ -240,9 +247,11 @@ export default class Ad {
     if (options.replayEventsWhileFrozen) {
       const events = this.getCachedEventsAndEmptyCache();
 
+      /*
       this.addToPromiseStack(
         () => seriallyResolvePromises(events),
       );
+       */
     }
 
     this.emit(EVENTS.UNFREEZE);
@@ -259,7 +268,7 @@ export default class Ad {
   // You really shouldn't await this, but it's useful to know
   // when all of the binded events have fired
   public async emit(key: string, callback?: (ad: this) => void) {
-    const events: Array<() => void> = this.events[key];
+    const events = this.events[key];
 
     if (!events) {
       return;

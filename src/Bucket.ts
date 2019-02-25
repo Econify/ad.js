@@ -5,48 +5,27 @@ import Ad from './Ad';
 const DEFAULT_CONFIGURATION: IBucketConfiguration = {
   plugins: [],
   extensions: [],
+  defaults: {},
 };
 
 class Bucket {
   public ads: Ad[] = [];
 
   public promiseStack: Promise<void> = Promise.resolve();
-  private plugins: IPlugin[] = [];
-  private extensions: IExtension[] = [];
-  private defaults: IAdConfiguration;
+  public plugins: IPlugin[] = [];
+  public extensions: IExtension[] = [];
+  public defaults: IAdConfiguration;
 
   constructor(public network: INetwork, providedConfiguration: IBucketConfiguration) {
-    const configuration = {
-      ...DEFAULT_CONFIGURATION,
-      ...providedConfiguration,
-    };
+    this.defaults =
+      providedConfiguration.defaults || DEFAULT_CONFIGURATION.defaults;
 
-    this.defaults = configuration.defaults;
-    this.plugins = configuration.plugins;
-    this.extensions = configuration.extensions;
+    this.plugins =
+      providedConfiguration.plugins || DEFAULT_CONFIGURATION.plugins;
+
+    this.extensions =
+      providedConfiguration.extensions || DEFAULT_CONFIGURATION.extensions;
   }
-
-  /*
-  private tasksForReady: Promise<void>;
-
-  public async onReady(fn: () => void): Promise<void> {
-    if (this.tasksForReady) {
-      await this.tasksForReady;
-
-      fn();
-    }
-
-    this.tasksForReady = Promise.all(
-      this.plugins.map(
-        (plugin) => plugin.prepare()
-      )
-    );
-
-    await this.tasksForReady;
-
-    fn();
-  }
-  */
 
   public Ad(el: HTMLElement, options?: IAdConfiguration): Ad {
     return this.createAd(el, options);
@@ -60,10 +39,14 @@ class Bucket {
     return ad;
   }
 
-  public async setAsActive() {
-    const { correlatorId: bucketCorrelatorId } = this.ads[0];
+  private get correlatorId(): void | string {
+    const { correlatorId } = this.ads[0];
 
-    if (MainSingleton.activeCorrelatorId === bucketCorrelatorId) {
+    return correlatorId;
+  }
+
+  public async setAsActive() {
+    if (!this.correlatorId || MainSingleton.activeCorrelatorId === this.correlatorId) {
       return;
     }
 

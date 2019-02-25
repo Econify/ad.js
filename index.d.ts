@@ -11,12 +11,7 @@ export interface IExtension {
 export interface IBucketConfiguration {
   plugins: IPlugin[];
   extensions: IExtension[];
-}
-
-export interface IBucket {
-  network: INetwork;
-  plugins?: IPlugin[];
-  defaults?: IAdConfiguration;
+  defaults: {};
 }
 
 export interface IPlugin {

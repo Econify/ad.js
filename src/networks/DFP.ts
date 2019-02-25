@@ -1,4 +1,3 @@
-import { googletag } from '@types/doubleclick-gpt';
 import { INetwork, INetworkInstance } from '../../';
 import loadScript from '../utils/loadScript';
 
@@ -8,26 +7,34 @@ declare global {
 }
 
 class DfpAd implements INetworkInstance {
+  private id: string;
   private slot: googletag.Slot;
 
   constructor(private el: HTMLElement) {
     DoubleClickForPublishers.prepare();
 
-    const id: string = el.getAttribute('data-ad-id');
+    const id = el.getAttribute('data-ad-id');
 
-    this.slot =
-      googletag.defineSlot('/1234567/sports', [160, 600], id);
+    if (!id) {
+      throw new Error('Ad does not have an id');
+    }
+
+    this.id = id;
+
+    this.slot = googletag.defineSlot('/1234567/sports', [160, 600], this.id);
+
+    this.slot.addService(googletag.pubads());
   }
 
-  public render() {
+  public render(): Promise<void> {
     return new Promise(
       (resolve) => {
         const { slot } = this;
 
         googletag.pubads().addEventListener(
-          googletag.events.SlotRenderEndedEvent,
+          'slotRenderEnded',
 
-          (event) => {
+          (event: any) => {
             if (event.slot === slot) {
               console.log('SLOT RENDERED');
             }
@@ -35,39 +42,44 @@ class DfpAd implements INetworkInstance {
         );
 
         googletag.pubads().addEventListener(
-          googletag.events.SlotOnloadEvent,
+          'slotOnloadEvent',
 
-          (event) => {
+          (event: any) => {
             if (event.slot === slot) {
               console.log('SLOT LOADED');
             }
           },
         );
 
-        slot.display();
+        googletag.display(this.id);
 
-        // TODO
         resolve();
     });
   }
 
-  public clear() {
+  public clear(): Promise<void> {
     const { slot } = this;
 
     googletag.pubads().clear([slot]);
+
+    return Promise.resolve();
   }
 
-  public refresh() {
+  public refresh(): Promise<void> {
     const { slot } = this;
 
     googletag.pubads().refresh([slot], { changeCorrelator: false });
+
+    return Promise.resolve();
   }
 
   // Cannot undo this action
-  public destroy() {
+  public destroy(): Promise<void> {
     const { slot } = this;
 
     googletag.destroySlots([slot]);
+
+    return Promise.resolve();
   }
 }
 
@@ -79,6 +91,7 @@ function loadGPT() {
 }
 
 const DoubleClickForPublishers: INetwork = {
+  name: 'DoubleClick for Publishers',
   loaded: false,
 
   createAd(el: HTMLElement): DfpAd {
