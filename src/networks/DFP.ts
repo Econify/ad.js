@@ -8,12 +8,12 @@ declare global {
 
 class DfpAd implements INetworkInstance {
   private id: string;
-  private slot: googletag.Slot;
+  private slot!: googletag.Slot;
 
   constructor(private el: HTMLElement) {
     DoubleClickForPublishers.prepare();
 
-    const id = el.getAttribute('data-ad-id');
+    const { id } = el;
 
     if (!id) {
       throw new Error('Ad does not have an id');
@@ -21,65 +21,88 @@ class DfpAd implements INetworkInstance {
 
     this.id = id;
 
-    this.slot = googletag.defineSlot('/1234567/sports', [160, 600], this.id);
+    googletag.cmd.push(() => {
+      // const sizes = [[468, 60], [728, 90], [300, 250]];
+      const sizes = [[300, 250], [300, 600], [300, 300]];
+      this.slot =
+        googletag.defineSlot('/2620/nbcnews/politics', sizes, this.id)
+          .addService(googletag.pubads())
+          .setTargeting('gender', 'male')
+          .setTargeting('age', '20-30');
 
-    this.slot.addService(googletag.pubads());
+      googletag.display(this.id);
+    });
   }
 
   public render(): Promise<void> {
     return new Promise(
       (resolve) => {
-        const { slot } = this;
+        googletag.cmd.push(() => {
+          const { slot } = this;
 
-        googletag.pubads().addEventListener(
-          'slotRenderEnded',
+          googletag.pubads().addEventListener(
+            'slotRenderEnded',
 
-          (event: any) => {
-            if (event.slot === slot) {
-              console.log('SLOT RENDERED');
-            }
-          },
-        );
+            (event: any) => {
+              if (event.slot === slot) {
+                resolve();
+              }
+            },
+          );
 
-        googletag.pubads().addEventListener(
-          'slotOnloadEvent',
+          /*
+          googletag.pubads().addEventListener(
+            'slotOnload',
 
-          (event: any) => {
-            if (event.slot === slot) {
-              console.log('SLOT LOADED');
-            }
-          },
-        );
+            (event: any) => {
+              if (event.slot === slot) {
+                console.log('SLOT LOADED');
+              }
+            },
+          );
+           */
 
-        googletag.display(this.id);
-
-        resolve();
-    });
+          googletag.pubads().refresh([slot], { changeCorrelator: false });
+        });
+      },
+    );
   }
 
   public clear(): Promise<void> {
-    const { slot } = this;
+    return new Promise((resolve) => {
+      googletag.cmd.push(() => {
+        const { slot } = this;
 
-    googletag.pubads().clear([slot]);
+        googletag.pubads().clear([slot]);
 
-    return Promise.resolve();
+        resolve();
+      });
+    });
   }
 
   public refresh(): Promise<void> {
-    const { slot } = this;
+    return new Promise((resolve) => {
+      googletag.cmd.push(() => {
+        const { slot } = this;
 
-    googletag.pubads().refresh([slot], { changeCorrelator: false });
+        googletag.pubads().refresh([slot], { changeCorrelator: false });
 
-    return Promise.resolve();
+        resolve();
+      });
+    });
   }
 
   // Cannot undo this action
   public destroy(): Promise<void> {
-    const { slot } = this;
+    return new Promise((resolve) => {
+      googletag.cmd.push(() => {
+        const { slot } = this;
 
-    googletag.destroySlots([slot]);
+        googletag.destroySlots([slot]);
 
-    return Promise.resolve();
+        resolve();
+      });
+    });
   }
 }
 
@@ -88,6 +111,12 @@ function loadGPT() {
 
   window.googletag = window.googletag || {};
   window.googletag.cmd = window.googletag.cmd || [];
+
+  window.googletag.cmd.push(() => {
+    googletag.pubads().disableInitialLoad();
+    googletag.pubads().enableAsyncRendering();
+    googletag.enableServices();
+  });
 }
 
 const DoubleClickForPublishers: INetwork = {
@@ -104,6 +133,7 @@ const DoubleClickForPublishers: INetwork = {
     }
 
     loadGPT();
+
     this.loaded = true;
   },
 

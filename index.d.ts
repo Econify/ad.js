@@ -9,9 +9,9 @@ export interface IExtension {
 }
 
 export interface IBucketConfiguration {
-  plugins: IPlugin[];
-  extensions: IExtension[];
-  defaults: {};
+  plugins?: IPlugin[];
+  extensions?: IExtension[];
+  defaults?: {};
 }
 
 export interface IPlugin {

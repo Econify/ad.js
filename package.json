@@ -4,7 +4,7 @@
   "description": "Ad Library that allows configuration with multiple providers",
   "main": "index.js",
   "scripts": {
-    "start:dev": "concurrently -k \"webpack-dev-server --port 8080\" \"http-server ./demo -p 8081\"",
+    "start": "concurrently -k \"webpack-dev-server --port 8080\" \"http-server ./demo -p 8081\"",
     "build": "webpack",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
     "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",

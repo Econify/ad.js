@@ -9,10 +9,10 @@ import Bucket from './Bucket';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 
-let adId = 1;
+let adId = 0;
 
-function nextId(): number {
-  return ++adId;
+function nextId(): string {
+  return `adjs-ad-container-${++adId}`;
 }
 
 const DEFAULT_CONFIGURATION: IAdConfiguration = {
@@ -101,7 +101,7 @@ export default class Ad {
   private configuration: IAdConfiguration;
 
   constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
-    this.container = insertElement('div', { 'data-ad-id': String(nextId()) }, el);
+    this.container = insertElement('div', { id: nextId() }, el);
 
     this.promiseStack = this.promiseStack.then(() => this.bucket.promiseStack);
 
@@ -114,7 +114,7 @@ export default class Ad {
     };
 
     this.onReady(() => {
-      this.networkInstance = this.network.createAd(this);
+      this.networkInstance = this.network.createAd(this.container);
 
       // TODO INCLUDE A DEBUGGER
     });

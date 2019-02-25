@@ -1,12 +1,8 @@
 const path = require('path');
 
-module.exports = {
-  entry: './src/index.ts',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'adjs.bundle.js',
-    library: 'AdJS'
-  },
+const configurations = [];
+
+const config = {
   resolve: {
     extensions: [".ts", ".js"]
   },
@@ -21,3 +17,42 @@ module.exports = {
   // addition - add source-map support
   devtool: "source-map"
 }
+
+function createFile({ entry, filename, library }) {
+  configurations.push({
+    ...config,
+    entry: `./src/${entry}`,
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: `adjs.${filename}.js`,
+      library,
+      libraryExport: 'default',
+    }
+  });
+}
+
+createFile({
+  entry: 'index.ts',
+  filename: 'main',
+  library: 'AdJS',
+});
+
+createFile({
+  entry: 'networks/DFP.ts',
+  filename: 'networks.dfp',
+  library: 'DFPNetwork',
+});
+
+createFile({
+  entry: 'networks/Mock.ts',
+  filename: 'networks.mock',
+  library: 'MockNetwork',
+});
+
+createFile({
+  entry: 'networks/Noop.ts',
+  filename: 'networks.noop',
+  library: 'NoopNetwork',
+});
+
+module.exports = configurations;

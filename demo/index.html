@@ -44,14 +44,11 @@
       <img src="http://www.econify.com/assets/econify_logo.png">
       <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
     </div>
-    <script type="text/javascript" src="http://localhost:8080/adjs.bundle.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/adjs.main.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/adjs.networks.dfp.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
-      ADJS = ADJS.default;
-
-      // initialize.
-      ADJS.configure({
-        network: new ADJS.Networks.Default(),
+      window.mainPage = new AdJS.Bucket(DFPNetwork, {
         defaults: {
           breakpoints: [1200, 800, 400],
           refreshRate: 1000,
@@ -61,7 +58,9 @@
       });
 
       // monetize.
-      const ad = new ADJS.Ad(document.getElementById('ad-slot-1'), 'slot1');
+      const ad = mainPage.createAd(document.getElementById('ad-slot-1'), 'slot1');
+      ad.render();
+
       ad.on('render', () => console.info('[STATE CHANGED] rendering'));
       ad.on('rendered', () => console.info('[STATE CHANGED] rendered'));
       ad.on('refresh', () => console.info('[STATE CHANGED] refreshing'));

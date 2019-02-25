@@ -2,29 +2,28 @@ import MainSingleton from '.';
 import { IAdConfiguration, IBucketConfiguration, IExtension, INetwork, IPlugin } from '../';
 import Ad from './Ad';
 
-const DEFAULT_CONFIGURATION: IBucketConfiguration = {
-  plugins: [],
-  extensions: [],
-  defaults: {},
-};
-
 class Bucket {
   public ads: Ad[] = [];
 
   public promiseStack: Promise<void> = Promise.resolve();
   public plugins: IPlugin[] = [];
   public extensions: IExtension[] = [];
-  public defaults: IAdConfiguration;
+  public defaults: IAdConfiguration = {};
 
   constructor(public network: INetwork, providedConfiguration: IBucketConfiguration = {}) {
-    this.defaults =
-      providedConfiguration.defaults || DEFAULT_CONFIGURATION.defaults;
+    const { defaults, plugins, extensions } = providedConfiguration;
 
-    this.plugins =
-      providedConfiguration.plugins || DEFAULT_CONFIGURATION.plugins;
+    if (defaults) {
+      this.defaults = defaults;
+    }
 
-    this.extensions =
-      providedConfiguration.extensions || DEFAULT_CONFIGURATION.extensions;
+    if (plugins) {
+      this.plugins = plugins;
+    }
+
+    if (extensions) {
+      this.extensions = extensions;
+    }
   }
 
   public Ad(el: HTMLElement, options?: IAdConfiguration): Ad {
