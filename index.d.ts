@@ -4,8 +4,22 @@ export interface IEventType {
   [key: string]: string;
 }
 
+export interface IAd {
+  public network: INetwork;
+
+  public render(): Promise<void>;
+  public refresh(): Promise<void>;
+  public clear(): Promise<void>;
+  public destroy(): Promise<void>;
+
+  public freeze(): void;
+  public unfreeze(): Promise<void>;
+}
+
 export interface IExtension {
   name: string;
+
+  [key: string]: (IAd) => Promise<void>;
 }
 
 export interface IBucketConfiguration {

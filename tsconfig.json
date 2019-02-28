@@ -12,6 +12,7 @@
     ],
     "strict": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "allowJs": true
   },

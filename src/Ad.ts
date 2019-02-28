@@ -1,4 +1,5 @@
 import {
+  IAd,
   IAdConfiguration, IEventType,
   IExtension, INetwork, INetworkInstance, IPlugin,
   Maybe,
@@ -9,17 +10,13 @@ import Bucket from './Bucket';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 
-interface IDefineLifeCycleOptions {
-  allowDuplicateExecution: boolean;
-}
-
 let adId = 0;
 
 function nextId(): string {
   return `adjs-ad-container-${++adId}`;
 }
 
-function ucFirst(word) {
+function ucFirst(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
@@ -55,10 +52,71 @@ export const EVENTS: IEventType = {
   CLEARED: 'cleared',
 };
 
+// Define LifeCycle Method will automatically wrap each
+// lifecycle with important items such as "queue" when frozen,
+// awaiting bucket queues and implementing extensions
+function attachAsLifecycleMethod(
+  target: any,
+  propertyName: string,
+  propertyDescriptor: any,
+): any {
+  const fn = propertyDescriptor.value;
 
-class Ad {
-  // TODO: Rethink
-  public correlatorId?: string;
+  propertyDescriptor.value = async function(...args: any[]) {
+    if (this.state.frozen) {
+      const boundReplayFn = this[propertyName].bind(this, ...args);
+      this.cache.push(boundReplayFn);
+
+      return;
+    }
+
+    const hookName = ucFirst(propertyName);
+
+    const beforeHookName = `before${hookName}`;
+    const onHookName = `on${hookName}`;
+    const afterHookName = `after${hookName}`;
+
+    const executingState = `${propertyName}ing`;
+    const executedState = `${propertyName}ed`;
+
+    // Has event already been called and currently executing?
+    if (this.state[executingState]) {
+      return;
+    }
+
+    // Has this render method already completed succesfully? Should we allow for it
+    // to be executed again?
+    // (!options || !options.allowDuplicateExecution) &&
+    if (this.state[executedState]) {
+      return;
+    }
+
+    this.state[executingState] = true;
+
+    this.onReady(async () => {
+      this.emit(executingState);
+
+      this.callExtensions(beforeHookName);
+
+      const executionOfFn = fn.apply(this, args);
+
+      this.callExtensions(onHookName);
+
+      await executionOfFn;
+
+      this.callExtensions(afterHookName);
+
+      this.state[executingState] = false;
+      this.state[executedState] = true;
+
+      this.emit(executedState);
+    });
+  };
+
+  return propertyDescriptor;
+}
+
+class Ad implements IAd {
 
   get network(): INetwork {
     return this.bucket.network;
@@ -77,11 +135,10 @@ class Ad {
       ...this.localPlugins,
     ];
   }
+  // TODO: Rethink
+  public correlatorId?: string;
 
   public breakpoints: number[] = [];
-
-  public defineLifeCycleMethod(methodName, () => {
-  });
 
   public state: { [key: string]: boolean } = {
     creating: false,
@@ -111,72 +168,6 @@ class Ad {
   };
 
   private configuration: IAdConfiguration;
-
-  private callExtensions(hook: string): Promise<void>[] {
-    return this.extensions.forEach(
-      async (extension) => {
-        if (!extension[hook]) {
-          return;
-        }
-
-        return extension[hook](this);
-      }
-    );
-  }
-
-  // Define LifeCycle Method will automatically wrap each
-  // lifecycle with important items such as "queue" when frozen,
-  // awaiting bucket queues and implementing extensions
-  static defineLifeCycleMethod(methodName, fn, options?: IDefineLifeCycleOptions) {
-    this.prototype[methodName] = async function () {
-      if (this.state.frozen) {
-        this.cache.push(this.prototype[methodName]);
-
-        return;
-      }
-
-      const hookName = ucFirst(methodName);
-
-      const beforeHookName = `before${hookName}`;
-      const onHookName = `on${hookName}`;
-      const afterHookName = `after${hookName}`;
-
-      const executingState = `${methodName}ing`;
-      const executedState = `${methodName}ed`;
-
-      // Has event already been called and currently executing?
-      if (this.state[executingState]) {
-        return;
-      }
-
-      // Has this render method already completed succesfully? Should we allow for it
-      // to be executed again?
-      if ((!options || !options.allowDuplicateExecution) && this.state[executedState]) {
-        return;
-      }
-
-      this.state[executingState] = true;
-
-      this.onReady(() => {
-        this.emit(executingState);
-
-        this.callExtensions(beforeHookName);
-
-        const executionOfFn = fn.call(this);
-
-        this.callExtensions(onHookName);
-
-        await executionOfFn;
-
-        this.callExtensions(afterHookName)
-
-        this.state[executingState] = false;
-        this.state[executedState] = true;
-
-        this.emit(executedState);
-      });
-    }
-  }
 
   constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
     this.container = insertElement('div', { id: nextId() }, el);
@@ -211,6 +202,44 @@ class Ad {
   //
   public async onReady(fn: () => void): Promise<void> {
     this.promiseStack = this.promiseStack.then(() => fn());
+  }
+
+  @attachAsLifecycleMethod
+  public async render(): Promise<void> {
+    await this.bucket.setAsActive();
+    await this.networkInstance.render();
+  }
+
+  @attachAsLifecycleMethod
+  public async refresh(): Promise<void> {
+    await this.bucket.setAsActive();
+
+    if (typeof this.networkInstance.refresh !== 'undefined') {
+      await this.networkInstance.refresh();
+    } else {
+      console.warn(`
+        ${this.network.name} Network does not support ad refreshing natively.
+        Destroying and Recreating the ad. Make sure this is what you intended.
+      `);
+
+      await this.networkInstance.destroy();
+
+      this.networkInstance = this.network.createAd(this);
+      await this.networkInstance.render();
+    }
+
+    this.state.rendered = true;
+  }
+
+  @attachAsLifecycleMethod
+  public async clear(): Promise<void> {
+    await this.networkInstance.clear();
+    this.state.rendered = false;
+  }
+
+  @attachAsLifecycleMethod
+  public async destroy(): Promise<void> {
+    await this.networkInstance.destroy();
   }
 
   public freeze(): void {
@@ -271,6 +300,18 @@ class Ad {
     );
   }
 
+  private callExtensions(hook: string): Array<Promise<void>> {
+    return this.extensions.map(
+      async (extension) => {
+        if (!extension[hook]) {
+          return;
+        }
+
+        return extension[hook](this);
+      },
+    );
+  }
+
   private getCachedEventsAndEmptyCache() {
     const events = this.events.__cache;
 
@@ -293,37 +334,4 @@ class Ad {
   }
 }
 
-Ad.defineLifeCycleMethod('render', async function () {
-  await this.bucket.setAsActive();
-
-  await this.networkInstance.render();
-});
-
-Ad.defineLifeCycleMethod('refresh', async function () {
-  await this.bucket.setAsActive();
-
-  if (typeof this.networkInstance.refresh !== 'undefined') {
-    await this.networkInstance.refresh();
-  } else {
-    console.warn(`
-      ${this.network.name} Network does not support ad refreshing natively.
-      Destroying and Recreating the ad. Make sure this is what you intended.
-    `);
-
-    await this.networkInstance.destroy();
-    this.networkInstance = this.network.createAd(this);
-
-    if (forceRender) {
-      this.networkInstance.render();
-    }
-  }
-});
-
-Ad.defineLifeCycleMethod('clear', async function () {
-  await this.networkInstance.clear();
-  this.state.rendered = false;
-});
-
-Ad.defineLifeCycleMethod('destroy', async function () {
-  await this.networkInstance.destroy();
-});
+export default Ad;

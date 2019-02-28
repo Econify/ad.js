@@ -58,7 +58,7 @@
       });
 
       // monetize.
-      const ad = mainPage.createAd(document.getElementById('ad-slot-1'), 'slot1');
+      window.ad = mainPage.createAd(document.getElementById('ad-slot-1'), 'slot1');
       ad.render();
 
       ad.on('render', () => console.info('[STATE CHANGED] rendering'));
