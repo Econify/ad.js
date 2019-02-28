@@ -9,10 +9,18 @@ import Bucket from './Bucket';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 
+interface IDefineLifeCycleOptions {
+  allowDuplicateExecution: boolean;
+}
+
 let adId = 0;
 
 function nextId(): string {
   return `adjs-ad-container-${++adId}`;
+}
+
+function ucFirst(word) {
+  return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 const DEFAULT_CONFIGURATION: IAdConfiguration = {
@@ -47,7 +55,8 @@ export const EVENTS: IEventType = {
   CLEARED: 'cleared',
 };
 
-export default class Ad {
+
+class Ad {
   // TODO: Rethink
   public correlatorId?: string;
 
@@ -70,6 +79,9 @@ export default class Ad {
   }
 
   public breakpoints: number[] = [];
+
+  public defineLifeCycleMethod(methodName, () => {
+  });
 
   public state: { [key: string]: boolean } = {
     creating: false,
@@ -99,6 +111,72 @@ export default class Ad {
   };
 
   private configuration: IAdConfiguration;
+
+  private callExtensions(hook: string): Promise<void>[] {
+    return this.extensions.forEach(
+      async (extension) => {
+        if (!extension[hook]) {
+          return;
+        }
+
+        return extension[hook](this);
+      }
+    );
+  }
+
+  // Define LifeCycle Method will automatically wrap each
+  // lifecycle with important items such as "queue" when frozen,
+  // awaiting bucket queues and implementing extensions
+  static defineLifeCycleMethod(methodName, fn, options?: IDefineLifeCycleOptions) {
+    this.prototype[methodName] = async function () {
+      if (this.state.frozen) {
+        this.cache.push(this.prototype[methodName]);
+
+        return;
+      }
+
+      const hookName = ucFirst(methodName);
+
+      const beforeHookName = `before${hookName}`;
+      const onHookName = `on${hookName}`;
+      const afterHookName = `after${hookName}`;
+
+      const executingState = `${methodName}ing`;
+      const executedState = `${methodName}ed`;
+
+      // Has event already been called and currently executing?
+      if (this.state[executingState]) {
+        return;
+      }
+
+      // Has this render method already completed succesfully? Should we allow for it
+      // to be executed again?
+      if ((!options || !options.allowDuplicateExecution) && this.state[executedState]) {
+        return;
+      }
+
+      this.state[executingState] = true;
+
+      this.onReady(() => {
+        this.emit(executingState);
+
+        this.callExtensions(beforeHookName);
+
+        const executionOfFn = fn.call(this);
+
+        this.callExtensions(onHookName);
+
+        await executionOfFn;
+
+        this.callExtensions(afterHookName)
+
+        this.state[executingState] = false;
+        this.state[executedState] = true;
+
+        this.emit(executedState);
+      });
+    }
+  }
 
   constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
     this.container = insertElement('div', { id: nextId() }, el);
@@ -133,94 +211,6 @@ export default class Ad {
   //
   public async onReady(fn: () => void): Promise<void> {
     this.promiseStack = this.promiseStack.then(() => fn());
-  }
-
-  public async render(): Promise<void> {
-    if (this.state.rendering || this.state.rendered) {
-      return;
-    }
-
-    this.state.rendering = true;
-
-    await this.onReady(async () => {
-      this.bucket.setAsActive();
-
-      this.emit(EVENTS.RENDER);
-
-      await this.networkInstance.render();
-
-      this.state.rendering = false;
-      this.state.rendered = true;
-      this.emit(EVENTS.RENDERED);
-    });
-  }
-
-  public async refresh(forceRender: boolean = true): Promise<void> {
-    if (this.state.refreshing) {
-      return;
-    }
-
-    this.state.refreshing = true;
-
-    await this.onReady(async () => {
-      this.bucket.setAsActive();
-
-      this.emit(EVENTS.REFRESH);
-
-      if (typeof this.networkInstance.refresh !== 'undefined') {
-        await this.networkInstance.refresh();
-      } else {
-        console.warn(`
-          ${this.network.name} Network does not support ad refreshing natively.
-          Destroying and Recreating the ad. Make sure this is what you intended.
-        `);
-
-        await this.networkInstance.destroy();
-        this.networkInstance = this.network.createAd(this);
-
-        if (forceRender) {
-          this.networkInstance.render();
-        }
-      }
-
-      this.state.refreshing = false;
-      this.state.refreshed = true;
-      this.emit(EVENTS.REFRESHED);
-    });
-  }
-
-  public async clear(): Promise<void> {
-    if (this.state.clearing || !this.state.rendered) {
-      return;
-    }
-
-    this.state.clearing = true;
-
-    await this.onReady(async () => {
-      await this.networkInstance.clear();
-
-      this.state.clearing = true;
-      this.state.rendered = false;
-      this.emit(EVENTS.CLEARED);
-    });
-  }
-
-  public async destroy(): Promise<void> {
-    if (this.state.destroying || this.state.destroyed) {
-      return;
-    }
-
-    this.state.destroying = true;
-
-    await this.onReady(async () => {
-      this.emit(EVENTS.DESTROY);
-
-      await this.networkInstance.destroy();
-
-      this.state.destroyed = true;
-      this.state.destroying = false;
-      this.emit(EVENTS.DESTROYED);
-    });
   }
 
   public freeze(): void {
@@ -302,3 +292,38 @@ export default class Ad {
     });
   }
 }
+
+Ad.defineLifeCycleMethod('render', async function () {
+  await this.bucket.setAsActive();
+
+  await this.networkInstance.render();
+});
+
+Ad.defineLifeCycleMethod('refresh', async function () {
+  await this.bucket.setAsActive();
+
+  if (typeof this.networkInstance.refresh !== 'undefined') {
+    await this.networkInstance.refresh();
+  } else {
+    console.warn(`
+      ${this.network.name} Network does not support ad refreshing natively.
+      Destroying and Recreating the ad. Make sure this is what you intended.
+    `);
+
+    await this.networkInstance.destroy();
+    this.networkInstance = this.network.createAd(this);
+
+    if (forceRender) {
+      this.networkInstance.render();
+    }
+  }
+});
+
+Ad.defineLifeCycleMethod('clear', async function () {
+  await this.networkInstance.clear();
+  this.state.rendered = false;
+});
+
+Ad.defineLifeCycleMethod('destroy', async function () {
+  await this.networkInstance.destroy();
+});
