@@ -4,11 +4,11 @@
   "description": "Ad Library that allows configuration with multiple providers",
   "main": "index.js",
   "scripts": {
-    "start:dev": "concurrently -k \"webpack-dev-server --port 8080\" \"http-server ./demo -p 8081\"",
+    "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
     "build": "webpack",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
     "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
-    "test": "jest ./tests --no-cache",
+    "test": "NODE_PATH=./src jest ./tests --no-cache",
     "ts": "tsc --pretty"
   },
   "repository": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/econify/ippyrus#readme",
   "dependencies": {
+    "@types/doubleclick-gpt": "^238.0.1",
     "scrollmonitor": "^1.2.4"
   },
   "devDependencies": {

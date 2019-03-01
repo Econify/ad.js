@@ -1,12 +1,16 @@
-export default function loadScript(url: string, attributes: {} = {}): Promise<void | {}> {
-  return new Promise((resolve) => {
+interface IScriptAttributes {
+  [key: string]: boolean | string;
+}
+
+export default (url: string, attributes: IScriptAttributes = {}): Promise<void> =>
+  new Promise((resolve) => {
     const scriptTag: HTMLScriptElement = document.createElement('script');
 
     scriptTag.src = url;
-    scriptTag.onload = resolve;
+    scriptTag.onload = () => resolve();
 
     Object.keys(attributes).forEach((key) => {
-      const value = attributes[key];
+      const value: boolean | string = attributes[key];
 
       if (typeof value === 'boolean') {
         if (!value) {
@@ -21,5 +25,4 @@ export default function loadScript(url: string, attributes: {} = {}): Promise<vo
     });
 
     document.getElementsByTagName('head')[0].appendChild(scriptTag);
-  }).catch((err) => console.error(err));
-}
+  });

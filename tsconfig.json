@@ -3,14 +3,18 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "strictNullChecks": true,
-    "module": "es6",
-    "jsx": "react",
-    "target": "es5",
-    "allowJs": true,
+    "target": "ES2017",
+    "module": "commonjs",
     "lib": [
-      "es2015",
-      "dom"
-    ]
+      "dom",
+      "es2017",
+      "esnext.asynciterable"
+    ],
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "allowJs": true
   },
   "include": [
     "./src/"

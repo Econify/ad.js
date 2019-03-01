@@ -1,139 +1,216 @@
-import ADJS from './index';
-import { NetworkInterface } from './NetworkTypes';
-import { PluginInterface } from './PluginTypes';
-import { Maybe } from './types/maybe';
+import {
+  IAd,
+  IAdConfiguration, IAdEventListener, IEventType,
+  IExtension, INetwork, INetworkInstance, IPlugin,
+  Maybe,
+} from '../';
 
-export interface AdConfiguration {
-  adPath?: string;
+import AdJS from '.';
+import Bucket from './Bucket';
+import insertElement from './utils/insertElement';
+import seriallyResolvePromises from './utils/seriallyResolvePromises';
+import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
 
-  targeting?: object;
-  sizes?: any[];
+let adId = 0;
 
-  offset?: number;
-
-  autoRender?: boolean;
-
-  autoRefresh?: boolean;
-  refreshRate?: number;
-
-  refreshOnBreakpoint?: boolean;
-  breakpoints?: number[];
-
-  page?: Maybe<string>;
+function nextId(): string {
+  return `adjs-ad-container-${++adId}`;
 }
 
+const DEFAULT_CONFIGURATION: IAdConfiguration = {
+  autoRender: true,
+  autoRefresh: true,
+  offset: 0,
+  refreshRate: 60000,
+  targeting: {},
+  breakpoints: [],
+  refreshOnBreakpoint: true,
+};
+
 // Event Bus Options
-export const EVENTS: { [key: string]: string } = {
-  CREATED: 'created',
-
+export const EVENTS: IEventType = {
+  CREATE: 'create',
   REQUEST: 'request',
-  REQUESTED: 'requested',
-
   RENDER: 'render',
-  RENDERED: 'rendered',
-
   REFRESH: 'refresh',
-  REFRESHED: 'refreshed',
-
   DESTROY: 'destroy',
-  DESTROYED: 'destroyed',
-
   FREEZE: 'freeze',
-  FROZEN: 'frozen',
   UNFREEZE: 'unfreeze',
-  UNFROZEN: 'unfrozen',
+  CLEAR: 'clear',
 };
 
-const seriallyResolvePromises = (thunks: Array<() => any>, removeAfterResolve: boolean): Promise<any[]> => {
-  return thunks.reduce(async (accumulator: Promise<any[]>, currentThunk: () => any): Promise<any[]> => {
-    (await accumulator).push(await currentThunk());
-    if (removeAfterResolve) { thunks.shift(); } // empties item from queue
-    return accumulator;
-  }, Promise.resolve([]));
-};
+// Define LifeCycle Method will automatically wrap each
+// lifecycle with important items such as "queue" when frozen,
+// awaiting bucket queues and implementing extensions
+function attachAsLifecycleMethod(
+  target: any,
+  propertyName: string,
+  propertyDescriptor: any, // Must be any as typescript can't determine
+                           // "this" on an unbound function
+): any {
+  const fn = propertyDescriptor.value;
 
-export class Ad {
-  get isConfigured(): boolean {
-    return !!this.configuration;
-  }
+  propertyDescriptor.value = async function(...args: any[]) {
+    /*
+     * If the ad unit is frozen push the call into a queue that
+     * can be executed later
+     */
+    if (this.state.frozen) {
+      const boundReplayFn = this[propertyName].bind(this, ...args);
 
-  get network(): NetworkInterface {
-    return ADJS.network;
-  }
+      this.actionsReceievedWhileFrozen.push(boundReplayFn);
 
-  public static breakpoints: number[] = [];
-
-  public static generateID(): string {
-    const randomNumber: number = Math.ceil(Math.random() * 100000);
-
-    const suggestedID = `randomId${randomNumber}`;
-
-    if (!this.instances[suggestedID]) {
-      return suggestedID;
+      return;
     }
 
-    return this.generateID();
-  }
+    const hookName = uppercaseFirstLetter(propertyName);
 
-  public static async onReady(fn: () => void): Promise<void> {
-    await this.ready;
-    await fn();
-  }
-  private static ready: Promise<void> = Promise.resolve();
-  private static network: NetworkInterface;
-  private static instances: { [id: string]: Ad } = {};
+    // e.g. beforeRender, onRender, afterRender, beforeRefresh
+    const beforeHookName = `before${hookName}`;
+    const onHookName = `on${hookName}`;
+    const afterHookName = `after${hookName}`;
 
-  public ready: Array<() => Promise<any>> = [];
-  public ad?: any;
+    // e.g. rendering, rendered
+    const executingState = `${propertyName}ing`;
+    const executedState = `${propertyName}ed`;
 
-  // Event Queue
-  public events: {} = {
-    __cache: {},
+    // Has event already been called and currently executing?
+    if (this.state[executingState]) {
+      return;
+    }
+
+    /*
+     * Has this render method already completed succesfully? Should we
+     * allow for it to be executed again?
+     * (!options || !options.allowDuplicateExecution) &&
+     */
+    if (this.state[executedState]) {
+      return;
+    }
+
+    /*
+     * Lifecycle methods are not idempotent, make sure that multiple
+     * calls to a method do not execute multiple times
+     */
+    this.state[executingState] = true;
+
+    /*
+     * Queue up the lifecycle method's execution to ensure all bucket async tasks
+     * have completed and that it executes in order.
+     *
+     * e.g. if ad.render() is called before ad.destroy(), ensure ad.render()
+     *      completes before executing ad.destroy().
+     */
+    await this.onReady(async () => {
+      this.emit(propertyName, 'before');
+
+      this.callExtensions(beforeHookName);
+
+      const executionOfFn = fn.apply(this, args);
+
+      this.callExtensions(onHookName);
+      this.emit(propertyName, 'on');
+
+      await executionOfFn;
+
+      this.callExtensions(afterHookName);
+
+      this.state[executingState] = false;
+      this.state[executedState] = true;
+
+      this.emit(propertyName, 'after');
+    });
   };
+
+  return propertyDescriptor;
+}
+
+class Ad implements IAd {
+
+  get network(): INetwork {
+    return this.bucket.network;
+  }
+
+  private get extensions() {
+    return [
+      ...this.bucket.extensions,
+      ...this.localExtensions,
+    ];
+  }
+
+  private get plugins() {
+    return [
+      ...this.bucket.plugins,
+      ...this.localPlugins,
+    ];
+  }
+  // TODO: Rethink
+  public correlatorId?: string;
+
+  public breakpoints: number[] = [];
 
   public state: { [key: string]: boolean } = {
     creating: false,
     created: false,
+
     rendering: false,
     rendered: false,
+
     refreshing: false,
+    refreshed: false,
+
+    clearing: false,
+    cleared: false,
+
     destroying: false,
     destroyed: false,
-    freezing: false,
+
     frozen: false,
-    unfreezing: false,
-    processing: false, // ready queue status
   };
 
-  public element: HTMLElement;
-  public slot: string;
-  public id: string;
-  public name: string;
+  public container: HTMLElement;
 
-  private configuration: AdConfiguration;
+  private networkInstance: INetworkInstance;
 
-  constructor(el: HTMLElement, idOrOptions: string | AdConfiguration, optionsOrNothing: Maybe<AdConfiguration>) {
-    if (!ADJS.isConfigured) {
-      throw new Error('Not configured properly. Please see README.md');
-    }
+  private actionsReceievedWhileFrozen: any = [];
 
-    this.ready = [];
+  private localExtensions: IExtension[] = [];
+  private localPlugins: IPlugin[] = [];
 
-    const id = typeof(idOrOptions) === 'string' ? idOrOptions : (this.constructor as typeof Ad).generateID();
+  private promiseStack: Promise<void> = Promise.resolve();
 
-    let options = arguments.length > 2 ? optionsOrNothing : idOrOptions;
-    options = typeof(options) === 'object' ? options : {};
-    this.configure(options);
+  // Event Queue
+  private events: {
+    [key: string]: IAdEventListener;
+  } = {
+    before: {},
+    on: {},
+    after: {},
+  };
 
-    this.element = el;
-    this.id = id;
+  private configuration: IAdConfiguration;
 
-    (this.constructor as typeof Ad).instances[id] = this;
+  constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
+    /*
+     * Add the parent buckets promise chain onto each Ad instance's
+     * promise chain to ensure that any async actions the parent bucket
+     * makes (e.g. Krux) are completed before allowing a lifecycle
+     * method (e.g. render) to execute
+     */
+    this.promiseStack = this.promiseStack.then(() => this.bucket.promiseStack);
 
-    this.onReady(async () => {
-      this.ad = await this.network.createAd(this);
-      console.log('ready to play');
-    });
+    this.configuration = {
+      // Bucket Defaults
+      ...this.bucket.defaults,
+
+      // Constructor Overrides
+      ...localConfiguration,
+    };
+
+    this.container = insertElement('div', { id: nextId() }, el);
+    this.networkInstance = this.network.createAd(this.container);
+
+    this.onReady(() => this.callExtensions('onCreate'));
   }
 
   // onReady will queue up additional execution calls to onReady
@@ -148,156 +225,158 @@ export class Ad {
   //  destroy must always happen after render has completed.
   //
   public async onReady(fn: () => void): Promise<void> {
-    await (this.constructor as typeof Ad).ready;
+    let externalResolve;
+    let externalReject;
 
-    const executionThunk: () => Promise<void> = () => Promise.resolve(fn());
-    this.ready.push(executionThunk);
+    const promiseMonitor = new Promise((resolve, reject) => {
+      externalResolve = resolve;
+      externalReject = reject;
+    });
 
-    // FIXME: the processing logic/flow below may not scale (not as-is anyway).
-    // However we needed something to tie us over because if you don't stop or
-    // pause processing between calls, duplicate processing can occur (it's a
-    // side effect of these calls being queued up and javascript's async
-    // nature). To reproduce, chain a bunch of ad events and comment out
-    // `&& !this.state.processing`. The demo will print 'ready to play' for
-    // every emit/onReady event call.
-    if (!this.state.frozen && !this.state.processing) {
-      this.state.processing = true;
-      await seriallyResolvePromises(this.ready, true);
-      this.state.processing = false;
-    }
+    this.promiseStack = this.promiseStack.then(async () => {
+      try {
+        await fn();
+
+        externalResolve();
+      } catch (e) {
+        externalReject(e);
+      }
+    });
+
+    return promiseMonitor;
   }
 
+  @attachAsLifecycleMethod
   public async render(): Promise<void> {
-    if (this.state.rendering || this.state.rendered) {
-      return;
-    }
-
-    await this.onReady(async () => {
-      await this.emit(EVENTS.RENDER, () => {
-        this.state.rendering = true;
-      });
-
-      await this.network.renderAd(this);
-
-      await this.emit(EVENTS.RENDERED, () => {
-        this.state.rendering = false;
-        this.state.rendered = true;
-      });
-    });
+    await this.bucket.setAsActive();
+    await this.networkInstance.render();
   }
 
+  @attachAsLifecycleMethod
   public async refresh(): Promise<void> {
-    if (this.state.refreshing) {
-      return;
+    await this.bucket.setAsActive();
+
+    if (typeof this.networkInstance.refresh !== 'undefined') {
+      await this.networkInstance.refresh();
+    } else {
+      console.warn(`
+        ${this.network.name} Network does not support ad refreshing natively.
+        Destroying and Recreating the ad. Make sure this is what you intended.
+      `);
+
+      await this.networkInstance.destroy();
+
+      this.networkInstance = this.network.createAd(this);
+      await this.networkInstance.render();
     }
 
-    await this.onReady(async () => {
-      await this.emit(EVENTS.REFRESH, () => {
-        this.state.refreshing = true;
-      });
-
-      await this.network.refreshAd(this);
-
-      await this.emit(EVENTS.REFRESHED, () => {
-        this.state.refreshing = false;
-        this.state.refreshed = true;
-      });
-    });
+    this.state.rendered = true;
   }
 
+  @attachAsLifecycleMethod
+  public async clear(): Promise<void> {
+    await this.networkInstance.clear();
+    this.state.rendered = false;
+  }
+
+  @attachAsLifecycleMethod
   public async destroy(): Promise<void> {
-    if (this.state.destroying || this.state.destroyed) {
-      return;
-    }
-
-    await this.onReady(async () => {
-      await this.emit(EVENTS.DESTROY, () => {
-        this.state.destroying = true;
-        this.state.destroying = false;
-      });
-
-      await this.network.destroyAd(this);
-
-      await this.emit(EVENTS.DESTROYED, () => {
-        this.state.destroyed = true;
-      });
-    });
+    await this.networkInstance.destroy();
   }
 
-  public async freeze(): Promise<void> {
-    if (this.state.freezing || this.state.frozen) {
+  public freeze(): void {
+    if (this.state.frozen) {
       return;
     }
 
-    await this.onReady(async () => {
-      await this.emit(EVENTS.FREEZE, () => {
-        this.state.freezing = true;
-      });
+    this.emit(EVENTS.FREEZE, 'before');
 
-      await this.emit(EVENTS.FROZEN, () => {
-        this.state.freezing = false;
-        this.state.frozen = true;
-      });
-    });
+    this.state.frozen = true;
+
+    this.emit(EVENTS.FREEZE, 'on');
+    this.emit(EVENTS.FREEZE, 'after');
   }
 
   public async unfreeze(options: { replayEventsWhileFrozen?: boolean } = {}): Promise<void> {
-    if (this.state.unfreezing || !this.state.frozen) {
+    if (!this.state.frozen) {
       return;
     }
+
+    this.emit(EVENTS.UNFREEZE, 'before');
 
     // unfreeze is the exception to the evented workflow because if it were
     // enqueued, it would be pushed to the end of the queue (after backlogged
     // events). Thus, leaving the ad in a limbo state. As such, we must bypass
     // the queue for this event.
-    await this.emit(EVENTS.UNFREEZE, () => {
-      this.state.unfreezing = true;
-    });
+    this.state.frozen = false;
 
-    await this.emit(EVENTS.UNFROZEN, () => {
-      this.state.frozen = false;
-      this.state.unfreezing = false;
-    });
+    const actions = this.actionsReceievedWhileFrozen;
+
+    this.actionsReceievedWhileFrozen = [];
 
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
-      await this.onReady(() => { /* noop */ });
+      // TODO
+      this.onReady(() =>
+        seriallyResolvePromises(actions),
+      );
     }
+
+    this.emit(EVENTS.UNFREEZE, 'on');
+    this.emit(EVENTS.UNFREEZE, 'after');
   }
 
   public on(key: string, fn: () => void): void {
-    if (!this.events[key]) {
-      this.events[key] = [];
-    }
-
-    this.events[key].push(fn);
+    this.attachEvent(key, fn, 'on');
   }
 
-  public async emit(key: string, callback?: () => any) {
-    const events: Array<() => void> = this.events[key];
+  public before(key: string, fn: () => void): void {
+    this.attachEvent(key, fn, 'before');
+  }
 
-    // trigger callback (typically associated state changes)
-    if (callback) {
-      await callback.call(this);
-    }
+  public after(key: string, fn: () => void): void {
+    this.attachEvent(key, fn, 'after');
+  }
+
+  // You really shouldn't await this, but it's useful to know
+  // when all of the binded events have fired
+  public async emit(key: string, lifecycleTiming: string = 'on') {
+    const events = this.events[lifecycleTiming][key];
 
     if (!events) {
       return;
     }
 
-    // trigger on('event') hooks
-    await seriallyResolvePromises(events, false);
+    await Promise.all(
+      events.map(
+        (event) => event(this),
+      ),
+    );
   }
 
-  public onInViewport() {
+  private attachEvent(key: string, fn: () => void, event: string = 'on'): void {
+    if (!this.events[event][key]) {
+      this.events[event][key] = [];
+    }
+
+    this.events[event][key].push(fn);
   }
 
-  public onBreakpointChange() {
+  private callExtensions(hook: string): Array<Promise<void>> {
+    return this.extensions.map(
+      async (extension) => {
+        if (!extension[hook]) {
+          return;
+        }
+
+        return extension[hook](this);
+      },
+    );
   }
 
-  public validateParameters(params: { adPath?: string }) {
+  private validateParameters(params: { adPath?: string }) {
     const providedParams = Object.keys(params);
-    const { requiredParams = [], name: networkName } = (this.constructor as typeof Ad).network;
+    const { requiredParams = [], name: networkName } = this.network;
 
     if (!params.adPath) {
       throw new Error('adPath is required for all networks');
@@ -309,24 +388,6 @@ export class Ad {
       }
     });
   }
-
-  private configure(configuration: AdConfiguration) {
-    this.configuration = {
-      // Lib Defaults
-      autoRender: true,
-      autoRefresh: true,
-      offset: 0,
-      refreshRate: 60000,
-      targeting: {},
-      breakpoints: [],
-      refreshOnBreakpoint: true,
-      page: undefined,
-
-      // Global Defaults (set by ADJS.configure)
-      ...ADJS.defaults,
-
-      // Constructor Overrides
-      ...configuration,
-    };
-  }
 }
+
+export default Ad;
