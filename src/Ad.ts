@@ -224,9 +224,9 @@ class Ad implements IAd {
   //
   //  destroy must always happen after render has completed.
   //
-  public async onReady(fn: () => void): Promise<void> {
-    let externalResolve;
-    let externalReject;
+  public async onReady(fn: () => void): Promise<any> {
+    let externalResolve: () => void;
+    let externalReject: (e: any) => void;
 
     const promiseMonitor = new Promise((resolve, reject) => {
       externalResolve = resolve;
