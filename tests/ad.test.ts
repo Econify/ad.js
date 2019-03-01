@@ -14,11 +14,10 @@ describe('Ad', () => {
     ad = bucket.createAd(el);
   });
 
-
   describe('render()', () => {
     it('should render ad & trigger async hooks', async () => {
       let rendered;
-      ad.on('rendered', () => { rendered = true; });
+      ad.on('render', () => { rendered = true; });
       await ad.render();
       expect(rendered).toEqual(true);
       expect(ad.state.rendering).toEqual(false);
@@ -29,7 +28,7 @@ describe('Ad', () => {
   describe('refresh()', () => {
     it('should refresh ad & trigger async hooks', async () => {
       let refreshed;
-      ad.on('refreshed', () => { refreshed = true; });
+      ad.on('refresh', () => { refreshed = true; });
       await ad.refresh();
       expect(refreshed).toEqual(true);
       expect(ad.state.refreshing).toEqual(false);
@@ -40,7 +39,7 @@ describe('Ad', () => {
   describe('destroy()', () => {
     it('should destroy ad & trigger async hooks', async () => {
       let destroyed;
-      ad.on('destroyed', () => { destroyed = true; });
+      ad.after('destroy', () => { destroyed = true; });
       await ad.destroy();
       expect(destroyed).toEqual(true);
       expect(ad.state.destroying).toEqual(false);
@@ -48,7 +47,6 @@ describe('Ad', () => {
     });
   });
 
-  /*
   describe('freeze()', () => {
     it('should freeze ad & trigger async hooks', async () => {
       let frozen;
@@ -60,31 +58,79 @@ describe('Ad', () => {
   });
 
   describe('unfreeze()', () => {
-    it('should unfreeze ad & trigger async hooks', async () => {
+    it('should unfreeze ad', async () => {
       let unfrozen;
+
       ad.on('unfreeze', () => { unfrozen = true; });
-      await ad.unfreeze({ replayEventsWhileFrozen: true });
+      ad.freeze();
+      ad.unfreeze();
+
       expect(unfrozen).toEqual(true);
       expect(ad.state.frozen).toEqual(false);
     });
 
     it('should trigger backlogged events when provided replayEventsWhileFrozen option', async () => {
-      let backlogged = true;
-      ad.on('refresh', () => { backlogged = false; });
-      await ad.freeze();
-      await ad.refresh();
+      let refreshed = false;
+
+      ad.freeze();
+      ad.refresh();
+
+      ad.on('refresh', () => {
+        refreshed = true;
+      });
+
       await ad.unfreeze({ replayEventsWhileFrozen: true });
-      expect(backlogged).toEqual(false);
+
+      expect(refreshed).toEqual(true);
     });
 
     it('should not trigger backlogged events when not provided replayEventsWhileFrozen option', async () => {
       let backlogged = true;
       ad.on('refresh', () => { backlogged = false; });
-      await ad.freeze();
-      await ad.refresh();
+      ad.freeze();
+      ad.refresh();
       await ad.unfreeze();
       expect(backlogged).toEqual(true);
     });
   });
- */
+
+  describe('Life cycle methods', () => {
+    it('should execute methods in order they were called in', (done) => {
+      let count = 0;
+      let renderIndex;
+      let refreshIndex;
+      let clearIndex;
+      let destroyIndex;
+
+      ad.on('render', () => {
+        renderIndex = ++count;
+      });
+
+      ad.on('refresh', () => {
+        refreshIndex = ++count;
+      });
+
+      ad.on('destroy', () => {
+        destroyIndex = ++count;
+      });
+
+      ad.on('clear', () => {
+        clearIndex = ++count;
+      });
+
+      ad.render();
+      ad.refresh();
+      ad.clear();
+      ad.destroy();
+
+      ad.after('destroy', () => {
+        expect(renderIndex).toEqual(1);
+        expect(refreshIndex).toEqual(2);
+        expect(clearIndex).toEqual(3);
+        expect(destroyIndex).toEqual(4);
+
+        done();
+      });
+    });
+  });
 });

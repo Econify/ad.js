@@ -1,6 +1,6 @@
 import {
   IAd,
-  IAdConfiguration, IEventType,
+  IAdConfiguration, IAdEventListener, IEventType,
   IExtension, INetwork, INetworkInstance, IPlugin,
   Maybe,
 } from '../';
@@ -9,15 +9,12 @@ import AdJS from '.';
 import Bucket from './Bucket';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
+import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
 
 let adId = 0;
 
 function nextId(): string {
   return `adjs-ad-container-${++adId}`;
-}
-
-function ucFirst(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 const DEFAULT_CONFIGURATION: IAdConfiguration = {
@@ -32,24 +29,14 @@ const DEFAULT_CONFIGURATION: IAdConfiguration = {
 
 // Event Bus Options
 export const EVENTS: IEventType = {
-  CREATED: 'created',
-
+  CREATE: 'create',
   REQUEST: 'request',
-  REQUESTED: 'requested',
-
   RENDER: 'render',
-  RENDERED: 'rendered',
-
   REFRESH: 'refresh',
-  REFRESHED: 'refreshed',
-
   DESTROY: 'destroy',
-  DESTROYED: 'destroyed',
-
   FREEZE: 'freeze',
   UNFREEZE: 'unfreeze',
-
-  CLEARED: 'cleared',
+  CLEAR: 'clear',
 };
 
 // Define LifeCycle Method will automatically wrap each
@@ -58,24 +45,32 @@ export const EVENTS: IEventType = {
 function attachAsLifecycleMethod(
   target: any,
   propertyName: string,
-  propertyDescriptor: any,
+  propertyDescriptor: any, // Must be any as typescript can't determine
+                           // "this" on an unbound function
 ): any {
   const fn = propertyDescriptor.value;
 
   propertyDescriptor.value = async function(...args: any[]) {
+    /*
+     * If the ad unit is frozen push the call into a queue that
+     * can be executed later
+     */
     if (this.state.frozen) {
       const boundReplayFn = this[propertyName].bind(this, ...args);
-      this.cache.push(boundReplayFn);
+
+      this.actionsReceievedWhileFrozen.push(boundReplayFn);
 
       return;
     }
 
-    const hookName = ucFirst(propertyName);
+    const hookName = uppercaseFirstLetter(propertyName);
 
+    // e.g. beforeRender, onRender, afterRender, beforeRefresh
     const beforeHookName = `before${hookName}`;
     const onHookName = `on${hookName}`;
     const afterHookName = `after${hookName}`;
 
+    // e.g. rendering, rendered
     const executingState = `${propertyName}ing`;
     const executedState = `${propertyName}ed`;
 
@@ -84,23 +79,37 @@ function attachAsLifecycleMethod(
       return;
     }
 
-    // Has this render method already completed succesfully? Should we allow for it
-    // to be executed again?
-    // (!options || !options.allowDuplicateExecution) &&
+    /*
+     * Has this render method already completed succesfully? Should we
+     * allow for it to be executed again?
+     * (!options || !options.allowDuplicateExecution) &&
+     */
     if (this.state[executedState]) {
       return;
     }
 
+    /*
+     * Lifecycle methods are not idempotent, make sure that multiple
+     * calls to a method do not execute multiple times
+     */
     this.state[executingState] = true;
 
-    this.onReady(async () => {
-      this.emit(executingState);
+    /*
+     * Queue up the lifecycle method's execution to ensure all bucket async tasks
+     * have completed and that it executes in order.
+     *
+     * e.g. if ad.render() is called before ad.destroy(), ensure ad.render()
+     *      completes before executing ad.destroy().
+     */
+    await this.onReady(async () => {
+      this.emit(propertyName, 'before');
 
       this.callExtensions(beforeHookName);
 
       const executionOfFn = fn.apply(this, args);
 
       this.callExtensions(onHookName);
+      this.emit(propertyName, 'on');
 
       await executionOfFn;
 
@@ -109,7 +118,7 @@ function attachAsLifecycleMethod(
       this.state[executingState] = false;
       this.state[executedState] = true;
 
-      this.emit(executedState);
+      this.emit(propertyName, 'after');
     });
   };
 
@@ -143,8 +152,16 @@ class Ad implements IAd {
   public state: { [key: string]: boolean } = {
     creating: false,
     created: false,
+
     rendering: false,
     rendered: false,
+
+    refreshing: false,
+    refreshed: false,
+
+    clearing: false,
+    cleared: false,
+
     destroying: false,
     destroyed: false,
 
@@ -153,7 +170,9 @@ class Ad implements IAd {
 
   public container: HTMLElement;
 
-  private networkInstance!: INetworkInstance;
+  private networkInstance: INetworkInstance;
+
+  private actionsReceievedWhileFrozen: any = [];
 
   private localExtensions: IExtension[] = [];
   private localPlugins: IPlugin[] = [];
@@ -162,16 +181,22 @@ class Ad implements IAd {
 
   // Event Queue
   private events: {
-    [key: string]: Array<(ad?: Ad) => void>;
+    [key: string]: IAdEventListener;
   } = {
-    __cache: [],
+    before: {},
+    on: {},
+    after: {},
   };
 
   private configuration: IAdConfiguration;
 
   constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
-    this.container = insertElement('div', { id: nextId() }, el);
-
+    /*
+     * Add the parent buckets promise chain onto each Ad instance's
+     * promise chain to ensure that any async actions the parent bucket
+     * makes (e.g. Krux) are completed before allowing a lifecycle
+     * method (e.g. render) to execute
+     */
     this.promiseStack = this.promiseStack.then(() => this.bucket.promiseStack);
 
     this.configuration = {
@@ -182,11 +207,10 @@ class Ad implements IAd {
       ...localConfiguration,
     };
 
-    this.onReady(() => {
-      this.networkInstance = this.network.createAd(this.container);
+    this.container = insertElement('div', { id: nextId() }, el);
+    this.networkInstance = this.network.createAd(this.container);
 
-      // TODO INCLUDE A DEBUGGER
-    });
+    this.onReady(() => this.callExtensions('onCreate'));
   }
 
   // onReady will queue up additional execution calls to onReady
@@ -201,7 +225,25 @@ class Ad implements IAd {
   //  destroy must always happen after render has completed.
   //
   public async onReady(fn: () => void): Promise<void> {
-    this.promiseStack = this.promiseStack.then(() => fn());
+    let externalResolve;
+    let externalReject;
+
+    const promiseMonitor = new Promise((resolve, reject) => {
+      externalResolve = resolve;
+      externalReject = reject;
+    });
+
+    this.promiseStack = this.promiseStack.then(async () => {
+      try {
+        await fn();
+
+        externalResolve();
+      } catch (e) {
+        externalReject(e);
+      }
+    });
+
+    return promiseMonitor;
   }
 
   @attachAsLifecycleMethod
@@ -247,8 +289,12 @@ class Ad implements IAd {
       return;
     }
 
+    this.emit(EVENTS.FREEZE, 'before');
+
     this.state.frozen = true;
-    this.emit(EVENTS.FREEZE);
+
+    this.emit(EVENTS.FREEZE, 'on');
+    this.emit(EVENTS.FREEZE, 'after');
   }
 
   public async unfreeze(options: { replayEventsWhileFrozen?: boolean } = {}): Promise<void> {
@@ -256,38 +302,46 @@ class Ad implements IAd {
       return;
     }
 
+    this.emit(EVENTS.UNFREEZE, 'before');
+
     // unfreeze is the exception to the evented workflow because if it were
     // enqueued, it would be pushed to the end of the queue (after backlogged
     // events). Thus, leaving the ad in a limbo state. As such, we must bypass
     // the queue for this event.
     this.state.frozen = false;
 
+    const actions = this.actionsReceievedWhileFrozen;
+
+    this.actionsReceievedWhileFrozen = [];
+
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
-      const events = this.getCachedEventsAndEmptyCache();
-
-      /*
-      this.addToPromiseStack(
-        () => seriallyResolvePromises(events),
+      // TODO
+      this.onReady(() =>
+        seriallyResolvePromises(actions),
       );
-       */
     }
 
-    this.emit(EVENTS.UNFREEZE);
+    this.emit(EVENTS.UNFREEZE, 'on');
+    this.emit(EVENTS.UNFREEZE, 'after');
   }
 
   public on(key: string, fn: () => void): void {
-    if (!this.events[key]) {
-      this.events[key] = [];
-    }
+    this.attachEvent(key, fn, 'on');
+  }
 
-    this.events[key].push(fn);
+  public before(key: string, fn: () => void): void {
+    this.attachEvent(key, fn, 'before');
+  }
+
+  public after(key: string, fn: () => void): void {
+    this.attachEvent(key, fn, 'after');
   }
 
   // You really shouldn't await this, but it's useful to know
   // when all of the binded events have fired
-  public async emit(key: string, callback?: (ad: this) => void) {
-    const events = this.events[key];
+  public async emit(key: string, lifecycleTiming: string = 'on') {
+    const events = this.events[lifecycleTiming][key];
 
     if (!events) {
       return;
@@ -300,6 +354,14 @@ class Ad implements IAd {
     );
   }
 
+  private attachEvent(key: string, fn: () => void, event: string = 'on'): void {
+    if (!this.events[event][key]) {
+      this.events[event][key] = [];
+    }
+
+    this.events[event][key].push(fn);
+  }
+
   private callExtensions(hook: string): Array<Promise<void>> {
     return this.extensions.map(
       async (extension) => {
@@ -310,12 +372,6 @@ class Ad implements IAd {
         return extension[hook](this);
       },
     );
-  }
-
-  private getCachedEventsAndEmptyCache() {
-    const events = this.events.__cache;
-
-    this.events.__cache = [];
   }
 
   private validateParameters(params: { adPath?: string }) {

@@ -4,6 +4,10 @@ export interface IEventType {
   [key: string]: string;
 }
 
+export interface IAdEventListener {
+  [key: string]: Array<(ad?: Ad) => void>;
+}
+
 export interface IAd {
   public network: INetwork;
 

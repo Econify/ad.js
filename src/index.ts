@@ -5,4 +5,18 @@ const AdJS = {
   Bucket,
 };
 
+/*
+if (typeof window !== 'undefined') {
+  window.adjsCmd = window.adjsCmd || [];
+
+  window.adjsCmd.forEach((fn) => {
+    fn();
+  });
+
+  window.adjsCmd.push = (fn) => {
+    fn();
+  }
+}
+*/
+
 export default AdJS;
