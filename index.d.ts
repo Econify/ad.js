@@ -20,21 +20,45 @@ export interface IAd {
   public unfreeze(): Promise<void>;
 }
 
-export interface IExtension {
+export interface IVendor {
   name: string;
-
-  [key: string]: (IAd) => Promise<void>;
 }
 
 export interface IBucketConfiguration {
   plugins?: IPlugin[];
-  extensions?: IExtension[];
+  vendors?: IVendor[];
   defaults?: {};
 }
 
+export type IPluginHook = (IAd) => void;
+
 export interface IPlugin {
   name: string;
-  prepare: () => Maybe<Promise>;
+
+  onCreate?: IPluginHook;
+
+  beforeRender?: IPluginHook;
+  onRender?: IPluginHook;
+  afterRender?: IPluginHook;
+
+  beforeRefresh?: IPluginHook;
+  onRefresh?: IPluginHook;
+  afterRefresh?: IPluginHook;
+
+  beforeClear?: IPluginHook;
+  onClear?: IPluginHook;
+  afterClear?: IPluginHook;
+
+  beforeDestroy?: IPluginHook;
+  onDestroy?: IPluginHook;
+  afterDestroy?: IPluginHook;
+
+  beforeFreeze?: IPluginHook;
+  onFreeze?: IPluginHook;
+
+  beforeUnfreeze?: IPluginHook;
+  onUnfreeze?: IPluginHook;
+  afterUnfreeze?: IPluginHook;
 }
 
 export interface INetworkArguments {

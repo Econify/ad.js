@@ -1,5 +1,5 @@
 import MainSingleton from '.';
-import { IAdConfiguration, IBucketConfiguration, IExtension, INetwork, IPlugin } from '../';
+import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from '../';
 import Ad from './Ad';
 
 class Bucket {
@@ -7,11 +7,11 @@ class Bucket {
 
   public promiseStack: Promise<void> = Promise.resolve();
   public plugins: IPlugin[] = [];
-  public extensions: IExtension[] = [];
+  public vendors: IVendor[] = [];
   public defaults: IAdConfiguration = {};
 
   constructor(public network: INetwork, providedConfiguration: IBucketConfiguration = {}) {
-    const { defaults, plugins, extensions } = providedConfiguration;
+    const { defaults, plugins, vendors } = providedConfiguration;
 
     if (defaults) {
       this.defaults = defaults;
@@ -21,8 +21,8 @@ class Bucket {
       this.plugins = plugins;
     }
 
-    if (extensions) {
-      this.extensions = extensions;
+    if (vendors) {
+      this.vendors = vendors;
     }
   }
 

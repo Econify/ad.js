@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
   <style>
-    body {
-      margin: 50px;
-      background-color: #f2f2ed;
-      color: #33322e;
+    body { margin: 50px;
+      background-color: #f2f2ed; color: #33322e;
       font-family: Helvetica;
       letter-spacing: 1px;
       text-align: center;
@@ -46,9 +44,13 @@
     </div>
     <script type="text/javascript" src="http://localhost:8081/adjs.main.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.networks.dfp.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.log.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
-      window.mainPage = new AdJS.Bucket(DFPNetwork, {
+      const mainPage = new AdJS.Bucket(DFPNetwork, {
+        plugins: [
+          LoggingPlugin,
+        ],
         defaults: {
           breakpoints: [1200, 800, 400],
           refreshRate: 1000,
@@ -57,51 +59,11 @@
         },
       });
 
+      const el = document.getElementById('ad-slot-1');
+
       // monetize.
-      window.ad = mainPage.createAd(document.getElementById('ad-slot-1'), 'slot1');
+      const ad = mainPage.createAd(el, 'slot1');
       ad.render();
-
-      ad.on('render', () => console.info('[STATE CHANGED] rendering'));
-      ad.on('rendered', () => console.info('[STATE CHANGED] rendered'));
-      ad.on('refresh', () => console.info('[STATE CHANGED] refreshing'));
-      ad.on('refreshed', () => console.info('[STATE CHANGED] refreshed'));
-      ad.on('destroy', () => console.info('[STATE CHANGED] destroying'));
-      ad.on('destroyed', () => console.info('[STATE CHANGED] destroyed'));
-
-      //////////////////////////////////////////////////////////////////////////
-
-      // Initialization Method 1:
-
-      // These 3 events get enqueued and don't immediately fire because the lib
-      // calls onReady in the Ad constructor which marks Ad state as processing:
-
-      // ad.render();
-      // ad.refresh();
-      // ad.destroy();
-
-      // The following actually triggers initial queue processing (NOTE: not sure
-      // this is desired but describes WIP state of current sync/async event flow):
-
-      // setTimeout(() => {
-      //   console.log('trigger queue processing');
-      //   ad.onReady(() => {});
-      // }, 1500);
-
-      //////////////////////////////////////////////////////////////////////////
-
-      /* Initialization Method 2 */
-
-      // However, if we await events, things work as expected onload:
-
-      // async function setup() {
-      //   await ad.render();
-      //   await ad.refresh();
-      //   await ad.destroy();
-      // }
-
-      // setup();
-
-      //////////////////////////////////////////////////////////////////////////
     </script>
   </body>
 </html>

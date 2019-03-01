@@ -1,7 +1,7 @@
 import {
   IAd,
   IAdConfiguration, IAdEventListener, IEventType,
-  IExtension, INetwork, INetworkInstance, IPlugin,
+  INetwork, INetworkInstance, IPlugin, IPluginHook, IVendor,
   Maybe,
 } from '../';
 
@@ -41,7 +41,7 @@ export const EVENTS: IEventType = {
 
 // Define LifeCycle Method will automatically wrap each
 // lifecycle with important items such as "queue" when frozen,
-// awaiting bucket queues and implementing extensions
+// awaiting bucket queues and implementing vendors
 function attachAsLifecycleMethod(
   target: any,
   propertyName: string,
@@ -103,16 +103,16 @@ function attachAsLifecycleMethod(
     await this.onReady(async () => {
       this.emit(propertyName, 'before');
 
-      this.callExtensions(beforeHookName);
+      this.callPlugins(beforeHookName);
 
       const executionOfFn = fn.apply(this, args);
 
-      this.callExtensions(onHookName);
+      this.callPlugins(onHookName);
       this.emit(propertyName, 'on');
 
       await executionOfFn;
 
-      this.callExtensions(afterHookName);
+      this.callPlugins(afterHookName);
 
       this.state[executingState] = false;
       this.state[executedState] = true;
@@ -125,15 +125,14 @@ function attachAsLifecycleMethod(
 }
 
 class Ad implements IAd {
-
   get network(): INetwork {
     return this.bucket.network;
   }
 
-  private get extensions() {
+  private get vendors() {
     return [
-      ...this.bucket.extensions,
-      ...this.localExtensions,
+      ...this.bucket.vendors,
+      ...this.localVendors,
     ];
   }
 
@@ -143,6 +142,8 @@ class Ad implements IAd {
       ...this.localPlugins,
     ];
   }
+  public pluginStorage: { [key: string]: any } = {};
+
   // TODO: Rethink
   public correlatorId?: string;
 
@@ -173,7 +174,7 @@ class Ad implements IAd {
 
   private actionsReceievedWhileFrozen: any = [];
 
-  private localExtensions: IExtension[] = [];
+  private localVendors: IVendor[] = [];
   private localPlugins: IPlugin[] = [];
 
   private promiseStack: Promise<void> = Promise.resolve();
@@ -209,7 +210,7 @@ class Ad implements IAd {
     this.container = insertElement('div', { id: nextId() }, el);
     this.networkInstance = this.network.createAd(this.container);
 
-    this.onReady(() => this.callExtensions('onCreate'));
+    this.onReady(() => this.callPlugins('onCreate'));
   }
 
   // onReady will queue up additional execution calls to onReady
@@ -361,14 +362,14 @@ class Ad implements IAd {
     this.events[event][key].push(fn);
   }
 
-  private callExtensions(hook: string): Array<Promise<void>> {
-    return this.extensions.map(
-      async (extension) => {
-        if (!extension[hook]) {
-          return;
+  // TODO Figure out type
+  private callPlugins(hook: keyof IPlugin): Array<Promise<void>> {
+    return this.plugins.map(
+      async (plugin) => {
+        const hookFn = plugin[hook];
+        if (typeof hookFn === 'function') {
+          return hookFn(this);
         }
-
-        return extension[hook](this);
       },
     );
   }

@@ -55,4 +55,10 @@ createFile({
   library: 'NoopNetwork',
 });
 
+createFile({
+  entry: 'plugins/Logging.ts',
+  filename: 'plugins.log',
+  library: 'LoggingPlugin',
+});
+
 module.exports = configurations;

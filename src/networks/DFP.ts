@@ -25,7 +25,7 @@ class DfpAd implements INetworkInstance {
       // const sizes = [[468, 60], [728, 90], [300, 250]];
       const sizes = [[300, 250], [300, 600], [300, 300]];
       this.slot =
-        googletag.defineSlot('/2620/nbcnews/politics', sizes, this.id)
+        googletag.defineSlot('/7231/nbcnews/politics', sizes, this.id)
           .addService(googletag.pubads())
           .setTargeting('gender', 'male')
           .setTargeting('age', '20-30');
