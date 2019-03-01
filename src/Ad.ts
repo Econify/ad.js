@@ -82,9 +82,8 @@ function attachAsLifecycleMethod(
     /*
      * Has this render method already completed succesfully? Should we
      * allow for it to be executed again?
-     * (!options || !options.allowDuplicateExecution) &&
      */
-    if (this.state[executedState]) {
+    if (this.state[executedState] && propertyName !== 'refresh') {
       return;
     }
 
