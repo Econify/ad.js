@@ -9,6 +9,8 @@ export interface IAdEventListener {
 }
 
 export interface IAd {
+  public configuration: IAdConfiguration;
+  public container: HTMLElement;
   public network: INetwork;
 
   public render(): Promise<void>;

@@ -170,6 +170,8 @@ class Ad implements IAd {
 
   public container: HTMLElement;
 
+  public configuration: IAdConfiguration;
+
   private networkInstance: INetworkInstance;
 
   private actionsReceievedWhileFrozen: any = [];
@@ -187,8 +189,6 @@ class Ad implements IAd {
     on: {},
     after: {},
   };
-
-  private configuration: IAdConfiguration;
 
   constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
     /*
