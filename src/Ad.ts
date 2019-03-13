@@ -103,16 +103,16 @@ function attachAsLifecycleMethod(
     await this.onReady(async () => {
       this.emit(propertyName, 'before');
 
-      this.callPlugins(beforeHookName);
+      await this.callPlugins(beforeHookName);
 
       const executionOfFn = fn.apply(this, args);
+      const executionOfPlugins = this.callPlugins(onHookName);
 
-      this.callPlugins(onHookName);
       this.emit(propertyName, 'on');
 
-      await executionOfFn;
+      await Promise.all([executionOfFn, executionOfPlugins]);
 
-      this.callPlugins(afterHookName);
+      await this.callPlugins(afterHookName);
 
       this.state[executingState] = false;
       this.state[executedState] = true;
@@ -363,14 +363,17 @@ class Ad implements IAd {
   }
 
   // TODO Figure out type
-  private callPlugins(hook: keyof IPlugin): Array<Promise<void>> {
-    return this.plugins.map(
-      async (plugin) => {
-        const hookFn = plugin[hook];
-        if (typeof hookFn === 'function') {
-          return hookFn(this);
-        }
-      },
+  private callPlugins(hook: keyof IPlugin): Promise<void[]> {
+    return Promise.all(
+      this.plugins.map(
+        async (plugin) => {
+          const hookFn = plugin[hook];
+
+          if (typeof hookFn === 'function') {
+            await hookFn(this);
+          }
+        },
+      ),
     );
   }
 
