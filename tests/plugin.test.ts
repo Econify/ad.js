@@ -27,7 +27,9 @@ describe('Plugin', () => {
 
     beforeEach(() => {
       const el = insertElement('div', {}, document.body);
-      const bucket = new AdJS.Bucket(MockNetwork);
+      const bucket = new AdJS.Bucket(MockNetwork, {
+        plugins: [TEST_PLUGIN],
+      });
 
       ad = bucket.createAd(el);
 
@@ -67,14 +69,14 @@ describe('Plugin', () => {
     });
 
     RENDER_METHODS.forEach((method) => {
-      it(`should call before${uppercaseFirstLetter(method)} before the network ${method}s the ad`, () => {
-        ad[method]();
+      it(`should call before${uppercaseFirstLetter(method)} before the network ${method}s the ad`, async () => {
+        await ad[method]();
 
         expect(TEST_PLUGIN[`before${uppercaseFirstLetter(method)}`]).toHaveBeenCalled();
       });
 
-      it(`should call on${uppercaseFirstLetter(method)} while the network is ${method}ing the ad`, () => {
-        ad[method]();
+      it(`should call on${uppercaseFirstLetter(method)} while the network is ${method}ing the ad`, async () => {
+        await ad[method]();
 
         expect(TEST_PLUGIN[`on${uppercaseFirstLetter(method)}`]).toHaveBeenCalled();
       });
