@@ -13,3 +13,5 @@ const AutoRender: IPlugin = {
     });
   },
 };
+
+export default AutoRender;

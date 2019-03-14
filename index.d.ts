@@ -10,8 +10,13 @@ export interface IAdEventListener {
 
 export interface IAd {
   public configuration: IAdConfiguration;
+
   public container: HTMLElement;
+  public el: HTMLElement;
+
   public network: INetwork;
+
+  public pluginStorage: { [key: string]: any };
 
   public render(): Promise<void>;
   public refresh(): Promise<void>;
@@ -38,6 +43,7 @@ export interface IPlugin {
   name: string;
 
   onCreate?: IPluginHook;
+  afterCreate?: IPluginHook;
 
   beforeRender?: IPluginHook;
   onRender?: IPluginHook;

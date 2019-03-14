@@ -142,7 +142,8 @@ class Ad implements IAd {
       ...this.localPlugins,
     ];
   }
-  public pluginStorage: { [key: string]: any } = {};
+
+  public pluginStorage = {};
 
   // TODO: Rethink
   public correlatorId?: string;
@@ -169,6 +170,7 @@ class Ad implements IAd {
   };
 
   public container: HTMLElement;
+  public el: HTMLElement;
 
   public configuration: IAdConfiguration;
 
@@ -207,10 +209,14 @@ class Ad implements IAd {
       ...localConfiguration,
     };
 
-    this.container = insertElement('div', { id: nextId() }, el);
-    this.networkInstance = this.network.createAd(this.container);
+    this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
+    this.el = insertElement('div', { id: nextId() }, this.container);
 
-    this.onReady(() => this.callPlugins('onCreate'));
+    this.networkInstance = this.network.createAd(this.el);
+
+    this.callPlugins('onCreate');
+
+    this.onReady(() => this.callPlugins('afterCreate'));
   }
 
   // onReady will queue up additional execution calls to onReady

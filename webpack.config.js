@@ -61,4 +61,16 @@ createFile({
   library: 'LoggingPlugin',
 });
 
+createFile({
+  entry: 'plugins/AutoRender.ts',
+  filename: 'plugins.autorender',
+  library: 'AutoRenderPlugin',
+});
+
+createFile({
+  entry: 'plugins/Debug.ts',
+  filename: 'plugins.debug',
+  library: 'DebugPlugin',
+});
+
 module.exports = configurations;
