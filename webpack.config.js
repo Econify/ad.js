@@ -73,4 +73,10 @@ createFile({
   library: 'DebugPlugin',
 });
 
+createFile({
+  entry: 'plugins/Sticky.ts',
+  filename: 'plugins.sticky',
+  library: 'StickyPlugin',
+});
+
 module.exports = configurations;
