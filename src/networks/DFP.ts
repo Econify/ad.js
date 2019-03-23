@@ -1,4 +1,4 @@
-import { INetwork, INetworkInstance } from '../../';
+import { IAd, INetwork, INetworkInstance } from '../types';
 import loadScript from '../utils/loadScript';
 
 declare global {
@@ -123,7 +123,9 @@ const DoubleClickForPublishers: INetwork = {
   name: 'DoubleClick for Publishers',
   loaded: false,
 
-  createAd(el: HTMLElement): DfpAd {
+  createAd(ad: IAd): DfpAd {
+    const { el } = ad;
+
     return new DfpAd(el);
   },
 

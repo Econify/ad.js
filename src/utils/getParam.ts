@@ -1,4 +1,4 @@
-import { Maybe } from '../../';
+import { Maybe } from '../types';
 import isServer from './isServer';
 
 // Util while Url API is not supported in IE11

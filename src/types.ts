@@ -5,26 +5,26 @@ export interface IEventType {
 }
 
 export interface IAdEventListener {
-  [key: string]: Array<(ad?: Ad) => void>;
+  [key: string]: Array<(ad?: IAd) => void>;
 }
 
 export interface IAd {
-  public configuration: IAdConfiguration;
+  configuration: IAdConfiguration;
 
-  public container: HTMLElement;
-  public el: HTMLElement;
+  container: HTMLElement;
+  el: HTMLElement;
 
-  public network: INetwork;
+  network: INetwork;
 
-  public pluginStorage: { [key: string]: any };
+  pluginStorage: { [key: string]: any };
 
-  public render(): Promise<void>;
-  public refresh(): Promise<void>;
-  public clear(): Promise<void>;
-  public destroy(): Promise<void>;
+  render(): Promise<void>;
+  refresh(): Promise<void>;
+  clear(): Promise<void>;
+  destroy(): Promise<void>;
 
-  public freeze(): void;
-  public unfreeze(): Promise<void>;
+  freeze(): void;
+  unfreeze(): Promise<void>;
 }
 
 export interface IVendor {
@@ -37,7 +37,7 @@ export interface IBucketConfiguration {
   defaults?: {};
 }
 
-export type IPluginHook = (IAd) => void;
+export type IPluginHook = (ad: IAd) => void;
 
 export interface IPlugin {
   name: string;
@@ -88,7 +88,7 @@ export interface INetwork {
   name: string;
   requiredParams?: string[];
 
-  createAd(HTMLElement): INetworkInstance;
+  createAd(ad: IAd): INetworkInstance;
 
   resetCorrelator(): Promise<void>;
 
@@ -111,5 +111,3 @@ export interface IAdConfiguration {
   refreshOnBreakpoint?: boolean;
   breakpoints?: number[];
 }
-
-

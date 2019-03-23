@@ -1,6 +1,6 @@
 import MainSingleton from '.';
-import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from '../';
 import Ad from './Ad';
+import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
 
 class Bucket {
   public ads: Ad[] = [];

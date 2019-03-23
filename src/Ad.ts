@@ -3,7 +3,7 @@ import {
   IAdConfiguration, IAdEventListener, IEventType,
   INetwork, INetworkInstance, IPlugin, IPluginHook, IVendor,
   Maybe,
-} from '../';
+} from './types';
 
 import AdJS from '.';
 import Bucket from './Bucket';
@@ -212,7 +212,7 @@ class Ad implements IAd {
     this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
     this.el = insertElement('div', { id: nextId() }, this.container);
 
-    this.networkInstance = this.network.createAd(this.el);
+    this.networkInstance = this.network.createAd(this);
 
     this.callPlugins('onCreate');
 

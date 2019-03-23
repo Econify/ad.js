@@ -1,5 +1,5 @@
 import scrollMonitor from 'scrollmonitor';
-import { IAd, IPlugin } from '../../';
+import { IAd, IPlugin } from '../types';
 
 const AutoRender: IPlugin = {
   name: 'Auto Render',

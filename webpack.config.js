@@ -23,7 +23,7 @@ function createFile({ entry, filename, library }) {
     ...config,
     entry: `./src/${entry}`,
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, 'client'),
       filename: `adjs.${filename}.js`,
       library,
       libraryExport: 'default',

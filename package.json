@@ -2,14 +2,19 @@
   "name": "ippyrus",
   "version": "0.0.1",
   "description": "Ad Library that allows configuration with multiple providers",
-  "main": "index.js",
+  "main": "./index.js",
+  "types": "./types.d.ts",
   "scripts": {
     "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
-    "build": "webpack",
+    "clean": "rm -rf ./clean && rm -rf ./build",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "webpack",
+    "build:server": "tsc --pretty -p .",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
     "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "NODE_PATH=./src jest ./tests --no-cache",
-    "ts": "tsc --pretty"
+    "ts": "tsc --pretty",
+    "release": "npm run clean && npm run build; cp ./package.json dist; cd dist; npm publish"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-import { IAd, IPlugin } from '../../';
+import { IAd, IPlugin } from '../types';
 import insertElement from '../utils/insertElement';
 
 const OVERLAY_STYLE = `
