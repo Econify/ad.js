@@ -1,6 +1,6 @@
 {
   "name": "ippyrus",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Ad Library that allows configuration with multiple providers",
   "main": "./index.js",
   "types": "./types.d.ts",
@@ -26,7 +26,10 @@
     "url": "https://github.com/econify/ippyrus/issues"
   },
   "homepage": "https://github.com/econify/ippyrus#readme",
-  "dependencies": {},
+  "dependencies": {
+    "scrollmonitor": "^1.2.4",
+    "stickybits": "^3.6.4"
+  },
   "devDependencies": {
     "@types/doubleclick-gpt": "^238.0.1",
     "@types/jest": "^23.3.0",
@@ -34,9 +37,7 @@
     "http-server": "^0.11.1",
     "husky": "^1.0.0-rc.13",
     "jest": "^23.4.1",
-    "scrollmonitor": "^1.2.4",
     "source-map-loader": "^0.2.3",
-    "stickybits": "^3.6.4",
     "ts-jest": "^23.0.1",
     "ts-loader": "^4.4.2",
     "tslint": "^5.11.0",
