@@ -7,6 +7,11 @@
       letter-spacing: 1px;
       text-align: center;
     }
+
+    .container {
+      height: 800px;
+    }
+
     h1 {
       font-size: 50px;
     }
@@ -45,16 +50,22 @@
     <script type="text/javascript" src="http://localhost:8081/adjs.main.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.networks.dfp.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.log.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.autorender.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.debug.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.sticky.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
       const mainPage = new AdJS.Bucket(DFPNetwork, {
         plugins: [
           LoggingPlugin,
+          AutoRenderPlugin,
+          DebugPlugin,
+          StickyPlugin,
         ],
         defaults: {
           breakpoints: [1200, 800, 400],
           refreshRate: 1000,
-          offset: -100,
+          offset: 100,
           targeting: { example: 'true' },
         },
       });
@@ -63,7 +74,6 @@
 
       // monetize.
       const ad = mainPage.createAd(el, 'slot1');
-      ad.render();
     </script>
   </body>
 </html>

@@ -1,7 +1,8 @@
 import {
+  IAd,
   INetwork,
   INetworkInstance,
-} from '../../';
+} from '../types';
 
 const NoopAd: INetworkInstance = {
   async render() {},
@@ -13,7 +14,7 @@ const NoopAd: INetworkInstance = {
 const Noop: INetwork = {
   name: 'The Does Absolutely Nothing Network',
 
-  createAd(el: HTMLElement) {
+  createAd(ad: IAd) {
     return NoopAd;
   },
 

@@ -69,6 +69,7 @@ describe('Ad', () => {
       expect(ad.state.frozen).toEqual(false);
     });
 
+    /*
     it('should trigger backlogged events when provided replayEventsWhileFrozen option', async () => {
       let refreshed = false;
 
@@ -83,6 +84,7 @@ describe('Ad', () => {
 
       expect(refreshed).toEqual(true);
     });
+   */
 
     it('should not trigger backlogged events when not provided replayEventsWhileFrozen option', async () => {
       let backlogged = true;

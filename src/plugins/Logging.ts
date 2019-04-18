@@ -1,4 +1,4 @@
-import { IAd, IPlugin } from '../../';
+import { IAd, IPlugin } from '../types';
 
 const BASE_MESSAGE = '[DEBUG]';
 

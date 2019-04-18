@@ -1,9 +1,8 @@
-import Ad from '../Ad';
-
 import {
+  IAd,
   INetwork,
   INetworkInstance,
-} from '../../';
+} from '../types';
 
 const MockAdInstance: INetworkInstance = {
   async render() {
@@ -19,7 +18,7 @@ const MockAdInstance: INetworkInstance = {
 const MockAdNetwork: INetwork = {
   name: 'Mock Network',
 
-  createAd(ad: Ad): INetworkInstance {
+  createAd(ad: IAd): INetworkInstance {
     return MockAdInstance;
   },
 

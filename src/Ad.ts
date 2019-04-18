@@ -3,7 +3,7 @@ import {
   IAdConfiguration, IAdEventListener, IEventType,
   INetwork, INetworkInstance, IPlugin, IPluginHook, IVendor,
   Maybe,
-} from '../';
+} from './types';
 
 import AdJS from '.';
 import Bucket from './Bucket';
@@ -103,16 +103,16 @@ function attachAsLifecycleMethod(
     await this.onReady(async () => {
       this.emit(propertyName, 'before');
 
-      this.callPlugins(beforeHookName);
+      await this.callPlugins(beforeHookName);
 
       const executionOfFn = fn.apply(this, args);
+      const executionOfPlugins = this.callPlugins(onHookName);
 
-      this.callPlugins(onHookName);
       this.emit(propertyName, 'on');
 
-      await executionOfFn;
+      await Promise.all([executionOfFn, executionOfPlugins]);
 
-      this.callPlugins(afterHookName);
+      await this.callPlugins(afterHookName);
 
       this.state[executingState] = false;
       this.state[executedState] = true;
@@ -142,7 +142,8 @@ class Ad implements IAd {
       ...this.localPlugins,
     ];
   }
-  public pluginStorage: { [key: string]: any } = {};
+
+  public pluginStorage = {};
 
   // TODO: Rethink
   public correlatorId?: string;
@@ -169,6 +170,9 @@ class Ad implements IAd {
   };
 
   public container: HTMLElement;
+  public el: HTMLElement;
+
+  public configuration: IAdConfiguration;
 
   private networkInstance: INetworkInstance;
 
@@ -188,8 +192,6 @@ class Ad implements IAd {
     after: {},
   };
 
-  private configuration: IAdConfiguration;
-
   constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
     /*
      * Add the parent buckets promise chain onto each Ad instance's
@@ -207,10 +209,14 @@ class Ad implements IAd {
       ...localConfiguration,
     };
 
-    this.container = insertElement('div', { id: nextId() }, el);
-    this.networkInstance = this.network.createAd(this.container);
+    this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
+    this.el = insertElement('div', { id: nextId() }, this.container);
 
-    this.onReady(() => this.callPlugins('onCreate'));
+    this.networkInstance = this.network.createAd(this);
+
+    this.callPlugins('onCreate');
+
+    this.onReady(() => this.callPlugins('afterCreate'));
   }
 
   // onReady will queue up additional execution calls to onReady
@@ -363,14 +369,17 @@ class Ad implements IAd {
   }
 
   // TODO Figure out type
-  private callPlugins(hook: keyof IPlugin): Array<Promise<void>> {
-    return this.plugins.map(
-      async (plugin) => {
-        const hookFn = plugin[hook];
-        if (typeof hookFn === 'function') {
-          return hookFn(this);
-        }
-      },
+  private callPlugins(hook: keyof IPlugin): Promise<void[]> {
+    return Promise.all(
+      this.plugins.map(
+        async (plugin) => {
+          const hookFn = plugin[hook];
+
+          if (typeof hookFn === 'function') {
+            await hookFn(this);
+          }
+        },
+      ),
     );
   }
 

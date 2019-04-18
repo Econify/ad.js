@@ -23,7 +23,7 @@ function createFile({ entry, filename, library }) {
     ...config,
     entry: `./src/${entry}`,
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, 'client'),
       filename: `adjs.${filename}.js`,
       library,
       libraryExport: 'default',
@@ -59,6 +59,24 @@ createFile({
   entry: 'plugins/Logging.ts',
   filename: 'plugins.log',
   library: 'LoggingPlugin',
+});
+
+createFile({
+  entry: 'plugins/AutoRender.ts',
+  filename: 'plugins.autorender',
+  library: 'AutoRenderPlugin',
+});
+
+createFile({
+  entry: 'plugins/Debug.ts',
+  filename: 'plugins.debug',
+  library: 'DebugPlugin',
+});
+
+createFile({
+  entry: 'plugins/Sticky.ts',
+  filename: 'plugins.sticky',
+  library: 'StickyPlugin',
 });
 
 module.exports = configurations;
