@@ -1,31 +1,32 @@
 {
-  "name": "ippyrus",
-  "version": "0.0.2",
-  "description": "Ad Library that allows configuration with multiple providers",
+  "name": "adjs",
+  "version": "2.0.0-alpha.0",
+  "description": "Ad Library to simplify and optimize integration with ad networks such as DFP",
   "main": "./index.js",
   "types": "./types.d.ts",
   "scripts": {
-    "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
-    "clean": "rm -rf ./clean && rm -rf ./build",
     "build": "npm run build:client && npm run build:server",
     "build:client": "webpack",
     "build:server": "tsc --pretty -p .",
+    "clean": "rm -rf ./clean && rm -rf ./build",
+    "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
     "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
+    "release": "npm run clean && npm run build; cp ./package.json dist; cd dist; npm publish",
+    "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
     "test": "NODE_PATH=./src jest ./tests --no-cache",
-    "ts": "tsc --pretty",
-    "release": "npm run clean && npm run build; cp ./package.json dist; cd dist; npm publish"
+    "ts": "tsc --pretty"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/econify/ippyrus.git"
+    "url": "git+https://github.com/econify/adjs.git"
   },
   "author": "Stephen Baldwin <s@econify.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/econify/ippyrus/issues"
+    "url": "https://github.com/econify/adjs/issues"
   },
-  "homepage": "https://github.com/econify/ippyrus#readme",
+  "homepage": "https://github.com/econify/adjs#readme",
   "dependencies": {
     "scrollmonitor": "^1.2.4",
     "stickybits": "^3.6.4"
@@ -34,6 +35,8 @@
     "@types/doubleclick-gpt": "^238.0.1",
     "@types/jest": "^23.3.0",
     "concurrently": "^3.6.0",
+    "docsify": "^4.9.1",
+    "docsify-cli": "^4.3.0",
     "http-server": "^0.11.1",
     "husky": "^1.0.0-rc.13",
     "jest": "^23.4.1",
