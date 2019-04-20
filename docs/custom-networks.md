@@ -4,53 +4,53 @@ If you are interacting with an ad platform that is not part of the official Ad.j
 Example Custom Provider:
 
 ```js
-    import DefaultProvider from 'adjs/DefaultProvider';
-    import loadScript from './loadScript';
+import TestNetwork from 'adjs/networks/Noop';
+import loadScript from 'adjs/utils/loadScript';
+
+class ExampleCustomProvider extends TestNetwork {
+  static optionalParams = [];
+  static requiredParams = ['adPath'];
+  
+  id = null;
+  url = null;
+  
+  constructor({ id, url }) {
+    super(true); // Important to pass true
+      
+    if (!id) {
+      throw new Error("ID is a required field");
+    }
     
-    class ExampleCustomProvider extends DefaultProvider {
-      static optionalParams = [];
-      static requiredParams = ['adPath'];
-      
-      id = null;
-      url = null;
-      
-      constructor({ id, url }) {
-        super(true); // Important to pass true
-          
-        if (!id) {
-          throw new Error("ID is a required field");
-        }
-        
-        if (!url) {
-          throw new Error("URL is a required field");
-        }
-        
-        this.id = id;
-        this.url = url;
-        
-        loadScript('https://cdn.econify.com/dfp.js');
-      }
-      
-      create(el, props, EventTrigger) {
-        super(props); // this will do type checking
-        const { adPath } = props;
+    if (!url) {
+      throw new Error("URL is a required field");
+    }
     
-        const ad = window.exampleLibrary.createAd({ el, adPath })
-                    .then((id) => {
-                      EventTrigger.rendered();
-                      return { id, adPath };
-                    });
-                    
-        Events.requested();
-        
-        return ad;
-      }
-      
-      async destroy(ad, EventTrigger) {
-        EventTrigger.destroying();
-        await window.exampleLibrary.destroyAd(ad.id);
-        EventTrigger.destroyed();
-      }
-    } 
+    this.id = id;
+    this.url = url;
+    
+    loadScript('https://cdn.econify.com/dfp.js');
+  }
+  
+  create(el, props, EventTrigger) {
+    super(props); // this will do type checking
+    const { adPath } = props;
+
+    const ad = window.exampleLibrary.createAd({ el, adPath })
+                .then((id) => {
+                  EventTrigger.rendered();
+                  return { id, adPath };
+                });
+                
+    Events.requested();
+    
+    return ad;
+  }
+  
+  async destroy(ad, EventTrigger) {
+    EventTrigger.destroying();
+    await window.exampleLibrary.destroyAd(ad.id);
+    EventTrigger.destroyed();
+  }
+} 
 ```
 

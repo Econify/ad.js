@@ -1,6 +1,12 @@
-# Usage
+# Interacting with Ad.js
+There are four methods for you to get a reference to your ad for interaction with the methods below.
 
-## Overview
+1. Assigning to variable:  `const bannerAd = new bucket.Ad(el, 'banner');`
+2. Lookup via SlotID:  `bucket.find('banner')`
+3. Lookup via Element:`bucket.find(DOMElement)`
+4. Lookup via instances array:`bucket.instances[0]`
+
+## Lifecycle
 Once your ad has been created, Ad.js provides you a functional interface to interact and control your ads.
 
 A typical ad lifecycle goes:
@@ -22,13 +28,7 @@ If your ad is refreshed (and your provider supports ad refresh), a typical lifec
 7. Render
 8. Complete
 
-There are three methods for you to get a reference to your ad for interaction with the methods below.
-
-1. Assigning to variable:  `const bannerAd = new bucket.Ad(el, 'banner');`
-2. Lookup via SlotID:  `bucket.find('banner')`
-3. Lookup via Element:`bucket.find(DOMElement)`
-4. Lookup via instances array:`bucket.instances[0]`
-
+## Actions
 Even though most Ad lifecycle actions require network requests and are therefore asynchronous, Ad.js interfaces are synchronous. When async methods are still pending, Ad.js will automatically queue up your action and replay them in the order received. Because of this code like this is safe!
 
 ```js
@@ -64,7 +64,6 @@ However should you want to link into the completion of the action you invoke, th
       .then(() => console.log('rendered'));
 ```
 
-## Actions
 ### Render
 Whether you have set autoRender to false or you need to explicitly render at a specific point Ad.js provides you with a render method. Simply call render() to force render an ad that has not yet been rendered. Note: Calling render on an already rendered Ad is a noop, however calling render on an ad that has been cleared will render a new ad.
 
