@@ -6,7 +6,7 @@ Ad.js is an ad library that aims to simplify and optimize client integrations wi
 To install Ad.js you have two options
 
 - NPM:  `npm install adjs`
-- Script include: `<script src=``"``https://cdn.adjs.io/latest.min.js``"``></script>`
+- Script include: `<script src="https://cdn.adjs.dev/latest.min.js"></script>`
 
 Before instantiating an Ad with Ad.js you should globally configure Ad.js otherwise your ad will instantiate with the default provider which is a Noop.
 
@@ -22,35 +22,35 @@ Before instantiating an Ad with Ad.js you should globally configure Ad.js otherw
 Example Configuration
 
 ```js
-    const homepageAdBucket = new AdJS.Bucket({
-      network: AdJS.Network.DFP,
-      vendors: [
-        new AdJS.Vendors.Krux("KRUX ID"),
-        new AdJS.Vendors.AdmantX({
-          url: "https://url.com/",
-          key: "admantixuserid",
-        }),
-      ],
-      
-      
-      defaults: {
-        breakpoints: [1200, 800, 400],
-        refreshRate: 1000,
-        offset: -100,
-        targeting: { example: 'true' },
-      }
-    });
+const homepageAdBucket = new AdJS.Bucket({
+  network: AdJS.Network.DFP,
+  vendors: [
+    new AdJS.Vendors.Krux("KRUX ID"),
+    new AdJS.Vendors.AdmantX({
+      url: "https://url.com/",
+      key: "admantixuserid",
+    }),
+  ],
+  
+  
+  defaults: {
+    breakpoints: [1200, 800, 400],
+    refreshRate: 1000,
+    offset: -100,
+    targeting: { example: 'true' },
+  }
+});
 ```
 After configuring Ad.js you can create Ad.js Ad instances targeted to your ad provider via new `AdJs.Ad` instances
 
 ```js
-    new homepageBucket.Ad(DomElement, ?Options);
+new homepageBucket.Ad(DomElement, ?Options);
 ```
 
-### Dom Element
+__Dom Element__:
 The dom element you’d like to place the ad into. You can pass either a DOMElement or a string. Strings will be looked up via document.querySelector. It is suggested that you pass in a DOM Element explicitly as document.querySelector is expensive.
 
-### Slot ID
+__Slot ID__:
 Ad.js requires you to name each ad instance with a unique slot ID. Some ad providers will leverage this id in their ad calls.
 
 ### Ad Options
@@ -71,12 +71,12 @@ Ad.js requires you to name each ad instance with a unique slot ID. Some ad provi
 Example Ad Creation
 
 ```js
-    const el = document.findElementById('example');
-    
-    const bannerAd = new homepageAdBucket.Ad(el, {
-      slot: 'banner',
-      offset: -10,
-    });
+const el = document.findElementById('example');
+
+const bannerAd = new homepageAdBucket.Ad(el, {
+  slot: 'banner',
+  offset: -10,
+});
 ```
 
 ## Networks (e.g. DFP)
@@ -85,11 +85,23 @@ In Ad.js a network is a module that enables Ad.js to communicate with the ad pla
 
 By default Ad.js ships with two providers:
 
-1. Default (link)
-2. DFP (link)
+1. [Test Network](default-network)
+2. [DoubleClick/DFP/GPT](dfp-network)
+
+Please see the individual network documentation for usage and examples.
 
 ## Plugins / Additional Functionality
-TODO
+The parsing of javascript is done on the main thread and is blocking. Even if the code is not used, it will still be parsed.
+By default Ad.js ships barebones. This is to ensure that only the code you are leveraging in your ad implementation is parsed
+resulting in the faster loading ads and higher viewability metrics.
+
+Available plugins include:
+- [Lazy Load (recommended)](lazy-load-plugin)
+- [Responsive Ads](responsive-plugin)
+- [Auto Refresh](refresh-plugin)
+- [Debug Tools](debug-plugin)
+
+See each the documentation of the respective plugins to understand their purpose and usage.
 
 ## Vendor Modules (e.g. Krux, Admantix)
 
@@ -97,3 +109,13 @@ A vendor module allows you to control targeting, slot ids, and run time behavior
 
 TODO: Describe vendor interface and hooks
 
+# About
+Ad.js was built by the Econify team as a response to the monetization issues media sites routinely face when implementing ads.
+Econify is a development shop that works with major media companies in NY, LA, Seattle and London.
+To learn more about Econify see the [Econify website](http://www.econify.com).
+
+## License
+TODO
+
+## Roadmap
+The Ad.js roadmap is not yet public, but feature requests can be made by submitting an issue or a pull request directly to the Ad.js open source repo.

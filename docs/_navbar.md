@@ -9,7 +9,7 @@
 	* [Auto Refresh](refresh-plugin.md)
 	* [Debug](debug-plugin.md)
 
-* Networks and Vendor Modules
+* Networks
   * [Default / Dev](default-network.md)
   * [DFP / GPT](dfp-network.md)
   * [Krux](krux-module.md)
