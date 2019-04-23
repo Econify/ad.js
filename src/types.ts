@@ -95,11 +95,16 @@ export interface INetwork {
   [key: string]: any;
 }
 
-export interface IAdConfiguration {
-  adPath?: string;
+export interface IAdTargeting {
+  [key: string]: string;
+}
 
-  targeting?: object;
-  sizes?: any[];
+export type IAdSizes = number[][];
+
+export interface IAdConfiguration {
+  path?: string;
+  targeting?: IAdTargeting;
+  sizes?: IAdSizes;
 
   offset?: number;
 

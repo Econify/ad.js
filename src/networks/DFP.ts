@@ -1,4 +1,4 @@
-import { IAd, INetwork, INetworkInstance } from '../types';
+import { IAd, IAdSizes, IAdTargeting, INetwork, INetworkInstance } from '../types';
 import loadScript from '../utils/loadScript';
 
 declare global {
@@ -10,7 +10,7 @@ class DfpAd implements INetworkInstance {
   private id: string;
   private slot!: googletag.Slot;
 
-  constructor(private el: HTMLElement) {
+  constructor(private el: HTMLElement, path: string, sizes: IAdSizes, targeting?: IAdTargeting) {
     DoubleClickForPublishers.prepare();
 
     const { id } = el;
@@ -22,13 +22,16 @@ class DfpAd implements INetworkInstance {
     this.id = id;
 
     googletag.cmd.push(() => {
-      // const sizes = [[468, 60], [728, 90], [300, 250]];
-      const sizes = [[300, 250], [300, 600], [300, 300]];
       this.slot =
-        googletag.defineSlot('/7231/nbcnews/politics', sizes, this.id)
-          .addService(googletag.pubads())
-          .setTargeting('gender', 'male')
-          .setTargeting('age', '20-30');
+        googletag.defineSlot(path, sizes, this.id)
+          .addService(googletag.pubads());
+
+      if (targeting) {
+        Object.entries(targeting)
+          .forEach(([key, value]) => {
+            this.slot.setTargeting(key, value);
+          });
+      }
 
       googletag.display(this.id);
     });
@@ -124,9 +127,18 @@ const DoubleClickForPublishers: INetwork = {
   loaded: false,
 
   createAd(ad: IAd): DfpAd {
-    const { el } = ad;
+    const { el, configuration } = ad;
+    const { sizes, targeting, path } = configuration;
 
-    return new DfpAd(el);
+    if (!sizes) {
+      throw new Error('Sizes must be defined');
+    }
+
+    if (!path) {
+      throw new Error('Ad Path must be defined');
+    }
+
+    return new DfpAd(el, path, sizes, targeting);
   },
 
   async prepare() {

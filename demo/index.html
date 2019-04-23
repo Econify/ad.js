@@ -63,7 +63,6 @@
           StickyPlugin,
         ],
         defaults: {
-          breakpoints: [1200, 800, 400],
           refreshRate: 1000,
           offset: 100,
           targeting: { example: 'true' },
@@ -73,7 +72,20 @@
       const el = document.getElementById('ad-slot-1');
 
       // monetize.
-      const ad = mainPage.createAd(el, 'slot1');
+      const ad = mainPage.createAd(el, {
+        path: '/1234567/sports',
+
+        sizes: [
+          [160, 600],
+          [300, 250],
+          [300, 600],
+          [300, 300]
+        ],
+
+        targeting: {
+          example: 'true',
+        }
+      });
     </script>
   </body>
 </html>
