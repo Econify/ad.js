@@ -12,15 +12,64 @@ The DFP network adds one required argument to Ad Options
 
 ## Examples
 
+__Without Breakpoints Plugin__
 ```js
-    new AdJS.Bucket({
-      provider: AdJS.Networks.DFP,
-    });
-    
-    const ad = new bucket.Ad(el, {
-      slot: "exampleAd",
-      adUnitPath: "/banner",
-    });
+const bucket = new AdJS.Bucket(DFPNetwork);
+
+const ad = new bucket.Ad(el, {
+  path: '/example/adunit/path',
+
+  targeting: {
+    age: 30,
+    gender: 'female'
+  },
+
+  sizes: [
+    [300, 250],
+  ]
+});
+```
+
+__With Breakpoints Plugin__
+```js
+const bucket = new AdJS.Bucket(DFPNetwork, {
+  plugins: [
+    require('adjs/plugins/breakpoints')
+  ],
+
+  breakpoints: {
+    mobile: { from: 0, to: 575 },
+    tablet: { from: 576, to: 768 },
+    laptop: { from: 769, to: 991 },
+    desktop: { from: 992 },
+  }
+});
+
+const ad = new bucket.Ad(el, {
+  path: '/example/adunit/path',
+
+  targeting: {
+    age: 30,
+    gender: 'female'
+  },
+
+  sizes: {
+    mobile: [],
+
+    tablet: [
+      [1, 1]
+    ],
+
+    laptop: [
+      [300, 250]
+    ],
+
+    desktop: [
+      [300, 250],
+      [300, 600]
+    ],
+  }
+});
 ```
 
 

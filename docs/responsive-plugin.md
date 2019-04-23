@@ -1,4 +1,4 @@
-# Creating Breakpoints Ads with Breakpoints
+# Creating Responsive Ads with Breakpoints
 By default when an ad is loaded your ad network will provide you a creative that fits the sizes requested for your current breakpoint
 (e.g. Desktop, Tablet, Mobile). However should a user resize the viewport by changing the size of the browser, the ad will stay the same
 size. This is problamatic in scenarios where full width creatives like a banner ad may fit the design on large desktop, but not on small desktop.
@@ -48,12 +48,13 @@ __Example__:
 ```
 
 ## Options
-The Breakpoints Plugin adds two options to ad instantiation
+The Breakpoints Plugin adds two options and adds additional functionality to the `sizes` option
 
 |Option|Default|Description|
 |---|---|---|
 |breakpoints|{}|A key value pair of name to breakpoint from/to. For Example: { desktop: { from: 0, to: 300 } }|
-|sizes|{}|A key value pair of breakpoints to ad sizes for that breakpoint. For Example: { desktop: [[300, 250], [300, 600]] }|
+|sizes|{}|While `sizes` is already a key within the Ad.JS base library, the breakpoints plugin allows you to leverage the named breakpoints from the `breakpoints` key in order to define ad sizes specific to each breakpoint. For Example: { desktop: [[300, 250], [300, 600]] }|
+|refreshOnBreakpoint|true|Whether or not to automatically trigger an ad refresh when the viewport crosses a breakpoint|
 
 ## Examples
 
