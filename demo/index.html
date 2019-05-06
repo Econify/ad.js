@@ -53,17 +53,19 @@
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.autorender.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.debug.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.sticky.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.autorefresh.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
       const mainPage = new AdJS.Bucket(DFPNetwork, {
         plugins: [
           LoggingPlugin,
           AutoRenderPlugin,
+          AutoRefreshPlugin,
           DebugPlugin,
           StickyPlugin,
         ],
         defaults: {
-          refreshRate: 1000,
+          refreshRateInSeconds: 10,
           offset: 100,
           targeting: { example: 'true' },
         },

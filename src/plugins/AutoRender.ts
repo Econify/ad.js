@@ -1,17 +1,17 @@
 import scrollMonitor from 'scrollmonitor';
-import { IAd, IPlugin } from '../types';
+import GenericPlugin from './GenericPlugin';
 
-const AutoRender: IPlugin = {
-  name: 'Auto Render',
+class AutoRender extends GenericPlugin {
+  public onCreate() {
+    const { configuration, container } = this.ad;
+    const { offset = 0 } = configuration;
 
-  onCreate(ad: IAd) {
-    const { offset = 0 } = ad.configuration;
-    const renderWatcher = scrollMonitor.create(ad.container, offset);
+    const renderWatcher = scrollMonitor.create(container, offset);
 
     renderWatcher.enterViewport(() => {
-      ad.render();
+      this.ad.render();
     });
-  },
-};
+  }
+}
 
 export default AutoRender;

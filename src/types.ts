@@ -16,8 +16,6 @@ export interface IAd {
 
   network: INetwork;
 
-  pluginStorage: { [key: string]: any };
-
   render(): Promise<void>;
   refresh(): Promise<void>;
   clear(): Promise<void>;
@@ -32,12 +30,18 @@ export interface IVendor {
 }
 
 export interface IBucketConfiguration {
-  plugins?: IPlugin[];
+  plugins?: IPluginConstructorOrSingleton[];
   vendors?: IVendor[];
   defaults?: {};
 }
 
 export type IPluginHook = (ad: IAd) => void;
+
+export type IPluginConstructorOrSingleton = IPluginConstructor | IPlugin;
+
+export interface IPluginConstructor {
+  new(ad: IAd): IPlugin;
+}
 
 export interface IPlugin {
   name: string;
@@ -111,8 +115,10 @@ export interface IAdConfiguration {
   autoRender?: boolean;
 
   autoRefresh?: boolean;
-  refreshRate?: number;
+  refreshRateInSeconds?: number;
 
   refreshOnBreakpoint?: boolean;
   breakpoints?: number[];
+
+  plugins?: IPluginConstructorOrSingleton[];
 }
