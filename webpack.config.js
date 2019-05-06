@@ -68,6 +68,12 @@ createFile({
 });
 
 createFile({
+  entry: 'plugins/AutoRefresh.ts',
+  filename: 'plugins.autorefresh',
+  library: 'AutoRefreshPlugin',
+});
+
+createFile({
   entry: 'plugins/Debug.ts',
   filename: 'plugins.debug',
   library: 'DebugPlugin',

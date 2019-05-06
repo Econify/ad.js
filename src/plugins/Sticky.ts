@@ -1,21 +1,24 @@
-import { IAd, IPlugin } from '../types';
+import stickybits, { StickyBits } from 'stickybits';
+import GenericPlugin from './GenericPlugin';
 
-import stickybits from 'stickybits';
+class StickyPlugin extends GenericPlugin {
+  public stickybit?: StickyBits;
 
-const StickyPlugin: IPlugin = {
-  name: 'Sticky Ads',
+  public onCreate() {
+    const { container } = this.ad;
 
-  onCreate(ad: IAd) {
-    const stickybit = stickybits(ad.container);
+    const stickybit = stickybits(container);
 
-    ad.pluginStorage.stickybit = stickybit;
-  },
+    this.stickybit = stickybit;
+  }
 
-  onDestroy(ad: IAd) {
-    ad.pluginStorage.stickybit.cleanup();
+  public onDestroy() {
+    if (this.stickybit) {
+      this.stickybit.cleanup();
+    }
 
-    delete ad.pluginStorage.stickybit;
-  },
-};
+    this.stickybit = undefined;
+  }
+}
 
 export default StickyPlugin;

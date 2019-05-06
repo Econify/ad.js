@@ -1,7 +1,7 @@
 import {
   IAd,
   IAdConfiguration, IAdEventListener, IEventType,
-  INetwork, INetworkInstance, IPlugin, IPluginHook, IVendor,
+  INetwork, INetworkInstance, IPlugin, IPluginConstructorOrSingleton, IPluginHook, IVendor,
   Maybe,
 } from './types';
 
@@ -136,15 +136,6 @@ class Ad implements IAd {
     ];
   }
 
-  private get plugins() {
-    return [
-      ...this.bucket.plugins,
-      ...this.localPlugins,
-    ];
-  }
-
-  public pluginStorage = {};
-
   // TODO: Rethink
   public correlatorId?: string;
 
@@ -178,8 +169,9 @@ class Ad implements IAd {
 
   private actionsReceievedWhileFrozen: any = [];
 
+  private plugins: IPlugin[] = [];
+
   private localVendors: IVendor[] = [];
-  private localPlugins: IPlugin[] = [];
 
   private promiseStack: Promise<void> = Promise.resolve();
 
@@ -214,9 +206,20 @@ class Ad implements IAd {
 
     this.networkInstance = this.network.createAd(this);
 
+    // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
+    const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];
+    if (localConfiguration && localConfiguration.plugins) {
+      this.plugins.push(...localConfiguration.plugins);
+    }
+
+    // Instantiate all class based plugins and reference them
+    this.attachPlugins(plugins);
+
     this.callPlugins('onCreate');
 
-    this.onReady(() => this.callPlugins('afterCreate'));
+    this.onReady(
+      () => this.callPlugins('afterCreate'),
+    );
   }
 
   // onReady will queue up additional execution calls to onReady
@@ -368,6 +371,18 @@ class Ad implements IAd {
     this.events[event][key].push(fn);
   }
 
+  private attachPlugins(plugins: IPluginConstructorOrSingleton[]): void {
+    this.plugins = plugins.map(
+      (Plugin) => {
+        if (typeof Plugin === 'function') {
+          return new Plugin(this);
+        }
+
+        return Plugin;
+      },
+    );
+  }
+
   // TODO Figure out type
   private callPlugins(hook: keyof IPlugin): Promise<void[]> {
     return Promise.all(
@@ -376,7 +391,7 @@ class Ad implements IAd {
           const hookFn = plugin[hook];
 
           if (typeof hookFn === 'function') {
-            await hookFn(this);
+            await hookFn.call(plugin, this);
           }
         },
       ),

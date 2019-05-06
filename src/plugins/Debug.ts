@@ -1,5 +1,7 @@
 import { IAd, IPlugin } from '../types';
 import insertElement from '../utils/insertElement';
+import padTime from '../utils/padTime';
+import GenericPlugin from './GenericPlugin';
 
 const OVERLAY_STYLE = `
   position: absolute;
@@ -16,46 +18,42 @@ const MESSAGE_STYLE = `
   text-align: left;
 `;
 
-function padTime(time: number): string {
-  return String(time).padStart(2, '0');
+class Debug extends GenericPlugin {
+  public debugOverlay!: HTMLElement;
+
+  public onCreate() {
+    const { container } = this.ad;
+
+    this.debugOverlay = insertElement('div', { style: OVERLAY_STYLE }, container);
+  }
+
+  public onRender() {
+    this.insertMessage('rendered');
+  }
+
+  public onRefresh() {
+    this.insertMessage('refreshed');
+  }
+
+  public onClear() {
+    this.insertMessage('cleared');
+  }
+
+  public onDestroy() {
+    this.insertMessage('destroyed');
+  }
+
+  private insertMessage(baseMessage: string): void {
+    const currentDate = new Date();
+
+    const hour = padTime(currentDate.getHours());
+    const minutes = padTime(currentDate.getMinutes());
+    const milliseconds = padTime(currentDate.getMilliseconds());
+
+    const message = `[EVENT] ${baseMessage} at ${hour}:${minutes}:${milliseconds}`;
+
+    insertElement('p', { style: MESSAGE_STYLE }, this.debugOverlay, message);
+  }
 }
-
-function insertMessage(ad: IAd, baseMessage: string): void {
-  const currentDate = new Date();
-
-  const hour = padTime(currentDate.getHours());
-  const minutes = padTime(currentDate.getMinutes());
-  const milliseconds = padTime(currentDate.getMilliseconds());
-
-  const message = `[EVENT] ${baseMessage} at ${hour}:${minutes}:${milliseconds}`;
-
-  insertElement('p', { style: MESSAGE_STYLE }, ad.pluginStorage.debugOverlay, message);
-}
-
-const Debug: IPlugin = {
-  name: 'Debug Plugin',
-
-  onCreate(ad: IAd) {
-    const { pluginStorage } = ad;
-
-    pluginStorage.debugOverlay = insertElement('div', { style: OVERLAY_STYLE }, ad.container);
-  },
-
-  onRender(ad: IAd) {
-    insertMessage(ad, 'rendered');
-  },
-
-  onRefresh(ad: IAd) {
-    insertMessage(ad, 'refreshed');
-  },
-
-  onClear(ad: IAd) {
-    insertMessage(ad, 'cleared');
-  },
-
-  onDestroy(ad: IAd) {
-    insertMessage(ad, 'destroyed');
-  },
-};
 
 export default Debug;
