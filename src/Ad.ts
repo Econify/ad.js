@@ -21,7 +21,7 @@ const DEFAULT_CONFIGURATION: IAdConfiguration = {
   autoRender: true,
   autoRefresh: true,
   offset: 0,
-  refreshRate: 60000,
+  refreshRateInSeconds: 30,
   targeting: {},
   breakpoints: [],
   refreshOnBreakpoint: true,
