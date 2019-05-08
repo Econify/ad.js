@@ -1,4 +1,5 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const configurations = [];
 
@@ -14,20 +15,35 @@ const config = {
       { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
     ]
   },
+
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        include: /\.min\.js$/
+      })
+    ],
+  },
+
   // addition - add source-map support
   devtool: "source-map"
 }
 
 function createFile({ entry, filename, library }) {
+  const fullEntryPath = `./src/${entry}`;
+
   configurations.push({
     ...config,
-    entry: `./src/${entry}`,
+    entry: {
+      [filename]: fullEntryPath,
+      [`${filename}.min`]: fullEntryPath,
+    },
     output: {
       path: path.resolve(__dirname, 'client'),
-      filename: `adjs.${filename}.js`,
+      filename: `adjs.[name].js`,
       library,
       libraryExport: 'default',
-    }
+    },
   });
 }
 

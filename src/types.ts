@@ -39,9 +39,7 @@ export type IPluginHook = (ad: IAd) => void;
 
 export type IPluginConstructorOrSingleton = IPluginConstructor | IPlugin;
 
-export interface IPluginConstructor {
-  new(ad: IAd): IPlugin;
-}
+export type IPluginConstructor = new(ad: IAd) => IPlugin;
 
 export interface IPlugin {
   name: string;

@@ -59,7 +59,7 @@ class AutoRefreshPlugin extends GenericPlugin {
 
     const { refreshRateInSeconds = 30 } = this.ad.configuration;
 
-    this.timerReference = setInterval(async () => {
+    this.timerReference = window.setInterval(async () => {
       this.timeInView += 1;
 
       // Determine whether the ad should refresh
