@@ -24,6 +24,8 @@ export interface IAdEventListener {
 }
 
 export interface IAd {
+  id: number;
+
   configuration: IAdConfiguration;
 
   container: HTMLElement;

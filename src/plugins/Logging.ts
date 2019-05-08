@@ -1,19 +1,25 @@
+import onEvent from '../utils/onEvent';
 import GenericPlugin from './GenericPlugin';
 
 const BASE_MESSAGE = '[DEBUG]';
 
-let adId = 0;
-
 class LoggingPlugin extends GenericPlugin {
   public onCreate() {
-    const id = ++adId;
-    (window as any)[`ad${id}`] = this.ad;
+    const { ad } = this;
+
+    (window as any)[`ad${ad.id}`] = ad;
 
     console.log(
       BASE_MESSAGE,
       'Ad Instantiated and assigned as',
-      `window.ad${adId}`,
+      `window.ad${ad.id}`,
     );
+
+    onEvent(ad, (event) => {
+      console.log(
+        BASE_MESSAGE, 'Custom Event',
+      );
+    });
   }
 
   public beforeRender() {
