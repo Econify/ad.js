@@ -1,4 +1,4 @@
-export default function(
+function insertElement(
   tag: string,
   attributes: { [key: string]: boolean | string } = {},
   elementToInsertInto: HTMLElement,
@@ -29,3 +29,5 @@ export default function(
 
   return element;
 }
+
+export = insertElement;

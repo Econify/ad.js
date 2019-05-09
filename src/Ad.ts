@@ -1,12 +1,13 @@
 import {
   IAd,
-  IAdConfiguration, IAdEventListener, IEventType,
+  IAdConfiguration, IAdEventListener,
   INetwork, INetworkInstance, IPlugin, IPluginConstructorOrSingleton, IPluginHook, IVendor,
   Maybe,
 } from './types';
 
 import AdJS from '.';
 import Bucket from './Bucket';
+import EVENTS from './Events';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
@@ -25,18 +26,6 @@ const DEFAULT_CONFIGURATION: IAdConfiguration = {
   targeting: {},
   breakpoints: [],
   refreshOnBreakpoint: true,
-};
-
-// Event Bus Options
-export const EVENTS: IEventType = {
-  CREATE: 'create',
-  REQUEST: 'request',
-  RENDER: 'render',
-  REFRESH: 'refresh',
-  DESTROY: 'destroy',
-  FREEZE: 'freeze',
-  UNFREEZE: 'unfreeze',
-  CLEAR: 'clear',
 };
 
 // Define LifeCycle Method will automatically wrap each
@@ -414,4 +403,4 @@ class Ad implements IAd {
   }
 }
 
-export default Ad;
+export = Ad;
