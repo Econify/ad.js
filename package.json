@@ -5,9 +5,9 @@
   "main": "./index.js",
   "types": "./types.d.ts",
   "scripts": {
-    "build": "npm run build:client && npm run build:server",
+    "build": "npm run build:client && npm run build:nodejs",
     "build:client": "webpack",
-    "build:server": "tsc --pretty -p .",
+    "build:nodejs": "tsc --pretty -p .",
     "clean": "rm -rf ./clean && rm -rf ./build",
     "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",

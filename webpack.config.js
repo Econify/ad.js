@@ -101,4 +101,10 @@ createFile({
   library: 'StickyPlugin',
 });
 
+createFile({
+  entry: 'plugins/Breakpoints.ts',
+  filename: 'plugins.breakpoints',
+  library: 'BreakpointsPlugin',
+});
+
 module.exports = configurations;

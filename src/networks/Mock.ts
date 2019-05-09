@@ -6,6 +6,9 @@ import {
 
 const MockAdInstance: INetworkInstance = {
   async render() {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 400);
+    });
   },
 
   async destroy() {

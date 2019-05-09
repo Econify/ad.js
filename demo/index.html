@@ -54,6 +54,7 @@
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.debug.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.sticky.js"></script>
     <script type="text/javascript" src="http://localhost:8081/adjs.plugins.autorefresh.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.breakpoints.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
       const mainPage = new AdJS.Bucket(DFPNetwork, {
@@ -63,8 +64,15 @@
           AutoRefreshPlugin,
           DebugPlugin,
           StickyPlugin,
-        ],
+          BreakpointsPlugin,
+      ],
         defaults: {
+          sizes: {},
+          breakpoints: {
+            mobile: { from: 0, to: 757 },
+            tablet: { from: 758, to: 999 },
+            desktop: { from: 1000, to: Infinity },
+          },
           refreshRateInSeconds: 10,
           offset: 100,
           targeting: { example: 'true' },
@@ -77,13 +85,27 @@
       const ad = mainPage.createAd(el, {
         path: '/1234567/sports',
 
-        sizes: [
-          [160, 600],
-          [300, 250],
-          [300, 600],
-          [300, 300]
-        ],
+        // sizes: [
+        //   [160, 600],
+        //   [300, 250],
+        //   [300, 600],
+        //   [300, 300]
+        // ],
 
+        sizes: {
+          mobile: [
+          ],
+          tablet: [
+            [300, 250],
+            [300, 600],
+          ],
+          desktop: [
+            [300, 250],
+            [300, 600],
+            [360, 360],
+            [360, 720],
+          ],
+        },
         targeting: {
           example: 'true',
         }

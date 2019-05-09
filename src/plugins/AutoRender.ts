@@ -2,7 +2,7 @@ import scrollMonitor from 'scrollmonitor';
 import GenericPlugin from './GenericPlugin';
 
 class AutoRender extends GenericPlugin {
-  public onCreate() {
+  public afterCreate() {
     const { configuration, container } = this.ad;
     const { offset = 0 } = configuration;
 
