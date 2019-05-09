@@ -1,4 +1,19 @@
+declare global {
+  // tslint:disable-next-line
+  interface Window {
+    _ADJS: ILoadedModulesCache;
+  }
+}
+
 export type Maybe<T> = T | void;
+
+export type LoadedModules = any;
+
+export interface ILoadedModulesCache {
+  Plugins: LoadedModules;
+  Networks: LoadedModules;
+  Vendors: LoadedModules;
+}
 
 export interface IEventType {
   [key: string]: string;
