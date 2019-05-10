@@ -38,8 +38,8 @@ function createConfiguration({ type, files, basePath }) {
     ...config,
     entry: { },
     output: {
-      path: path.resolve(__dirname, 'client'),
-      filename: `adjs.${type}.[name].min.js`,
+      path: path.resolve(__dirname, 'umd'),
+      filename: `${type}.[name].min.js`.toLowerCase(),
       library: ['_ADJS', type, '[name]'],
       libraryExport: 'default',
     }
@@ -84,8 +84,8 @@ configurations.push({
   ...config,
   entry: './src/index',
   output: {
-    path: path.resolve(__dirname, 'client'),
-    filename: 'adjs.core.min.js',
+    path: path.resolve(__dirname, 'umd'),
+    filename: 'core.min.js',
     library: 'AdJS',
     libraryExport: 'default',
   },

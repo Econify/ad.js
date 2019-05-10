@@ -47,13 +47,13 @@
       <img src="http://www.econify.com/assets/econify_logo.png">
       <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
     </div>
-    <script type="text/javascript" src="http://localhost:8081/adjs.core.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.Networks.DFP.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.Logging.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.AutoRender.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.Debug.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.Sticky.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.AutoRefresh.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/core.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/networks.DFP.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.Logging.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.AutoRender.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.Debug.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.Sticky.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.AutoRefresh.min.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
       const mainPage = new AdJS.Bucket(AdJS.Networks.DFP, {
@@ -75,7 +75,7 @@
 
       // monetize.
       const ad = mainPage.createAd(el, {
-        path: '/1234567/sports',
+        path: '/123456/sports',
 
         sizes: [
           [160, 600],
