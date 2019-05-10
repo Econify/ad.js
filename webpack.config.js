@@ -1,7 +1,9 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 
 const configurations = [];
+const bundleFiles = ['./src/index'];
 
 const config = {
   resolve: {
@@ -19,86 +21,74 @@ const config = {
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        include: /\.min\.js$/
-      })
+      new TerserPlugin()
     ],
   },
+
+  plugins: [
+    new UnminifiedWebpackPlugin()
+  ],
 
   // addition - add source-map support
   devtool: "source-map"
 }
 
-function createFile({ entry, filename, library }) {
-  const fullEntryPath = `./src/${entry}`;
-
-  configurations.push({
+function createConfiguration({ type, files, basePath }) {
+  const configuration = {
     ...config,
-    entry: {
-      [filename]: fullEntryPath,
-      [`${filename}.min`]: fullEntryPath,
-    },
+    entry: { },
     output: {
       path: path.resolve(__dirname, 'client'),
-      filename: `adjs.[name].js`,
-      library,
+      filename: `adjs.${type}.[name].min.js`,
+      library: ['_ADJS', type, '[name]'],
       libraryExport: 'default',
-    },
+    }
+  };
+
+  files.forEach((file) => {
+    const path = `${basePath}/${file}`;
+
+    bundleFiles.push(path);
+
+    configuration.entry[file] = path;
   });
+
+  configurations.push(configuration);
 }
 
-createFile({
-  entry: 'index.ts',
-  filename: 'main',
-  library: 'AdJS',
+createConfiguration({
+  type: 'Plugins',
+  basePath: './src/plugins',
+  files: [
+    'AutoRender',
+    'AutoRefresh',
+    'Debug',
+    'GenericPlugin',
+    'Logging',
+    'Sticky',
+  ]
 });
 
-createFile({
-  entry: 'networks/DFP.ts',
-  filename: 'networks.dfp',
-  library: 'DFPNetwork',
+createConfiguration({
+  type: 'Networks',
+  basePath: './src/networks',
+  files: [
+    'DFP',
+    'Mock',
+    'Noop',
+  ]
 });
 
-createFile({
-  entry: 'networks/Mock.ts',
-  filename: 'networks.mock',
-  library: 'MockNetwork',
-});
-
-createFile({
-  entry: 'networks/Noop.ts',
-  filename: 'networks.noop',
-  library: 'NoopNetwork',
-});
-
-createFile({
-  entry: 'plugins/Logging.ts',
-  filename: 'plugins.log',
-  library: 'LoggingPlugin',
-});
-
-createFile({
-  entry: 'plugins/AutoRender.ts',
-  filename: 'plugins.autorender',
-  library: 'AutoRenderPlugin',
-});
-
-createFile({
-  entry: 'plugins/AutoRefresh.ts',
-  filename: 'plugins.autorefresh',
-  library: 'AutoRefreshPlugin',
-});
-
-createFile({
-  entry: 'plugins/Debug.ts',
-  filename: 'plugins.debug',
-  library: 'DebugPlugin',
-});
-
-createFile({
-  entry: 'plugins/Sticky.ts',
-  filename: 'plugins.sticky',
-  library: 'StickyPlugin',
+// Core Build
+configurations.push({
+  ...config,
+  entry: './src/index',
+  output: {
+    path: path.resolve(__dirname, 'client'),
+    filename: 'adjs.core.min.js',
+    library: 'AdJS',
+    libraryExport: 'default',
+  },
 });
 
 module.exports = configurations;

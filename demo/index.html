@@ -47,22 +47,22 @@
       <img src="http://www.econify.com/assets/econify_logo.png">
       <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
     </div>
-    <script type="text/javascript" src="http://localhost:8081/adjs.main.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.networks.dfp.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.log.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.autorender.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.debug.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.sticky.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/adjs.plugins.autorefresh.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.core.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.Networks.DFP.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.Logging.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.AutoRender.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.Debug.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.Sticky.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/adjs.Plugins.AutoRefresh.min.js"></script>
     <script type="text/javascript">
       // import. (manipulated)
-      const mainPage = new AdJS.Bucket(DFPNetwork, {
+      const mainPage = new AdJS.Bucket(AdJS.Networks.DFP, {
         plugins: [
-          LoggingPlugin,
-          AutoRenderPlugin,
-          AutoRefreshPlugin,
-          DebugPlugin,
-          StickyPlugin,
+          AdJS.Plugins.Logging,
+          AdJS.Plugins.AutoRender,
+          AdJS.Plugins.AutoRefresh,
+          AdJS.Plugins.Debug,
+          AdJS.Plugins.Sticky,
         ],
         defaults: {
           refreshRateInSeconds: 10,
