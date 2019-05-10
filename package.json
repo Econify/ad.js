@@ -1,6 +1,6 @@
 {
   "name": "adjs",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.3",
   "description": "Ad Library to simplify and optimize integration with ad networks such as DFP",
   "main": "./index.js",
   "types": "./types.d.ts",
@@ -8,7 +8,7 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "webpack",
     "build:server": "tsc --pretty -p .",
-    "clean": "rm -rf ./clean && rm -rf ./build",
+    "clean": "rm -rf ./umd && rm -rf ./build",
     "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
     "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
