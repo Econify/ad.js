@@ -6,5 +6,7 @@ describe('isBetween', () => {
     expect(isBetween(999, 998.79, 1000)).toEqual(true);
     expect(isBetween(.5, 0, 1)).toEqual(true);
     expect(isBetween(2, 3, 4)).toEqual(false);
+    // @ts-ignore
+    expect(isBetween(675, undefined, undefined)).toEqual(false);
   });
 });

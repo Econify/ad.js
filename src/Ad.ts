@@ -48,7 +48,7 @@ function attachAsLifecycleMethod(
     if (this.state.frozen) {
       const boundReplayFn = this[propertyName].bind(this, ...args);
 
-      this.actionsreceivedWhileFrozen.push(boundReplayFn);
+      this.actionsReceivedWhileFrozen.push(boundReplayFn);
 
       return;
     }
@@ -155,7 +155,7 @@ class Ad implements IAd {
 
   private networkInstance!: INetworkInstance;
 
-  private actionsreceivedWhileFrozen: any = [];
+  private actionsReceivedWhileFrozen: any = [];
 
   private plugins: IPlugin[] = [];
 
@@ -320,9 +320,9 @@ class Ad implements IAd {
     // the queue for this event.
     this.state.frozen = false;
 
-    const actions = this.actionsreceivedWhileFrozen;
+    const actions = this.actionsReceivedWhileFrozen;
 
-    this.actionsreceivedWhileFrozen = [];
+    this.actionsReceivedWhileFrozen = [];
 
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
