@@ -192,10 +192,9 @@ class Ad implements IAd {
     this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
     this.el = insertElement('div', { id: nextId() }, this.container);
 
-    // TODO: add this in when writing tests
-    // if (!Array.isArray(this.configuration.sizes) && !this.configuration.breakpoints) {
-    //   throw new AdJsError('MISCONFIGURATION', 'Sizes must be of type `Array` without BreakpointPlugin');
-    // }
+    if (!Array.isArray(this.configuration.sizes) && !this.configuration.breakpoints) {
+      throw new AdJsError('MISCONFIGURATION', 'Sizes must be of type `Array` without BreakpointPlugin');
+    }
 
     // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
     const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];

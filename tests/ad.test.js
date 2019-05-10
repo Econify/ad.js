@@ -11,7 +11,7 @@ describe('Ad', () => {
 
     bucket = new AdJS.Bucket(MockNetwork);
 
-    ad = bucket.createAd(el);
+    ad = bucket.createAd(el, { sizes: [], breakpoints: {} });
   });
 
   describe('render()', () => {
