@@ -66,6 +66,7 @@ createConfiguration({
     'GenericPlugin',
     'Logging',
     'Sticky',
+    'Breakpoints',
   ]
 });
 
@@ -89,12 +90,6 @@ configurations.push({
     library: 'AdJS',
     libraryExport: 'default',
   },
-});
-
-createFile({
-  entry: 'plugins/Breakpoints.ts',
-  filename: 'plugins.breakpoints',
-  library: 'BreakpointsPlugin',
 });
 
 module.exports = configurations;
