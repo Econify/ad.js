@@ -1,7 +1,4 @@
 version: 0.2
-# env:
-#   variables:
-#     STAGE: "production"
 
 phases:
   install:
