@@ -56,4 +56,4 @@ class Debug extends GenericPlugin {
   }
 }
 
-export = Debug;
+export default Debug;

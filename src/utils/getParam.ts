@@ -10,4 +10,4 @@ function getParam(key: string): Maybe<string> {
   return (window.location.search.split(`${key}=`)[1] || '').split('&')[0];
 }
 
-export = getParam;
+export default getParam;

@@ -421,4 +421,4 @@ class Ad implements IAd {
   }
 }
 
-export = Ad;
+export default Ad;
