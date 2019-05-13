@@ -13,9 +13,11 @@ If you have installed Ad.js via NPM the refresh package is available via an esmo
 __Example__:
 ```js
 import AdJS from 'adjs';
+import DFP from 'adjs/networks/DFP';
+
 import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
 
-const bucket = new AdJS.Bucket(Network, {
+const bucket = new AdJS.Bucket(DFP, {
   plugins: [
     AutoRefreshPlugin,
   ]
@@ -30,10 +32,10 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/networks.DFP.min.js"></script>
 
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/plugins.AutoRefresh.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/plugins.AutoRefresh.min.js"></script>
   </head>
   <body>
     <script>
@@ -52,7 +54,7 @@ The AutoRefresh Plugin adds two options to ad instantiation
 
 |Option|Default|Description|
 |---|---|---|
-|refreshInterval|30000|Duration the ad must be in view (in ms) before refreshing the unit. 30 Seconds is recommended. If set to 0, the ad will not refresh|
+|refreshRateInSeconds|30|Duration the ad must be in view (in seconds) before refreshing the unit. 30 Seconds is recommended. If set to 0, the ad will not refresh|
 |refreshLimit|null|Allows you to specify a maximum number of times the ad slot can be refreshed|
 
 ## Examples
@@ -62,13 +64,13 @@ Configuration via Bucket (will affect all ads within the bucket). It is common t
 import AdJS from 'adjs';
 import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
-const bucket = new AdJS(Network, {
+const bucket = new AdJS.Bucket(Network, {
   plugins: [
     AutoRefresh,
   ],
 
   defaults: {
-    refreshInterval: 30000,
+    refreshRateInSeconds: 30,
     refreshLimit: 3
   }
 });
@@ -81,14 +83,14 @@ import DFPNetwork from 'adjs/networks/DFP';
 
 import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
 
-const bucket = new AdJS(DFPNetwork);
+const bucket = new AdJS.Bucket(DFPNetwork);
 
 const ad = new bucket.createAd(el, {
   plugins: [
     AutoRefreshPlugin
   ],
 
-  refreshInterval: 30000,
+  refreshRateInSeconds: 30,
   refreshLimit: 3
 });
 ``` 

@@ -13,7 +13,7 @@ __Example__:
 import AdJS from 'adjs';
 import TestNetwork from 'adjs/networks/Noop';
 
-const bucket = new AdJS(TestNetwork);
+const bucket = new AdJS.Bucket(TestNetwork);
 ```
 
 ### Script Tag
@@ -24,12 +24,12 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.Noop.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/networks.Noop.min.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS(AdJS.Networks.Noop);
+      const bucket = new AdJS.Bucket(AdJS.Networks.Noop);
     </script>
   </body>
 </html>
