@@ -9,7 +9,6 @@ phases:
       - npm install -g npm@latest
       - npm install
   pre_build:
-      - npm run lint:no-fix
       - npm run test
   build:
     commands:
