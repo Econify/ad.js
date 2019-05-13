@@ -18,6 +18,7 @@ class ResponsivePlugin extends GenericPlugin {
 
     this.listener = throttle(this.THROTTLE_DURATION, () => {
       const { from = 0, to = 1 } = this.currentConfines;
+
       if (isBetween(window.innerWidth, from, to)) {
         return;
       }
@@ -39,6 +40,7 @@ class ResponsivePlugin extends GenericPlugin {
 
   public determineCurrentBreakpoint() {
     const { breakpoints } = this.ad.configuration;
+    let breakpointSpecifiedForViewWidth: boolean = false;
 
     if (!breakpoints) {
       return;
@@ -48,7 +50,12 @@ class ResponsivePlugin extends GenericPlugin {
       const { from, to } = breakpoints[key];
 
       if (isBetween(window.innerWidth, from, to)) {
+        breakpointSpecifiedForViewWidth = true;
         this.currentConfines = { from, to };
+      }
+
+      if (!breakpointSpecifiedForViewWidth) {
+        this.currentConfines = {};
       }
     });
   }
