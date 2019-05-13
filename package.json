@@ -32,7 +32,6 @@
     "stickybits": "^3.6.4"
   },
   "devDependencies": {
-    "@types/doubleclick-gpt": "^238.0.1",
     "@types/jest": "^23.3.0",
     "concurrently": "^3.6.0",
     "docsify": "^4.9.4",
