@@ -10,10 +10,7 @@ phases:
       - npm install
   pre_build:
       - npm run test
-  build:
-    commands:
-      - npm run build
-  # post_build:
+  # build:
   #   commands:
   #     - npm run release
 
