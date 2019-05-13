@@ -1,7 +1,7 @@
 # Creating Responsive Ads with Breakpoints
 By default when an ad is loaded your ad network will provide you a creative that fits the sizes requested for your current breakpoint
 (e.g. Desktop, Tablet, Mobile). However should a user resize the viewport by changing the size of the browser, the ad will stay the same
-size. This is problamatic in scenarios where full width creatives like a banner ad may fit the design on large desktop, but not on small desktop.
+size. This is problematic in scenarios where full width creatives like a banner ad may fit the design on large desktop, but not on small desktop.
 
 Ad.js's Responsive plugin will monitor the browser's viewport as well as the sizes that your ad requests and will request new creatives from your ad network automatically.
 
