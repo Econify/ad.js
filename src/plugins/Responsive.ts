@@ -66,4 +66,4 @@ class ResponsivePlugin extends GenericPlugin {
   }
 }
 
-export = ResponsivePlugin;
+export default ResponsivePlugin;

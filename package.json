@@ -15,7 +15,7 @@
     "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
     "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
     "release": "npm run clean && npm run build; cp ./package.json dist; cp ./README.md dist; cp -R umd dist; cd dist; npm publish",
-    "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
+    "start": "concurrently -k \"rollup --watch -c\" \"http-server -p 8080\"",
     "test": "NODE_PATH=./src jest ./tests --no-cache",
     "ts": "tsc --pretty"
   },
