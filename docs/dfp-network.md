@@ -45,7 +45,7 @@ The DFP network adds one required argument to Ad Options
 
 ## Examples
 
-__Usinig Standard Sizes__
+__Using Standard Sizes__
 ```js
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
