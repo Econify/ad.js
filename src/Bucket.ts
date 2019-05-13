@@ -59,4 +59,4 @@ class Bucket {
   }
 }
 
-export default Bucket;
+export = Bucket;

@@ -32,14 +32,15 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://cdn.adjs.dev/adjs.base.js"></script>
-    <script src="https://cdn.adjs.dev/adjs.responsive.plugin.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/plugins.Breakpoints.min.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS(Network, {
+      const bucket = new AdJS(AdJS.Networks.DFP, {
         plugins: [
-          AdJSPlugins.Responsive
+          AdJS.Plugins.Responsive
         ]
       });
     </script>

@@ -6,15 +6,15 @@ Ad.js is an ad library that aims to simplify and optimize client integrations wi
 To install Ad.js you have two options
 
 - NPM:  `npm install adjs`
-- Script include: `<script src="https://cdn.adjs.dev/latest.min.js"></script>`
+- Script include: `<script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>`
 
-Before instantiating an Ad with Ad.js you should globally configure Ad.js otherwise your ad will instantiate with the default provider which is a Noop.
+Note: If you are using the script include, please make sure to also include the scripts for all plugins you will be using as well. You can find the index of all hosted plugins for script include [here](https://unpkg.com/adjs@2.0.0-alpha.3/umd/)
 
-## Configuration Options
+## Configuration
 
 | Argument            | Default               | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| network (optional) | AdJs.Provider.Default | The provider argument expects an object that is able to communicate with your ad provider that adheres to Ad.js provider interface (link). Common Ad platforms are already included within Ad.js such as DFP. Custom providers are easily created by inheriting from AdJS.Provider.Default.<br><br>See here (link) for built in providers and required options<br>See here for examples of custom providers (link). |
+| network (required argument) | None | The network argument expects an object that is able to communicate with your ad provider that adheres to Ad.js network interface (link). Common Ad platforms are already included within Ad.js such as DFP.Provider.Default.<br><br>See [here](README?id=networks-eg-dfp) for built in providers and required options<br>See here for examples of custom providers (link). |
 | plugins (optional)  | None                  | An array of modules that you’d like to leverage from AdJS that adhere to the Plugin Interface. Most features of AdJS are separated into modules/plugins to ensure that the size of your package is as small as possible                                                                                                                                                                                                     |
 | vendors (optional)  | None                  | An array of objects that conform to the vendor interface spec. See here (link)                                                                                                                                                                                                                                                                                                                                      |
 | defaults (optional) | None                  | An object of default values that you’d like passed into every ad on creation<br><br>See here for ad options (link)                                                                                                                                                                                                                                                                                                  |
@@ -22,8 +22,7 @@ Before instantiating an Ad with Ad.js you should globally configure Ad.js otherw
 Example Configuration
 
 ```js
-const homepageAdBucket = new AdJS.Bucket({
-  network: AdJS.Network.DFP,
+const homepageAdBucket = new AdJS.Bucket(AdJS.Networks.DFP, {
   vendors: [
     new AdJS.Vendors.Krux("KRUX ID"),
     new AdJS.Vendors.AdmantX({
@@ -32,26 +31,32 @@ const homepageAdBucket = new AdJS.Bucket({
     }),
   ],
   
-  
   defaults: {
-    breakpoints: [1200, 800, 400],
-    refreshRate: 1000,
+    breakpoints: {
+      mobile: { from: 0, to: 359 },
+      tablet: { from: 400, to: 759 },
+      laptop: { from: 800, to: 1159 },
+      desktop: { from: 1200, to: Infinity },
+    },
+    refreshRateInSeconds: 1000,
     offset: -100,
     targeting: { example: 'true' },
   }
 });
 ```
-After configuring Ad.js you can create Ad.js Ad instances targeted to your ad provider via new `AdJs.Ad` instances
+Once you've created an Ad.js Bucket, you can creat Ad instances inside of them via `bucketName.createAd()`
 
+__Example:__
 ```js
 new homepageBucket.Ad(DomElement, ?Options);
+
+// or
+
+homepageBucket.createAd(DomElement, ?Options);
 ```
 
 __Dom Element__:
 The dom element you’d like to place the ad into. You can pass either a DOMElement or a string. Strings will be looked up via document.querySelector. It is suggested that you pass in a DOM Element explicitly as document.querySelector is expensive.
-
-__Slot ID__:
-Ad.js requires you to name each ad instance with a unique slot ID. Some ad providers will leverage this id in their ad calls.
 
 ### Ad Options
 
@@ -60,7 +65,7 @@ Ad.js requires you to name each ad instance with a unique slot ID. Some ad provi
 | autoRender          | true    | In order to optimize page performance and viewability metrics (link), when this value is set Ad.js will monitor the sum of the browsers scroll position and ad offset option to automatically call render for you. If this is set to false you will be expected to call render() explicitly.             |
 | autoRefresh         | true    | In order to optimize ad impressions when an ad is in view beyond the amount of time provided to the ad refreshRate options, Ad.js will automatically refresh the ad slot and give you a new ad. If this value is false you will be expected to call refresh() explicitly if you’d like to refresh an ad. |
 | offset              | 0       | The offset of the viewport to consider the ad in view. This will not affect your provider’s internal viewability metrics, however it is used by the autoRefresh and autoRender options                                                                                                                   |
-| refreshRate         | 60000   | If autoRefresh has been set to true, this value will be used to determine how long after an ad is in viewport (browsers scroll position + offset) until the ad should be refreshed for another impression.                                                                                               |
+| refreshRateInSeconds         | 60000   | If autoRefresh has been set to true, this value will be used to determine how long after an ad is in viewport (browsers scroll position + offset) until the ad should be refreshed for another impression.                                                                                               |
 | targeting           | {}      | Key value targeting values to be passed to your ad provider                                                                                                                                                                                                                                              |
 | breakpoints         | []      | Array of values that correspond to the page breakpoints                                                                                                                                                                                                                                                  |
 | refreshOnBreakpoint | true    | Should the ad automatically refresh when passing the values provided in breakpoints                                                                                                                                                                                                                      |
@@ -96,9 +101,10 @@ By default Ad.js ships barebones. This is to ensure that only the code you are l
 resulting in the faster loading ads and higher viewability metrics.
 
 Available plugins include:
-- [Lazy Load (recommended)](lazy-load-plugin)
+- [Lazy Load / Auto Render (recommended)](lazy-load-plugin)
 - [Responsive Ads](responsive-plugin)
 - [Auto Refresh](refresh-plugin)
+- [Sticky Ads](sticky-plugin)
 - [Debug Tools](debug-plugin)
 
 See each the documentation of the respective plugins to understand their purpose and usage.

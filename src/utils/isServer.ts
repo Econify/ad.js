@@ -1,3 +1,3 @@
-import isClient from './isClient';
+const isServer = (): boolean => typeof window === 'undefined';
 
-export default (): boolean => !isClient();
+export = isServer;

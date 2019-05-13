@@ -24,12 +24,12 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://cdn.econify.com/adjs.base.js"></script>
-    <script src="https://cdn.econify.com/adjs.noop.network.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.Noop.min.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS(NoopNetwork);
+      const bucket = new AdJS(AdJS.Networks.Noop);
     </script>
   </body>
 </html>
