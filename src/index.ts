@@ -102,4 +102,4 @@ const AdJS = {
   }
 */
 
-export = AdJS;
+export default AdJS;

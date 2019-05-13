@@ -1,3 +1,3 @@
 const isServer = (): boolean => typeof window === 'undefined';
 
-export = isServer;
+export default isServer;

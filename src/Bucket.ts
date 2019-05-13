@@ -1,5 +1,5 @@
-import MainSingleton from '.';
 import Ad from './Ad';
+import MainSingleton from './index';
 import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
 
 class Bucket {
@@ -59,4 +59,4 @@ class Bucket {
   }
 }
 
-export = Bucket;
+export default Bucket;

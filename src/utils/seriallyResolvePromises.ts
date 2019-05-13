@@ -6,4 +6,4 @@ const seriallyResolvePromises = (promises: Array<() => Promise<void>>): Promise<
     Promise.resolve(),
   );
 
-export = seriallyResolvePromises;
+export default seriallyResolvePromises;

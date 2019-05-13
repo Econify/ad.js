@@ -5,9 +5,9 @@ import {
   Maybe,
 } from './types';
 
-import AdJS from '.';
 import Bucket from './Bucket';
 import EVENTS from './Events';
+import AdJS from './index';
 import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
@@ -410,4 +410,4 @@ class Ad implements IAd {
   }
 }
 
-export = Ad;
+export default Ad;
