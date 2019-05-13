@@ -27,4 +27,4 @@ const MockAdNetwork: INetwork = {
   },
 };
 
-export default MockAdNetwork;
+export = MockAdNetwork;

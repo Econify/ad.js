@@ -65,4 +65,4 @@ class LoggingPlugin extends GenericPlugin {
   }
 }
 
-export default LoggingPlugin;
+export = LoggingPlugin;

@@ -2,7 +2,7 @@ interface IScriptAttributes {
   [key: string]: boolean | string;
 }
 
-export default (url: string, attributes: IScriptAttributes = {}): Promise<void> =>
+const loadScript = (url: string, attributes: IScriptAttributes = {}): Promise<void> =>
   new Promise((resolve) => {
     const scriptTag: HTMLScriptElement = document.createElement('script');
 
@@ -26,3 +26,5 @@ export default (url: string, attributes: IScriptAttributes = {}): Promise<void> 
 
     document.getElementsByTagName('head')[0].appendChild(scriptTag);
   });
+
+export = loadScript;
