@@ -11,7 +11,7 @@ is located further down the page and the visitor bounces (or leaves) before the 
 the ad is considered a "non-viewable impression". This in result ends up affecting the CPM of the ad unit.
 
 In order to avoid the penalties imposed by loading slow creatives at load time, as well as low viewability scores,
-The Ad.js Lazy Load plugin delays the loading of the creative until the creative is in the viewport. This ensures that
+The Ad.js Auto Render plugin delays the loading of the creative until the creative is in the viewport. This ensures that
 the creatives only load when the visitor is ready to see them.
 
 ## Installation
@@ -19,36 +19,38 @@ Depending on your method of implementation, Ad.js packages may be installed via 
 Please follow the directions for your relevant method.
 
 ### NPM
-If you have installed Ad.js via NPM the lazy load package is available via an esmodule import.
+If you have installed Ad.js via NPM the auto render package is available via an esmodule import.
 
 __Example__:
 ```js
 import AdJS from 'adjs';
-import LazyLoad from 'adjs/plugins/LazyLoad';
+import AutoRender from 'adjs/plugins/AutoRender';
 
 const bucket = new AdJS(Network, {
   plugins: [
-    LazyLoad,
+    AutoRender,
   ]
 });
 ```
 
 ### Script Tag
 If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
-includes the LazyLoad plugin (preferred) or include the lazy load script in the header.
+includes the Auto Render plugin (preferred) or include the auto render script in the header.
 
 __Example__:
 ```html
 <html>
   <head>
-    <script src="https://cdn.econify.com/adjs.base.js"></script>
-    <script src="https://cdn.econify.com/adjs.lazyload.plugin.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.DFP.min.js"></script>
+
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/plugins.AutoRender.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS(Network, {
+      const bucket = new AdJS(AdJS.Networks.DFP, {
         plugins: [
-          AdJSPlugins.LazyLoad
+          AdJS.Plugins.AutoRender
         ]
       });
     </script>
@@ -57,11 +59,11 @@ __Example__:
 ```
 
 ## Options
-The Lazy Load Plugin adds two options to ad instantiation
+The Auto Render Plugin adds two options to ad instantiation
 
 |Option|Default|Description|
 |---|---|---|
-|autoLoad|false|When set to true, Ad.js will automatically load the ad when it enters the viewport (plus the offset provided if any)|
+|autoRender|false|When set to true, Ad.js will automatically render the ad when it enters the viewport (plus the offset provided if any)|
 |offset|0|A measurement in pixels or percentage that Ad.js will use to determine how far away from the viewport to load the ad|
 
 ## Examples
@@ -69,11 +71,11 @@ The Lazy Load Plugin adds two options to ad instantiation
 Configuration via Bucket (will affect all ads within the bucket)
 ```js
 import AdJS from 'adjs';
-import LazyLoad from 'adjs/plugins/LazyLoad';
+import AutoRender from 'adjs/plugins/AutoRender';
 
 const bucket = new AdJS(Network, {
   plugins: [
-    LazyLoad,
+    AutoRender,
   ],
 
   defaults: {
@@ -86,13 +88,13 @@ const bucket = new AdJS(Network, {
 Configuraton on an individual Ad
 ```js
 import AdJS from 'adjs';
-import LazyLoad from 'adjs/plugins/LazyLoad';
+import AutoRender from 'adjs/plugins/AutoRender';
 
 const bucket = new AdJS(Network);
 
 const ad = new bucket.createAd(el, {
   plugins: [
-    LazyLoad
+    AutoRender
   ],
 
   offset: -100,
