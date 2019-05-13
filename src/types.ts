@@ -113,6 +113,10 @@ export interface INetwork {
   [key: string]: any;
 }
 
+interface ICustomSlot extends googletag.Slot {
+  getContentUrl: () => any;
+}
+
 export interface IAdTargeting {
   [key: string]: string;
 }
