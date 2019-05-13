@@ -1,4 +1,4 @@
-import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, ICustomSlot, INetwork, INetworkInstance } from '../types';
+import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance } from '../types';
 import AdJsError from '../utils/AdJsError';
 import loadScript from '../utils/loadScript';
 
@@ -9,7 +9,7 @@ declare global {
 
 class DfpAd implements INetworkInstance {
   private id: string;
-  private slot!: ICustomSlot;
+  private slot!: googletag.Slot;
 
   constructor(
     private el: HTMLElement,
