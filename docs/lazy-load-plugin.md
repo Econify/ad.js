@@ -43,10 +43,10 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/networks.DFP.min.js"></script>
 
-    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/plugins.AutoRender.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/plugins.AutoRender.js"></script>
   </head>
   <body>
     <script>
