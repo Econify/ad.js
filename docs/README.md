@@ -6,9 +6,9 @@ Ad.js is an ad library that aims to simplify and optimize client integrations wi
 To install Ad.js you have two options
 
 - NPM:  `npm install adjs`
-- Script include: `<script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>`
+- Script include: `<script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/core.min.js"></script>`
 
-Note: If you are using the script include, please make sure to also include the scripts for all plugins you will be using as well. You can find the index of all hosted plugins for script include [here](https://unpkg.com/adjs@2.0.0-alpha.3/umd/)
+Note: If you are using the script include, please make sure to also include the scripts for all plugins you will be using as well. You can find the index of all hosted plugins for script include [here](https://unpkg.com/adjs@2.0.0-beta.1/umd/)
 
 ## Configuration
 
@@ -65,11 +65,12 @@ The dom element you’d like to place the ad into. You can pass either a DOMElem
 | autoRender          | true    | In order to optimize page performance and viewability metrics (link), when this value is set Ad.js will monitor the sum of the browsers scroll position and ad offset option to automatically call render for you. If this is set to false you will be expected to call render() explicitly.             |
 | autoRefresh         | true    | In order to optimize ad impressions when an ad is in view beyond the amount of time provided to the ad refreshRate options, Ad.js will automatically refresh the ad slot and give you a new ad. If this value is false you will be expected to call refresh() explicitly if you’d like to refresh an ad. |
 | offset              | 0       | The offset of the viewport to consider the ad in view. This will not affect your provider’s internal viewability metrics, however it is used by the autoRefresh and autoRender options                                                                                                                   |
-| refreshRateInSeconds         | 60000   | If autoRefresh has been set to true, this value will be used to determine how long after an ad is in viewport (browsers scroll position + offset) until the ad should be refreshed for another impression.                                                                                               |
+| refreshRateInSeconds         | 60   | If autoRefresh has been set to true, this value will be used to determine how long after an ad is in viewport (browsers scroll position + offset) until the ad should be refreshed for another impression.                                                                                               |
 | targeting           | {}      | Key value targeting values to be passed to your ad provider                                                                                                                                                                                                                                              |
-| breakpoints         | []      | Array of values that correspond to the page breakpoints                                                                                                                                                                                                                                                  |
+| breakpoints         | {}      | Key value list of breakpoints. (e.g. { mobile: { from: 0, to: 480 }, desktop: { from: 481, to: Infinity } }) |
+| sizes         | []      | Either an array of ad sizes (e.g. [[300, 600], [300, 250]]) or if you have specified breakpoints, a key value mapping to the breakpoints (e.g. { mobile: [[300, 250]], desktop: [[300, 600], [300, 250]] }) |
 | refreshOnBreakpoint | true    | Should the ad automatically refresh when passing the values provided in breakpoints                                                                                                                                                                                                                      |
-| *provider options*  |         | Sometimes (though discouraged) an ad provider will have additional options that are required or optional. See your provider to see these additional options.                                                                                                                                             |
+| *provider options*  |         | Sometimes (though discouraged) an ad network will have additional options that are required or optional. See your network to see these additional options.                                                                                                                                             |
 
     
 
@@ -79,7 +80,7 @@ Example Ad Creation
 const el = document.findElementById('example');
 
 const bannerAd = new homepageAdBucket.Ad(el, {
-  slot: 'banner',
+  path: '/1234/example/homepage',
   offset: -10,
 });
 ```

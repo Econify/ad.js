@@ -24,9 +24,11 @@ If you have installed Ad.js via NPM the auto render package is available via an 
 __Example__:
 ```js
 import AdJS from 'adjs';
+import DFPNetwork from 'adjs/networks/DFP';
+
 import AutoRender from 'adjs/plugins/AutoRender';
 
-const bucket = new AdJS(Network, {
+const bucket = new AdJS.Bucket(DFPNetwork, {
   plugins: [
     AutoRender,
   ]
@@ -41,14 +43,14 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/networks.DFP.min.js"></script>
 
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/plugins.AutoRender.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/plugins.AutoRender.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS(AdJS.Networks.DFP, {
+      const bucket = new AdJS.Bucket(AdJS.Networks.DFP, {
         plugins: [
           AdJS.Plugins.AutoRender
         ]
@@ -73,7 +75,7 @@ Configuration via Bucket (will affect all ads within the bucket)
 import AdJS from 'adjs';
 import AutoRender from 'adjs/plugins/AutoRender';
 
-const bucket = new AdJS(Network, {
+const bucket = new AdJS.Bucket(Network, {
   plugins: [
     AutoRender,
   ],
@@ -90,7 +92,7 @@ Configuraton on an individual Ad
 import AdJS from 'adjs';
 import AutoRender from 'adjs/plugins/AutoRender';
 
-const bucket = new AdJS(Network);
+const bucket = new AdJS.Bucket(Network);
 
 const ad = new bucket.createAd(el, {
   plugins: [

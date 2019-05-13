@@ -13,7 +13,7 @@ __Example__:
 import AdJS from 'adjs';
 import DFPNetwork from 'adjs/networks/DFP';
 
-const bucket = new AdJS(DFPNetwork);
+const bucket = new AdJS.Bucket(DFPNetwork);
 ```
 
 ### Script Tag
@@ -24,12 +24,12 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-beta.1/umd/networks.DFP.min.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS(AdJS.Networks.DFP);
+      const bucket = new AdJS.Bucket(AdJS.Networks.DFP);
     </script>
   </body>
 </html>
@@ -45,7 +45,7 @@ The DFP network adds one required argument to Ad Options
 
 ## Examples
 
-__Without Responsive Plugin__
+__Usinig Standard Sizes__
 ```js
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
@@ -66,7 +66,7 @@ const ad = new bucket.Ad(el, {
 });
 ```
 
-__With Responsive Plugin__
+__Using Breakpoints__
 ```js
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
