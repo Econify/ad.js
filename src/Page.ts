@@ -1,10 +1,14 @@
 import Ad from './Ad';
 import MainSingleton from './index';
+<<<<<<< HEAD
 <<<<<<< HEAD:src/Page.ts
 import { IAdConfiguration, INetwork, IPageConfiguration, IPlugin, IVendor } from './types';
 =======
 import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
 >>>>>>> [SB] Switch to Rollup:src/Bucket.ts
+=======
+import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
+>>>>>>> [SB] Switch to Rollup
 
 export default class Page {
   public ads: Ad[] = [];

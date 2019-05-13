@@ -7,9 +7,13 @@ const orderBy = require('lodash.orderby');
 
 function cleanText(str) {
 <<<<<<< HEAD
+<<<<<<< HEAD
   return convertSpacesToTabs(clearEntryAndExitLines(removeIndent(str)));
 =======
   return convertSpacesToTabs(removeIndent(str));
+>>>>>>> [SB] Switch to Rollup
+=======
+  return convertSpacesToTabs(clearEntryAndExitLines(removeIndent(str)));
 >>>>>>> [SB] Switch to Rollup
 }
 
@@ -19,14 +23,20 @@ function cleanText(str) {
 // tabs
 function convertSpacesToTabs(str) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> [SB] Switch to Rollup
   return str.replace(/    /g, '\t');
 }
 
 // Remove an initial new line and trailing new line from the string
 function clearEntryAndExitLines(str) {
   return str.replace(/(^\s*\n|\n\s+$)/g, '');
+<<<<<<< HEAD
 =======
   return str.replace(/^\s{4}/g, '\t');
+>>>>>>> [SB] Switch to Rollup
+=======
 >>>>>>> [SB] Switch to Rollup
 }
 
