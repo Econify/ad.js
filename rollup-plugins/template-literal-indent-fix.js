@@ -6,7 +6,11 @@ const { walk } = require('estree-walker');
 const orderBy = require('lodash.orderby');
 
 function cleanText(str) {
+<<<<<<< HEAD
   return convertSpacesToTabs(clearEntryAndExitLines(removeIndent(str)));
+=======
+  return convertSpacesToTabs(removeIndent(str));
+>>>>>>> [SB] Switch to Rollup
 }
 
 // It doesn't make sense to convert all spaces to tabs as
@@ -14,12 +18,16 @@ function cleanText(str) {
 // However we can save 2 characters for every four spaces by converting them to
 // tabs
 function convertSpacesToTabs(str) {
+<<<<<<< HEAD
   return str.replace(/    /g, '\t');
 }
 
 // Remove an initial new line and trailing new line from the string
 function clearEntryAndExitLines(str) {
   return str.replace(/(^\s*\n|\n\s+$)/g, '');
+=======
+  return str.replace(/^\s{4}/g, '\t');
+>>>>>>> [SB] Switch to Rollup
 }
 
 function removeIndent(str) {

@@ -3,11 +3,15 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import { terser } from "rollup-plugin-terser";
+<<<<<<< HEAD
 import copy from 'rollup-plugin-copy';
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const minifyErrors = require('./rollup-plugins/error-minify');
 
 const BUILD_DIR = 'build';
+=======
+const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
+>>>>>>> [SB] Switch to Rollup
 
 const WEB_FORMAT = 'iife';
 const NODE_FORMAT = 'cjs';
@@ -15,21 +19,27 @@ const NODE_FORMAT = 'cjs';
 const SOURCEMAP = true;
 const INDENT = false;
 
+<<<<<<< HEAD
 const FILES_TO_COPY = [
   './package.json',
   './README.md',
   './src/types.ts',
 ];
 
+=======
+>>>>>>> [SB] Switch to Rollup
 const BASE_PLUGINS = [
   typescript(),
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
+<<<<<<< HEAD
   copy({
     targets: FILES_TO_COPY,
     outputFolder: BUILD_DIR,
   }),
+=======
+>>>>>>> [SB] Switch to Rollup
 ];
 
 const configurations = [];
@@ -61,7 +71,11 @@ function createConfiguration(options) {
 }
 
 function createNodeConfiguration({ type, file, path }) {
+<<<<<<< HEAD
   const outputFile = `./${BUILD_DIR}/${type}/${file}.js`;
+=======
+  const outputFile = `./dist/${type}/${file}.js`;
+>>>>>>> [SB] Switch to Rollup
 
   const configuration = {
     input: path,
@@ -75,14 +89,22 @@ function createNodeConfiguration({ type, file, path }) {
   };
 
   if (!type) {
+<<<<<<< HEAD
     configuration.output.file = `./${BUILD_DIR}/${file}.js`;
+=======
+    configuration.output.file = `./dist/${file}.js`;
+>>>>>>> [SB] Switch to Rollup
   }
 
   return configuration;
 }
 
 function createDevelopmentConfiguration({ type, file, path, name }) {
+<<<<<<< HEAD
   const outputFile = `./${BUILD_DIR}/umd/${type}.${file}.development.js`.toLowerCase();
+=======
+  const outputFile = `./umd/${type}.${file}.development.js`.toLowerCase();
+>>>>>>> [SB] Switch to Rollup
 
   const configuration = {
     input: path,
@@ -105,7 +127,11 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
   }
 
   if (!type) {
+<<<<<<< HEAD
     configuration.output.file = `./${BUILD_DIR}/umd/${file}.development.js`;
+=======
+    configuration.output.file = `./umd/${file}.development.js`;
+>>>>>>> [SB] Switch to Rollup
   }
 
   return configuration;
@@ -116,11 +142,18 @@ function createProductionConfiguration({ type, file, path, name }) {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
+<<<<<<< HEAD
       minifyErrors(),
       terser()
     ],
     output: {
       file: `./${BUILD_DIR}/umd/${type}.${file}.production.min.js`.toLowerCase(),
+=======
+      terser()
+    ],
+    output: {
+      file: `./umd/${type}.${file}.production.min.js`.toLowerCase(),
+>>>>>>> [SB] Switch to Rollup
       name: `_ADJS.${type}.${file}`,
 
       format: WEB_FORMAT,
@@ -135,12 +168,43 @@ function createProductionConfiguration({ type, file, path, name }) {
   }
 
   if (!type) {
+<<<<<<< HEAD
     configuration.output.file = `./${BUILD_DIR}/umd/${file}.production.min.js`;
+=======
+    configuration.output.file = `./umd/${file}.production.min.js`;
+>>>>>>> [SB] Switch to Rollup
   }
 
   return configuration;
 }
 
+<<<<<<< HEAD
+=======
+createConfigurations({
+  type: 'Plugins',
+  basePath: './src/plugins',
+  files: [
+    'AutoRender',
+    'AutoRefresh',
+    'Debug',
+    'GenericPlugin',
+    'Logging',
+    'Sticky',
+    'Responsive',
+  ]
+});
+
+createConfigurations({
+  type: 'Networks',
+  basePath: './src/networks',
+  files: [
+    'DFP',
+    'Mock',
+    'Noop',
+  ]
+});
+
+>>>>>>> [SB] Switch to Rollup
 createConfiguration({
   name: 'AdJS',
   path: './src/index.ts',
