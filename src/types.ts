@@ -148,6 +148,11 @@ export interface IAdSizes {
   [key: string]: AdSizesDescriptor;
 }
 
+export interface ICurrentConfines {
+  from?: number;
+  to?: number;
+}
+
 export interface IAdConfiguration {
   autoRefresh?: boolean;
   autoRender?: boolean;

@@ -66,7 +66,7 @@ createConfiguration({
     'GenericPlugin',
     'Logging',
     'Sticky',
-    'Breakpoints',
+    'Responsive',
   ]
 });
 

@@ -54,7 +54,7 @@
     <script type="text/javascript" src="http://localhost:8081/plugins.Debug.min.js"></script>
     <script type="text/javascript" src="http://localhost:8081/plugins.Sticky.min.js"></script>
     <script type="text/javascript" src="http://localhost:8081/plugins.AutoRefresh.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.Breakpoints.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.Responsive.min.js"></script>
 
     <script type="text/javascript">
       // import. (manipulated)
@@ -65,7 +65,7 @@
           AdJS.Plugins.AutoRefresh,
           AdJS.Plugins.Debug,
           AdJS.Plugins.Sticky,
-          AdJS.Plugins.Breakpoints,
+          AdJS.Plugins.Responsive,
         ],
         defaults: {
           sizes: {},
@@ -109,6 +109,7 @@
             [360, 720],
           ],
         },
+        refreshOnBreakpoint: false,
         targeting: {
           example: 'true',
         }

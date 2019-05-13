@@ -19,6 +19,14 @@ function nextId(): string {
   return `adjs-ad-container-${++adId}`;
 }
 
+function validateSizes(configuration: IAdConfiguration): void {
+  const { sizes, breakpoints } = configuration;
+
+  if (!Array.isArray(sizes) && !breakpoints) {
+    throw new AdJsError('MISCONFIGURATION', 'Sizes must be of type `Array` unless breakpoints have been specified');
+  }
+}
+
 const DEFAULT_CONFIGURATION: IAdConfiguration = {
   autoRender: true,
   autoRefresh: true,
@@ -192,9 +200,7 @@ class Ad implements IAd {
     this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
     this.el = insertElement('div', { id: nextId() }, this.container);
 
-    if (!Array.isArray(this.configuration.sizes) && !this.configuration.breakpoints) {
-      throw new AdJsError('MISCONFIGURATION', 'Sizes must be of type `Array` without BreakpointPlugin');
-    }
+    validateSizes(this.configuration);
 
     // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
     const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];
