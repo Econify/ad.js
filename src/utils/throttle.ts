@@ -3,7 +3,7 @@
  * @param {number} customDelay Time in Milliseconds
  */
 let previousCall: number = 0;
-export = (cb: any, customDelay?: number) => {
+export default (cb: any, customDelay?: number) => {
   const delay = customDelay || 200;
   const currentTime: number = new Date().getTime();
 

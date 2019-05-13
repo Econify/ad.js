@@ -167,4 +167,4 @@ const DoubleClickForPublishers: INetwork = {
   },
 };
 
-export = DoubleClickForPublishers;
+export default DoubleClickForPublishers;

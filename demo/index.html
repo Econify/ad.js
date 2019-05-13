@@ -47,14 +47,14 @@
       <img src="http://www.econify.com/assets/econify_logo.png">
       <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
     </div>
-    <script type="text/javascript" src="http://localhost:8081/core.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/networks.DFP.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.Logging.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.AutoRender.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.Debug.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.Sticky.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.AutoRefresh.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8081/plugins.Responsive.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/core.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/networks.dfp.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.logging.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.autorender.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.debug.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.sticky.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.autorefresh.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.responsive.development.js"></script>
 
     <script type="text/javascript">
       // import. (manipulated)
@@ -68,7 +68,6 @@
           AdJS.Plugins.Responsive,
         ],
         defaults: {
-          sizes: {},
           breakpoints: {
             mobile: { from: 0, to: 757 },
             tablet: { from: 758, to: 999 },
@@ -84,7 +83,7 @@
 
       // monetize.
       const ad = mainPage.createAd(el, {
-        path: '/123456/sports',
+        path: '/2620/nbcnews/homepage_2',
 
         /*
           for use without breakpoints

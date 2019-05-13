@@ -21,4 +21,4 @@ class StickyPlugin extends GenericPlugin {
   }
 }
 
-export = StickyPlugin;
+export default StickyPlugin;
