@@ -21,7 +21,9 @@ const config = {
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin()
+      new TerserPlugin({
+        sourceMap: true,
+      })
     ],
   },
 
@@ -41,7 +43,7 @@ function createConfiguration({ type, files, basePath }) {
       path: path.resolve(__dirname, 'umd'),
       filename: `${type}.[name].min.js`.toLowerCase(),
       library: ['_ADJS', type, '[name]'],
-      libraryExport: 'default',
+      libraryTarget: 'umd',
     }
   };
 
@@ -88,7 +90,7 @@ configurations.push({
     path: path.resolve(__dirname, 'umd'),
     filename: 'core.min.js',
     library: 'AdJS',
-    libraryExport: 'default',
+    libraryTarget: 'umd',
   },
 });
 

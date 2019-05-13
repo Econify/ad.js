@@ -4,9 +4,10 @@
   * [Example Code](example-code.md)
 
 * Plugins
-	* [Lazy Load](lazy-load-plugin.md)
+	* [Lazy Load / Auto Render](lazy-load-plugin.md)
 	* [Responsive Ads](responsive-plugin.md)
 	* [Auto Refresh](refresh-plugin.md)
+	* [Sticky Ads](sticky-plugin.md)
 	* [Debug](debug-plugin.md)
 
 * Networks

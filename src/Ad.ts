@@ -1,7 +1,7 @@
 import {
   EventBusOptions as EVENTS,
   IAd,
-  IAdConfiguration, IAdEventListener, IEventType,
+  IAdConfiguration, IAdEventListener,
   INetwork, INetworkInstance, IPlugin, IPluginConstructorOrSingleton, IPluginHook, IVendor,
   Maybe,
 } from './types';
@@ -9,6 +9,7 @@ import {
 import AdJS from '.';
 import Bucket from './Bucket';
 import AdJsError from './utils/AdJsError';
+import EVENTS from './Events';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
@@ -421,4 +422,4 @@ class Ad implements IAd {
   }
 }
 
-export default Ad;
+export = Ad;
