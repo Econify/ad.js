@@ -12,12 +12,11 @@
     "build:webpack": "webpack",
     "clean": "rm -rf ./umd && rm -rf ./build",
     "docs": "docsify serve docs",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "lint:fix": "tslint -c tslint.json --fix 'src/**/*.ts'",
-    "release": "npm run build; cd build; npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN; npm publish",
-    "server": "echo \"Demo is available http://localhost:8080/demo\" && http-server -p 8080",
-    "start": "nodemon --exec \"npm run build && npm run server\" --kill-all --watch ./src -e ts",
-    "test": "NODE_PATH=./src jest --coverage ./tests --no-cache",
+    "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
+    "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
+    "release": "npm run clean && npm run build; cp ./package.json dist; cp ./README.md dist; cp -R umd dist; cd dist; npm publish",
+    "start": "concurrently -k \"rollup --watch -c\" \"http-server -p 8080\"",
+    "test": "NODE_PATH=./src jest ./tests --no-cache",
     "ts": "tsc --pretty"
   },
   "repository": {
