@@ -113,17 +113,6 @@ export interface INetwork {
   [key: string]: any;
 }
 
-export enum EventBusOptions {
-  CREATE = 'create',
-  REQUEST = 'request',
-  RENDER = 'render',
-  REFRESH = 'refresh',
-  DESTROY = 'destroy',
-  FREEZE = 'freeze',
-  UNFREEZE = 'unfreeze',
-  CLEAR = 'clear',
-}
-
 export interface IAdTargeting {
   [key: string]: string;
 }

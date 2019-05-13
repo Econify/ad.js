@@ -1,5 +1,4 @@
 import {
-  EventBusOptions as EVENTS,
   IAd,
   IAdConfiguration, IAdEventListener,
   INetwork, INetworkInstance, IPlugin, IPluginConstructorOrSingleton, IPluginHook, IVendor,
@@ -8,8 +7,8 @@ import {
 
 import AdJS from '.';
 import Bucket from './Bucket';
-import AdJsError from './utils/AdJsError';
 import EVENTS from './Events';
+import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
