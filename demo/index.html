@@ -54,6 +54,8 @@
     <script type="text/javascript" src="http://localhost:8081/plugins.Debug.min.js"></script>
     <script type="text/javascript" src="http://localhost:8081/plugins.Sticky.min.js"></script>
     <script type="text/javascript" src="http://localhost:8081/plugins.AutoRefresh.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8081/plugins.Responsive.min.js"></script>
+
     <script type="text/javascript">
       // import. (manipulated)
       const mainPage = new AdJS.Bucket(AdJS.Networks.DFP, {
@@ -63,8 +65,15 @@
           AdJS.Plugins.AutoRefresh,
           AdJS.Plugins.Debug,
           AdJS.Plugins.Sticky,
+          AdJS.Plugins.Responsive,
         ],
         defaults: {
+          sizes: {},
+          breakpoints: {
+            mobile: { from: 0, to: 757 },
+            tablet: { from: 758, to: 999 },
+            desktop: { from: 1000, to: Infinity },
+          },
           refreshRateInSeconds: 10,
           offset: 100,
           targeting: { example: 'true' },
@@ -77,13 +86,30 @@
       const ad = mainPage.createAd(el, {
         path: '/123456/sports',
 
-        sizes: [
-          [160, 600],
-          [300, 250],
-          [300, 600],
-          [300, 300]
-        ],
+        /*
+          for use without breakpoints
+          sizes: [
+            [160, 600],
+            [300, 250],
+            [300, 600],
+            [300, 300]
+          ],
+        */
 
+        sizes: {
+          mobile: [],
+          tablet: [
+            [300, 250],
+            [300, 600],
+          ],
+          desktop: [
+            [300, 250],
+            [300, 600],
+            [360, 360],
+            [360, 720],
+          ],
+        },
+        refreshOnBreakpoint: true,
         targeting: {
           example: 'true',
         }

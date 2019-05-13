@@ -59,6 +59,7 @@ export type IPluginConstructor = new(ad: IAd) => IPlugin;
 export interface IPlugin {
   name: string;
 
+  beforeCreate?: IPluginHook;
   onCreate?: IPluginHook;
   afterCreate?: IPluginHook;
 
@@ -116,22 +117,40 @@ export interface IAdTargeting {
   [key: string]: string;
 }
 
-export type IAdSizes = number[][];
+interface IAdBreakpointDescriptor {
+  from: number;
+  to: number;
+}
+
+export interface IAdBreakpointSizes {
+  [key: string]: AdSizesDescriptor;
+}
+
+export interface IAdBreakpoints {
+  [key: string]: IAdBreakpointDescriptor;
+}
+
+export type AdSizesDescriptor = number[];
+export type AdSizes = IAdSizes | IAdBreakpointSizes;
+
+export interface IAdSizes {
+  [key: string]: AdSizesDescriptor;
+}
+
+export interface ICurrentConfines {
+  from?: number;
+  to?: number;
+}
 
 export interface IAdConfiguration {
-  path?: string;
-  targeting?: IAdTargeting;
-  sizes?: IAdSizes;
-
-  offset?: number;
-
-  autoRender?: boolean;
-
   autoRefresh?: boolean;
-  refreshRateInSeconds?: number;
-
-  refreshOnBreakpoint?: boolean;
-  breakpoints?: number[];
-
+  autoRender?: boolean;
+  breakpoints?: IAdBreakpoints;
+  offset?: number;
+  path?: string;
   plugins?: IPluginConstructorOrSingleton[];
+  refreshOnBreakpoint?: boolean;
+  refreshRateInSeconds?: number;
+  sizes?: AdSizes;
+  targeting?: IAdTargeting;
 }

@@ -45,7 +45,7 @@ The DFP network adds one required argument to Ad Options
 
 ## Examples
 
-__Without Breakpoints Plugin__
+__Without Responsive Plugin__
 ```js
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
@@ -66,14 +66,14 @@ const ad = new bucket.Ad(el, {
 });
 ```
 
-__With Breakpoints Plugin__
+__With Responsive Plugin__
 ```js
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
 
 const bucket = new AdJS.Bucket(DFPNetwork, {
   plugins: [
-    require('adjs/plugins/breakpoints')
+    require('adjs/plugins/responsive')
   ],
 
   breakpoints: {

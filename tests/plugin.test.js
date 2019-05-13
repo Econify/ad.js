@@ -31,7 +31,7 @@ describe('Plugin', () => {
         plugins: [TEST_PLUGIN],
       });
 
-      ad = bucket.createAd(el);
+      ad = bucket.createAd(el, { sizes: [], breakpoints: {} });
 
       jest.spyOn(TEST_PLUGIN, 'onCreate');
       jest.spyOn(TEST_PLUGIN, 'beforeRender');

@@ -8,6 +8,7 @@ import {
 import AdJS from '.';
 import Bucket from './Bucket';
 import EVENTS from './Events';
+import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
@@ -18,13 +19,21 @@ function nextId(): string {
   return `adjs-ad-container-${++adId}`;
 }
 
+function validateSizes(configuration: IAdConfiguration): void {
+  const { sizes, breakpoints } = configuration;
+
+  if (!Array.isArray(sizes) && !breakpoints) {
+    throw new AdJsError('MISCONFIGURATION', 'Sizes must be of type `Array` unless breakpoints have been specified');
+  }
+}
+
 const DEFAULT_CONFIGURATION: IAdConfiguration = {
   autoRender: true,
   autoRefresh: true,
   offset: 0,
   refreshRateInSeconds: 30,
   targeting: {},
-  breakpoints: [],
+  breakpoints: {},
   refreshOnBreakpoint: true,
 };
 
@@ -47,7 +56,7 @@ function attachAsLifecycleMethod(
     if (this.state.frozen) {
       const boundReplayFn = this[propertyName].bind(this, ...args);
 
-      this.actionsReceievedWhileFrozen.push(boundReplayFn);
+      this.actionsReceivedWhileFrozen.push(boundReplayFn);
 
       return;
     }
@@ -128,8 +137,6 @@ class Ad implements IAd {
   // TODO: Rethink
   public correlatorId?: string;
 
-  public breakpoints: number[] = [];
-
   public state: { [key: string]: boolean } = {
     creating: false,
     created: false,
@@ -154,9 +161,9 @@ class Ad implements IAd {
 
   public configuration: IAdConfiguration;
 
-  private networkInstance: INetworkInstance;
+  private networkInstance!: INetworkInstance;
 
-  private actionsReceievedWhileFrozen: any = [];
+  private actionsReceivedWhileFrozen: any = [];
 
   private plugins: IPlugin[] = [];
 
@@ -193,7 +200,7 @@ class Ad implements IAd {
     this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
     this.el = insertElement('div', { id: nextId() }, this.container);
 
-    this.networkInstance = this.network.createAd(this);
+    validateSizes(this.configuration);
 
     // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
     const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];
@@ -204,10 +211,21 @@ class Ad implements IAd {
     // Instantiate all class based plugins and reference them
     this.attachPlugins(plugins);
 
-    this.callPlugins('onCreate');
+    const executionOfPlugins = this.callPlugins('beforeCreate');
 
     this.onReady(
-      () => this.callPlugins('afterCreate'),
+      async () => {
+        await executionOfPlugins;
+
+        await Promise.all(
+          [
+            this.networkInstance = this.network.createAd(this),
+            this.callPlugins('onCreate'),
+          ],
+        );
+
+        await this.callPlugins('afterCreate');
+      },
     );
   }
 
@@ -222,7 +240,7 @@ class Ad implements IAd {
   //
   //  destroy must always happen after render has completed.
   //
-  public async onReady(fn: () => void): Promise<any> {
+  public onReady(fn: () => void): Promise<any> {
     let externalResolve: () => void;
     let externalReject: (e: any) => void;
 
@@ -308,9 +326,9 @@ class Ad implements IAd {
     // the queue for this event.
     this.state.frozen = false;
 
-    const actions = this.actionsReceievedWhileFrozen;
+    const actions = this.actionsReceivedWhileFrozen;
 
-    this.actionsReceievedWhileFrozen = [];
+    this.actionsReceivedWhileFrozen = [];
 
     // processes backlogged events in queue on('unfreeze')
     if (options.replayEventsWhileFrozen) {
@@ -392,12 +410,12 @@ class Ad implements IAd {
     const { requiredParams = [], name: networkName } = this.network;
 
     if (!params.adPath) {
-      throw new Error('adPath is required for all networks');
+      throw new AdJsError('INVALID_PARAMETERS', '${adPath} is required for all networks.');
     }
 
     requiredParams.forEach((param) => {
       if (providedParams.indexOf(param) === -1) {
-        throw new Error(`'${param}' is a required parameter in '${networkName}'`);
+        throw new AdJsError('INVALID_PARAMETERS', `'${param}' is a required parameter in '${networkName}'`);
       }
     });
   }

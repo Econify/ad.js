@@ -1,4 +1,5 @@
-import { IAd, IAdSizes, IAdTargeting, INetwork, INetworkInstance } from '../types';
+import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance } from '../types';
+import AdJsError from '../utils/AdJsError';
 import loadScript from '../utils/loadScript';
 
 declare global {
@@ -10,21 +11,26 @@ class DfpAd implements INetworkInstance {
   private id: string;
   private slot!: googletag.Slot;
 
-  constructor(private el: HTMLElement, path: string, sizes: IAdSizes, targeting?: IAdTargeting) {
+  constructor(
+    private el: HTMLElement,
+    path: string,
+    sizes: AdSizes,
+    breakpoints?: IAdBreakpoints,
+    targeting?: IAdTargeting,
+  ) {
     DoubleClickForPublishers.prepare();
 
     const { id } = el;
 
     if (!id) {
-      throw new Error('Ad does not have an id');
+      throw new AdJsError('MALFORMED_REQUEST', 'Ad does not have an id');
     }
 
     this.id = id;
 
     googletag.cmd.push(() => {
       this.slot =
-        googletag.defineSlot(path, sizes, this.id)
-          .addService(googletag.pubads());
+        googletag.defineSlot(path, [], this.id);
 
       if (targeting) {
         Object.entries(targeting)
@@ -32,6 +38,17 @@ class DfpAd implements INetworkInstance {
             this.slot.setTargeting(key, value);
           });
       }
+
+      if (!Array.isArray(sizes) && breakpoints) {
+        const sizing = googletag.sizeMapping();
+        Object.entries(breakpoints).map(([device, dimensions]) => {
+          sizing.addSize([dimensions.from, 1], sizes[device] || []);
+        });
+
+        this.slot.defineSizeMapping(sizing.build());
+      }
+
+      this.slot.addService(googletag.pubads());
 
       googletag.display(this.id);
     });
@@ -42,6 +59,14 @@ class DfpAd implements INetworkInstance {
       (resolve) => {
         googletag.cmd.push(() => {
           const { slot } = this;
+
+          const contentUrl = slot.getContentUrl();
+
+          if (!contentUrl) {
+            resolve();
+
+            return;
+          }
 
           googletag.pubads().addEventListener(
             'slotRenderEnded',
@@ -128,17 +153,17 @@ const DoubleClickForPublishers: INetwork = {
 
   createAd(ad: IAd): DfpAd {
     const { el, configuration } = ad;
-    const { sizes, targeting, path } = configuration;
+    const { sizes, targeting, path, breakpoints } = configuration;
 
     if (!sizes) {
-      throw new Error('Sizes must be defined');
+      throw new AdJsError('MALFORMED_REQUEST', 'Sizes must be defined.');
     }
 
     if (!path) {
-      throw new Error('Ad Path must be defined');
+      throw new AdJsError('MALFORMED_REQUEST', 'Ad Path must be defined.');
     }
 
-    return new DfpAd(el, path, sizes, targeting);
+    return new DfpAd(el, path, sizes, breakpoints, targeting);
   },
 
   async prepare() {

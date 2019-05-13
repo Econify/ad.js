@@ -15,11 +15,11 @@ If you have installed Ad.js via NPM the responsive package is available via an e
 __Example__:
 ```js
 import AdJS from 'adjs';
-import BreakpointsPlugin from 'adjs/plugins/Breakpoints';
+import ResponsivePlugin from 'adjs/plugins/Responsive';
 
 const bucket = new AdJS(Network, {
   plugins: [
-    BreakpointsPlugin,
+    ResponsivePlugin,
   ]
 });
 ```
@@ -40,7 +40,7 @@ __Example__:
     <script>
       const bucket = new AdJS(AdJS.Networks.DFP, {
         plugins: [
-          AdJS.Plugins.Breakpoints
+          AdJS.Plugins.Responsive
         ]
       });
     </script>
@@ -63,7 +63,7 @@ Configuration via Bucket (will affect all ads within the bucket). It is preferre
 generally the site's breakpoints will not change) and to define the sizes on each ad implementation.
 ```js
 import AdJS from 'adjs';
-import Breakpoints from 'adjs/plugins/Breakpoints';
+import Responsive from 'adjs/plugins/Responsive';
 
 const bucket = new AdJS(Network, {
   plugins: [
@@ -94,13 +94,13 @@ const ad = new bucket.createAd(el, {
 Configuraton on an individual Ad
 ```js
 import AdJS from 'adjs';
-import Breakpoints from 'adjs/plugins/Breakpoints';
+import Responsive from 'adjs/plugins/Responsive';
 
 const bucket = new AdJS(Network);
 
 const ad = new bucket.createAd(el, {
   plugins: [
-    Breakpoints
+    Responsive
   ],
 
   breakpoints: {
