@@ -113,7 +113,7 @@ export interface INetwork {
   [key: string]: any;
 }
 
-interface ICustomSlot extends googletag.Slot {
+export interface ICustomSlot extends googletag.Slot {
   getContentUrl: () => any;
 }
 
