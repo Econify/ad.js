@@ -1,7 +1,7 @@
-# Maximizing Impressions with Refreshing Ads
+# Maximizing Impressions with AutoRefreshing Ads
 Viewability is a binary metric. Your creative will either generate a "viewable impression" or a "non-viewable impression". The standard metric to determine whether an ad was Viewable is whether the ad was in the viewport of the browser for 2 seconds.
 
-The Ad.js refresh plugin helps you maximize your impressions per page by refreshing/fetching a new creative after your Ad has been considered as "viewed". By default the Refresh Plugin will only refresh an Ad after 30 seconds of view time.
+The Ad.js refresh plugin helps you maximize your impressions per page by refreshing/fetching a new creative after your Ad has been considered as "viewed". By default the AutoRefresh Plugin will only refresh an Ad after 30 seconds of view time.
 
 ## Installation
 Depending on your method of implementation, Ad.js packages may be installed via different methods.
@@ -13,31 +13,33 @@ If you have installed Ad.js via NPM the refresh package is available via an esmo
 __Example__:
 ```js
 import AdJS from 'adjs';
-import RefreshPlugin from 'adjs/plugins/Refresh';
+import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
 
 const bucket = new AdJS.Bucket(Network, {
   plugins: [
-    RefreshPlugin,
+    AutoRefreshPlugin,
   ]
 });
 ```
 
 ### Script Tag
 If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
-includes the Refresh plugin (preferred) or include the lazy load script in the header.
+includes the AutoRefresh plugin (preferred) or include the lazy load script in the header.
 
 __Example__:
 ```html
 <html>
   <head>
-    <script src="https://cdn.adjs.dev/adjs.base.js"></script>
-    <script src="https://cdn.adjs.dev/adjs.refresh.plugin.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/networks.DFP.min.js"></script>
+
+    <script src="https://unpkg.com/adjs@2.0.0-alpha.3/umd/plugins.AutoRefresh.min.js"></script>
   </head>
   <body>
     <script>
-      const bucket = new AdJS.Bucket(Network, {
+      const bucket = new AdJS.Bucket(AdJS.Networks.DFP, {
         plugins: [
-          AdJSPlugins.Refresh
+          AdJS.Plugins.AutoRefresh
         ]
       });
     </script>
@@ -46,7 +48,7 @@ __Example__:
 ```
 
 ## Options
-The Refresh Plugin adds two options to ad instantiation
+The AutoRefresh Plugin adds two options to ad instantiation
 
 |Option|Default|Description|
 |---|---|---|
@@ -58,11 +60,11 @@ The Refresh Plugin adds two options to ad instantiation
 Configuration via Bucket (will affect all ads within the bucket). It is common to implement refresh on a bucket level as your refresh strategy will usually be the same site wide.
 ```js
 import AdJS from 'adjs';
-import Refresh from 'adjs/plugins/Refresh';
+import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
 const bucket = new AdJS(Network, {
   plugins: [
-    Refresh,
+    AutoRefresh,
   ],
 
   defaults: {
@@ -75,13 +77,15 @@ const bucket = new AdJS(Network, {
 Configuraton on an individual Ad
 ```js
 import AdJS from 'adjs';
-import RefreshPlugin from 'adjs/plugins/Refresh';
+import DFPNetwork from 'adjs/networks/DFP';
 
-const bucket = new AdJS(Network);
+import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
+
+const bucket = new AdJS(DFPNetwork);
 
 const ad = new bucket.createAd(el, {
   plugins: [
-    RefreshPlugin
+    AutoRefreshPlugin
   ],
 
   refreshInterval: 30000,
