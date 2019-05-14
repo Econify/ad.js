@@ -6,7 +6,7 @@ import GenericPlugin from './GenericPlugin';
 class ResponsivePlugin extends GenericPlugin {
   public currentConfines: ICurrentConfines = {};
   private EVENT_KEY: string = 'resize';
-  private THROTTLE_DURATION: number = 200;
+  private THROTTLE_DURATION: number = 250;
   private listener?: any;
 
   public beforeCreate() {
@@ -16,16 +16,18 @@ class ResponsivePlugin extends GenericPlugin {
 
     this.determineCurrentBreakpoint();
 
-    this.listener = throttle(this.THROTTLE_DURATION, () => {
-      const { from = 0, to = 1 } = this.currentConfines;
+    this.listener = () => {
+      throttle(() => {
+        const { from = 0, to = 1 } = this.currentConfines;
 
-      if (isBetween(window.innerWidth, from, to)) {
-        return;
-      }
+        if (isBetween(window.innerWidth, from, to)) {
+          return;
+        }
 
-      this.determineCurrentBreakpoint();
-      this.ad.refresh();
-    });
+        this.determineCurrentBreakpoint();
+        this.ad.refresh();
+      }, this.THROTTLE_DURATION);
+    };
 
     window.addEventListener(this.EVENT_KEY, this.listener);
   }
