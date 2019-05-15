@@ -1,6 +1,7 @@
 import { ILoadedModulesCache, LoadedModules } from './types';
 
 import Bucket from './Bucket';
+import AdJsError from './utils/AdJsError';
 import isServer from './utils/isServer';
 
 const LOADED_MODULES: ILoadedModulesCache = {
@@ -24,7 +25,7 @@ const PluginsHandler = {
         return {};
       }
 
-      throw new Error(`
+      throw new AdJsError('MISCONFIGURATION', `
         Using the Networks or Plugins property on AdJS is only available when installing via script.
         If you are compiling the AdJS library locally within your project, use require to
         specify the plugin directly.
@@ -42,7 +43,7 @@ const PluginsHandler = {
     }
 
     if (!plugins[cleanedProperty]) {
-      throw new Error(`
+      throw new AdJsError('MISCONFIGURATION', `
         The ${cleanedProperty} Plugin or Network has not been included in your bundle. Please
         manually include the script tag associated with this plugin or network. You can see
         documentation on https://adjs.dev.
