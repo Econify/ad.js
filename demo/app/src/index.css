@@ -1,0 +1,69 @@
+:root {
+  --white: #fff;
+  --dark: #33322e;
+  --bg-light: #f2f2ed;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  margin: 50px 10px;
+  background-color: var(--bg-light);
+  color: var(--dark);
+  letter-spacing: 1px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+pre {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  font-size: 12px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin: 10px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+}
+
+#ad-slot-1 {
+  min-width: 300px;
+  min-height: 600px;
+  background-color: var(--white);
+}
+
+footer img {
+  display: block;
+  margin: 30px auto;
+  max-width: 150px;
+}
+
+label {
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 24px;
+  text-transform: uppercase;
+  align-self: center;
+}
+
+div[data-baseweb="block"],
+label[data-baseweb="checkbox"] {
+  margin: 0 0 15px;
+}
+
+div#code-preview {
+  padding: 10px;
+  background-color: var(--white);
+  border-radius: 5px;
+  overflow-y: auto;
+  height: 512px;
+}
