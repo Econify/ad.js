@@ -1,5 +1,4 @@
 import scrollMonitor, { IWatcher } from 'scrollmonitor';
-import { IAd, IPlugin } from '../types';
 import GenericPlugin from './GenericPlugin';
 
 const ONE_SECOND = 1000;

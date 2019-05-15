@@ -1,4 +1,3 @@
-import { IAd, IPlugin } from '../types';
 import insertElement from '../utils/insertElement';
 import padTime from '../utils/padTime';
 import GenericPlugin from './GenericPlugin';
