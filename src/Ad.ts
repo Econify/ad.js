@@ -404,21 +404,6 @@ class Ad implements IAd {
       ),
     );
   }
-
-  private validateParameters(params: { adPath?: string }) {
-    const providedParams = Object.keys(params);
-    const { requiredParams = [], name: networkName } = this.network;
-
-    if (!params.adPath) {
-      throw new AdJsError('INVALID_PARAMETERS', '${adPath} is required for all networks.');
-    }
-
-    requiredParams.forEach((param) => {
-      if (providedParams.indexOf(param) === -1) {
-        throw new AdJsError('INVALID_PARAMETERS', `'${param}' is a required parameter in '${networkName}'`);
-      }
-    });
-  }
 }
 
 export = Ad;
