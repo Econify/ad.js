@@ -7,6 +7,10 @@ declare global {
   interface Window { googletag: any; }
 }
 
+function useSizeMapping(sizes: AdSizes, breakpoints?: IAdBreakpoints): boolean {
+  return !Array.isArray(sizes) && !!breakpoints;
+}
+
 class DfpAd implements INetworkInstance {
   private id: string;
   private slot!: googletag.Slot;
@@ -29,8 +33,13 @@ class DfpAd implements INetworkInstance {
     this.id = id;
 
     googletag.cmd.push(() => {
-      this.slot =
-        googletag.defineSlot(path, [], this.id);
+      if (Array.isArray(sizes)) {
+        this.slot =
+          googletag.defineSlot(path, sizes, this.id);
+      } else {
+        this.slot =
+          googletag.defineSlot(path, [], this.id);
+      }
 
       if (targeting) {
         Object.entries(targeting)
@@ -60,14 +69,6 @@ class DfpAd implements INetworkInstance {
         googletag.cmd.push(() => {
           const { slot } = this;
 
-          const contentUrl = slot.getContentUrl();
-
-          if (!contentUrl) {
-            resolve();
-
-            return;
-          }
-
           googletag.pubads().addEventListener(
             'slotRenderEnded',
 
@@ -91,6 +92,13 @@ class DfpAd implements INetworkInstance {
            */
 
           googletag.pubads().refresh([slot], { changeCorrelator: false });
+
+          // No Sizes Set
+          const contentUrl = slot.getContentUrl();
+
+          if (!contentUrl) {
+            resolve();
+          }
         });
       },
     );
