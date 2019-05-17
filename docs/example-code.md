@@ -1,42 +1,15 @@
-### React.Js Example ###
+### Example Code ###
 
-__Ad.js Component__:
-```js
-import React, { Component } from 'react';
-import bucket from './AdJsBucketSingleton';
-import defaultOptions from './defaultAdOptions';
+Both of these examples will require some sort of transpiler e.g. babel, typescript, etc.
+See the [README](README.md) for alternative import solutions.
 
-class Ad extends Component {
-  constructor(props) {
-    super(props);
-    this.anchor = null;
-  }
-
-  componentDidMount() {
-    this.createAd();
-  }
-
-  createAd = () => {
-    const { options: optionOverrides } = this.props;
-    const options = { ...defaultOptions, ...optionOverrides };
-    bucket.createAd(this.anchor, options);
-  }
-
-  render() {
-    const styles = {
-      background: `repeating-linear-gradient(45deg, white, black 10px, grey 30px)`,
-      height: '2000px',
-      position: 'absolute'
-    };
-
-    return <div style={styles} ref={anchor => { this.anchor = anchor }} />;
-  }
-}
-
-export default Ad;
+In this example, we will be using all of the `plugins` available and setting them at the bucket level.
+It is important to note that for more granular control over each individual ad, it is recommended
+that some of these `plugins` be added at a per ad level (`Sticky`, `AutoRefresh`, etc.).
+Please see any of the plugins documentation in the [README](README.md) for ad level inclusion.
 
 
-```
+Both vanilla javascript and react.js will use this bucket singleton on init of the application:
 
 __AdJsBucketSingleton.js__:
 ```js
@@ -77,43 +50,86 @@ export default bucket;
 
 ```
 
-__defaultAdOptions.js__:
-```js
+As well as a default ad configuration file:
 
-export default {
-  path: "/sports/12345",
-  sizes: {
-    mobile: [
-      [300, 250],
-      [300, 600],
-    ],
-    tablet: [
-      [300, 250],
-      [300, 600],
-    ],
-    desktop: [
-      [300, 250],
-      [300, 600],
-      [360, 360],
-      [360, 720],
-    ],
-    largeDesktop: [
-      [300, 250],
-      [300, 600],
-      [360, 360],
-      [360, 720],
-    ],
-  },
-  refreshOnBreakpoint: true,
-  targeting: {
-    age: 30,
-    gender: 'female'
-  },
+__defaultAdConfiguration.js__:
+```js
+  export default {
+    path: "/sports/12345",
+    sizes: {
+      mobile: [[300, 250], [300, 600]],
+      tablet: [[300, 250], [300, 600]],
+      desktop: [[300, 250], [300, 600], [360, 360], [360, 720]],
+      largeDesktop: [[300, 250], [300, 600], [360, 360], [360, 720]],
+    },
+    refreshOnBreakpoint: true,
+    targeting: { age: 30, gender: 'female' },
+  }
+```
+
+Creating ads using the `AdJsBucketSingleton` and `defaultAdConfiguration`
+
+### React.Js Example ###
+
+__Ad.js Component__:
+```js
+import React, { Component } from 'react';
+import bucket from './AdJsBucketSingleton';
+import defaultOptions from './defaultAdConfiguration';
+
+class Ad extends Component {
+  constructor(props) {
+    super(props);
+    this.anchor = null;
+  }
+
+  componentDidMount() {
+    this.createAd();
+  }
+
+  createAd = () => {
+    const { options: optionOverrides } = this.props;
+    const options = { ...defaultOptions, ...optionOverrides };
+    bucket.createAd(this.anchor, options);
+  }
+
+  render() {
+    // position and height required for ${StickyPlugin}
+    const styles = { position: 'absolute', height: '2000px' };
+
+    return <div style={styles} ref={anchor => { this.anchor = anchor }} />;
+  }
 }
 
+export default Ad;
+
+
 ```
+
+And then just create a new instance of the component
 
 __parentContainer__:
 ```js
   <Ad {...this.props} />
+```
+
+
+### Vanilla Javascript Example ###
+
+__createAd.js__:
+```js
+  import bucket from './AdJsBucketSingleton';
+  import defaultOptions from './defaultAdConfiguration';
+
+  const createAd = (targetElement, options = null) => {
+    bucket.createAd(targetElement, { ...defaultOptions, ...options }); 
+  }
+```
+
+__script.js__ Fired on load:
+```js
+  import createAd from './pathToCreateAd.js'
+
+  const elm = document.getElementById('my-ad-target-1');
+  createAd(elm, {})
 ```
