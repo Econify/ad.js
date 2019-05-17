@@ -110,6 +110,8 @@ And then just create a new instance of the component
 
 __parentContainer__:
 ```js
+  import Ad from 'pathToComponent/Ad';
+
   <Ad {...this.props} />
 ```
 
