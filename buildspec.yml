@@ -10,7 +10,7 @@ phases:
     commands:
       - npm run lint:no-fix
       - npm run test
-  # build:
-  #   commands:
-  #     - npm run release
+  build:
+    commands:
+      - npm run release
 
