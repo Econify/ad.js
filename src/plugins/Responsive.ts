@@ -55,11 +55,11 @@ class ResponsivePlugin extends GenericPlugin {
         breakpointSpecifiedForViewWidth = true;
         this.currentConfines = { from, to };
       }
-
-      if (!breakpointSpecifiedForViewWidth) {
-        this.currentConfines = {};
-      }
     });
+
+    if (!breakpointSpecifiedForViewWidth) {
+      this.currentConfines = {};
+    }
   }
 
   public isRefreshDisabled() {
