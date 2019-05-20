@@ -4,6 +4,11 @@ phases:
   install:
     commands:
       - echo 'Beginning production build'
+      - CURRENT_PUBLISHED_VERSION=$(npm info adjs version)
+      - if [ -z $CURRENT_PUBLISHED_VERSION ]; then echo "Could not find latest published version. Exiting build."; exit 1; fi
+      - LOCAL_VERSION=$(node -e "console.log(require('./package.json').version)")
+      - if [ -z $LOCAL_VERSION ]; then echo "Version is missing from package.json. Exiting build."; exit 1; fi
+      - if [ $LOCAL_VERSION = $CURRENT_PUBLISHED_VERSION ]; then echo "Version is unchanged. Exiting build without error."; exit 0; fi
       - npm install -g npm@latest
       - npm install
   pre_build:
@@ -12,5 +17,9 @@ phases:
       - npm run test
   build:
     commands:
+      - sudo apt-get update
+      - sudo apt-get install build-essential -y
+      - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz && tar xzf jq-1.5.tar.gz && cd jq-1.5 && ./configure && make && make install && cd ..
+      - npm config set '//registry.npmjs.org/:_authToken' $(aws ssm get-parameter --name npm-publish-token | jq '.Parameter.Value')
       - npm run release
 
