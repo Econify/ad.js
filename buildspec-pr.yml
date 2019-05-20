@@ -8,9 +8,10 @@ phases:
       - wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz && tar xzf jq-1.5.tar.gz && cd jq-1.5 && ./configure && make && make install && cd ..
       # - npm config set '//registry.npmjs.org/:_authToken' $(aws ssm get-parameter --name npm-publish-token | jq '.Parameter.Value')
       - VALUE=$(aws ssm get-parameter --name npm-publish-token | jq '.Parameter.Value')
+      - echo $VALUE "Value"; exit 1; fi
       - echo $VALUE
-      - npm install -g npm@latest
-      - npm install
+      # - npm install -g npm@latest
+      # - npm install
       - echo 'TESTTTTTTT Beginning production build'
       - CURRENT_PUBLISHED_VERSION=$(npm info adjs version)
       - if [ -z $CURRENT_PUBLISHED_VERSION ]; then echo "Could not find latest published version. Exiting build."; exit 1; fi
