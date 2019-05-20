@@ -71,7 +71,7 @@ Creating ads using the `AdJsBucketSingleton` and `defaultAdConfiguration`
 
 ### React.Js Example ###
 
-__Ad.js Component__:
+__Ad.js Class Component__:
 ```js
 import React, { Component } from 'react';
 import bucket from './AdJsBucketSingleton';
@@ -99,6 +99,33 @@ class Ad extends Component {
 
     return <div style={styles} ref={anchor => { this.anchor = anchor }} />;
   }
+}
+
+export default Ad;
+
+```
+
+OR
+
+__Ad.js Functional Component__:
+```js
+import React, { useRef, useLayoutEffect } from 'react';
+import bucket from './AdJsBucketSingleton';
+import defaultOptions from './defaultAdConfiguration';
+
+const Ad = (props) => {
+  const anchor = useRef(null);
+
+  useLayoutEffect(() => {
+    const options = { ...defaultOptions, ...props.options };
+
+    bucket.createAd(anchor.current, options);
+  });
+
+  // position and height required for ${StickyPlugin}
+  const styles = { height: '2000px', position: 'absolute' };
+
+  return <div style={styles} ref={anchor} />;
 }
 
 export default Ad;
