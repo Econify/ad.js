@@ -3,17 +3,13 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo 'Beginning production build'
-      - CURRENT_PUBLISHED_VERSION=$(npm info adjs version)
-      - exit 0; fi
-      - LOCAL_VERSION=$(node -e "console.log(require('./package.json').version)")
-      - if [ -z $LOCAL_VERSION ]; then echo "Version is missing from package.json. Exiting build."; exit 1; fi
-      - if [ $LOCAL_VERSION = $CURRENT_PUBLISHED_VERSION ]; then echo "Version is unchanged. Exiting build without error."; exit 0; fi
+      - npm install -g npm@latest
+      - npm install
   pre_build:
     commands:
-      - echo "still went into pre build"
       - npm run lint:no-fix
       - npm run test
   build:
     commands:
-      - npm run build
+      - bash ./test.sh
+      # - npm run build
