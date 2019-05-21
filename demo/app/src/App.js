@@ -17,9 +17,9 @@ const defaults = {
   targeting: `{ "example": "true" }`,
   sizes: {
     desktop: [
-      { w: 300, h: 250, checked: false },
+      { w: 300, h: 250, checked: true },
       { w: 300, h: 600, checked: true },
-      { w: 720, h: 90, checked: true },
+      { w: 720, h: 90, checked: false },
       { w: 150, h: 150, checked: false },
       { w: 900, h: 150, checked: false }
     ],
@@ -30,9 +30,9 @@ const defaults = {
       { w: 336, h: 280, checked: false }
     ],
     mobile: [
-      { w: 320, h: 50, checked: true },
+      { w: 320, h: 50, checked: false },
       { w: 300, h: 250, checked: false },
-      { w: 336, h: 280, checked: true }
+      { w: 336, h: 280, checked: false }
     ]
   }
 };
@@ -120,11 +120,12 @@ const App = () => {
     if (autoRefreshPlugin) plugins.push("AutoRefresh");
     if (debugPlugin) plugins.push("Debug");
     if (stickyPlugin) plugins.push("Sticky");
+    if (responsivePlugin) plugins.push("Responsive");
 
     return {
       plugins: plugins.map(plugin => window.AdJS.Plugins[plugin]),
       defaults: {
-      breakpoints: {
+        breakpoints: {
           mobile: { from: 0, to: 350 },
           tablet: { from: 351, to: 780 },
           desktop: { from: 781, to: Infinity }
@@ -137,21 +138,21 @@ const App = () => {
   };
 
   const setSourceCodePreview = returnCode => {
-    let sourceCode = `
-const mainPage = new AdJS.Bucket(AdJS.Networks.${provider}, ${JSON.stringify(
+    let sourceCode = `<script type="text/javascript">
+  const mainPage = new AdJS.Bucket(AdJS.Networks.${provider}, ${JSON.stringify(
       getBucketConfiguration(),
       null,
-      "  "
+      2
     )});
 
-const el = document.getElementById('ad-slot-1');
+  const el = document.getElementById('ad-slot-1');
 
-const ad = mainPage.createAd(el, ${JSON.stringify(
-      getAdConfiguration(),
-      null,
-      "  "
-    )});
-`;
+  const ad = mainPage.createAd(el, ${JSON.stringify(
+    getAdConfiguration(),
+    null,
+    2
+  )});
+</script>`;
 
     setCodePreview(sourceCode);
   };
@@ -192,37 +193,61 @@ const ad = mainPage.createAd(el, ${JSON.stringify(
   };
 
   return (
-    <div className="config">
+    <div className="container">
       <StatefulTabs initialState={{ activeKey: "0" }}>
+        <Tab title="Ad Preview">
+          <div id="ad-slot-1" />
+        </Tab>
+        <Tab title="Code Preview">
+          <div id="code-preview">
+            <pre>{codePreview}</pre>
+          </div>
+        </Tab>
+      </StatefulTabs>
+      <StatefulTabs initialState={{ activeKey: "1" }}>
         <Tab title="Settings">
-          <Block display="grid" gridTemplateColumns="130px 1fr">
-            <label>Network</label>
-            <Input
-              disabled
-              value={provider}
-              onChange={event => setProvider(event.target.value)}
-            />
-          </Block>
+          <fieldset>
+            <legend>Main settings</legend>
 
-          <Block display="grid" gridTemplateColumns="130px 1fr">
-            <label>Path</label>
-            <Input
-              value={path}
-              onChange={event => setPath(event.target.value)}
-            />
-          </Block>
+            <Block display="grid" gridTemplateColumns="130px 1fr">
+              <label>Network</label>
+              <Input
+                disabled
+                value={provider}
+                onChange={event => setProvider(event.target.value)}
+              />
+            </Block>
 
-          <Block display="grid" gridTemplateColumns="130px 1fr">
-            <label>Targeting</label>
-            <Input
-              value={targeting}
-              onChange={event => setTargeting(event.target.value)}
-            />
-          </Block>
+            <Block display="grid" gridTemplateColumns="130px 1fr">
+              <label>Path</label>
+              <Input
+                value={path}
+                onChange={event => setPath(event.target.value)}
+              />
+            </Block>
 
-          <Block display="grid" gridTemplateColumns="130px 1fr">
-            <label>Refresh</label>
+            <Block display="grid" gridTemplateColumns="130px 1fr">
+              <label>Targeting</label>
+              <Input
+                value={targeting}
+                onChange={event => setTargeting(event.target.value)}
+              />
+            </Block>
+          </fieldset>
+        </Tab>
+        <Tab title="Plugins">
+          <fieldset>
+            <legend>Refresh</legend>
+            <Checkbox
+              checked={autoRefreshPlugin}
+              onChange={() => setAutoRefreshPlugin(!autoRefreshPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+            >
+              on/off
+            </Checkbox>
+
             <Slider
+              disabled={!autoRefreshPlugin}
               min={0}
               max={60}
               step={5}
@@ -236,11 +261,20 @@ const ad = mainPage.createAd(el, ${JSON.stringify(
                 }
               }}
             />
-          </Block>
+          </fieldset>
+          <fieldset>
+            <legend>Rendering</legend>
+            <Checkbox
+              checked={autoRenderPlugin}
+              onChange={() => setAutoRenderPlugin(!autoRenderPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+            >
+              on/off
+            </Checkbox>
 
-          <Block display="grid" gridTemplateColumns="130px 1fr">
-            <label>Offset</label>
+            <label />
             <Slider
+              disabled={!autoRenderPlugin}
               min={-200}
               max={200}
               step={10}
@@ -254,55 +288,51 @@ const ad = mainPage.createAd(el, ${JSON.stringify(
                 }
               }}
             />
-          </Block>
+          </fieldset>
 
-          <Checkbox
-            checked={autoRefreshPlugin}
-            onChange={() => setAutoRefreshPlugin(!autoRefreshPlugin)}
-            checkmarkType={STYLE_TYPE.toggle}
-          >
-            Auto Refresh
-          </Checkbox>
+          <fieldset>
+            <legend>Debug</legend>
+            <Checkbox
+              checked={debugPlugin}
+              onChange={() => setDebugPlugin(!debugPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+            >
+              on/off
+            </Checkbox>
+          </fieldset>
 
-          <Checkbox
-            checked={autoRenderPlugin}
-            onChange={() => setAutoRenderPlugin(!autoRenderPlugin)}
-            checkmarkType={STYLE_TYPE.toggle}
-          >
-            Auto Render
-          </Checkbox>
+          <fieldset>
+            <legend>Logging</legend>
+            <Checkbox
+              checked={loggingPlugin}
+              onChange={() => setLoggingPlugin(!loggingPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+            >
+              on/off
+            </Checkbox>
+          </fieldset>
 
-          <Checkbox
-            checked={debugPlugin}
-            onChange={() => setDebugPlugin(!debugPlugin)}
-            checkmarkType={STYLE_TYPE.toggle}
-          >
-            Debug
-          </Checkbox>
+          <fieldset>
+            <legend>Responsive</legend>
+            <Checkbox
+              checked={responsivePlugin}
+              onChange={() => setResponsivePlugin(!responsivePlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+            >
+              on/off
+            </Checkbox>
+          </fieldset>
 
-          <Checkbox
-            checked={loggingPlugin}
-            onChange={() => setLoggingPlugin(!loggingPlugin)}
-            checkmarkType={STYLE_TYPE.toggle}
-          >
-            Logging
-          </Checkbox>
-
-          <Checkbox
-            checked={responsivePlugin}
-            onChange={() => setResponsivePlugin(!responsivePlugin)}
-            checkmarkType={STYLE_TYPE.toggle}
-          >
-            Responsive
-          </Checkbox>
-
-          <Checkbox
-            checked={stickyPlugin}
-            onChange={() => setStickyPlugin(!stickyPlugin)}
-            checkmarkType={STYLE_TYPE.toggle}
-          >
-            Sticky
-          </Checkbox>
+          <fieldset>
+            <legend>Sticky</legend>
+            <Checkbox
+              checked={stickyPlugin}
+              onChange={() => setStickyPlugin(!stickyPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+            >
+              on/off
+            </Checkbox>
+          </fieldset>
         </Tab>
         <Tab title="Sizes">
           <AdsSizes
@@ -323,19 +353,15 @@ const ad = mainPage.createAd(el, ${JSON.stringify(
             setSelection={setSelectionMobile}
           />
         </Tab>
-
-        <Tab title="Code Preview">
-          <div id="code-preview">
-            <pre>{codePreview}</pre>
-          </div>
-        </Tab>
       </StatefulTabs>
       <Button
+        className="preview"
         onClick={previewAd}
         overrides={{
           BaseButton: {
             style: {
-              margin: "0 24px 20px"
+              gridRowStart: 2,
+              gridColumnStart: 2
             }
           }
         }}

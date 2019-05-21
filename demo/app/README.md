@@ -1,4 +1,4 @@
-# Ads.js Demo Config Tool
+# Ad.js Demo Config Tool
 
 Dashboard tool for testing ad.js
 

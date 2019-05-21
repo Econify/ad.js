@@ -12,18 +12,13 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <header>
-      <h1>Ads.js Demo Config Tool</h1>
+      <h1>Ad.js Demo Config Tool</h1>
     </header>
-    <div class="container">
-      <div class="demo">
-        <div id="ad-slot-1"></div>
-      </div>
-      <div id="root"></div>
-    </div>
+    <div id="root"></div>
     <footer>
       <hr />
       <img src="http://www.econify.com/assets/econify_logo.png" />
-      <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
+      <small>Copyright &copy; <span id="year"></span> Econify, LLC. All Rights Reserved.</small>
     </footer>
     <script
       type="text/javascript"
@@ -57,5 +52,10 @@
       type="text/javascript"
       src="http://localhost:8081/plugins.Debug.min.js"
     ></script>
+
+    <script type="text/javascript">
+      var y = new Date().getFullYear();
+      document.getElementById("year").innerHTML = y;
+    </script>
   </body>
 </html>
