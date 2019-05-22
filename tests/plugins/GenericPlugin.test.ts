@@ -4,9 +4,9 @@ describe('GenericPlugin', () => {
   it('throws MISCONFIGURATION error when no ad provided', () => {
     try {
       // @ts-ignore
-      const banana = new GenericPlugin(null);
+      const plugin = new GenericPlugin(null);
 
-      return banana;
+      return plugin;
     } catch (e) {
       expect(e.code).toEqual('MISCONFIGURATION');
     }
