@@ -205,7 +205,7 @@ class Ad implements IAd {
     // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
     const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];
     if (localConfiguration && localConfiguration.plugins) {
-      this.plugins.push(...localConfiguration.plugins);
+      plugins.push(...localConfiguration.plugins);
     }
 
     // Instantiate all class based plugins and reference them
