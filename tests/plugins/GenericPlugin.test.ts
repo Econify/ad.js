@@ -12,7 +12,7 @@ describe('GenericPlugin', () => {
     }
   });
 
-  it('throws MISCONFIGURATION error when no ad provided', () => {
+  it('assigns the provided ad to the plugin', () => {
     const fakeAd = { fakeProperty: 'whatever' };
 
     // @ts-ignore
