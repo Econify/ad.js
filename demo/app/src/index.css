@@ -1,0 +1,74 @@
+:root {
+  --white: #fff;
+  --dark: #33322e;
+  --light: #CCC;
+  --bg-light: #f2f2ed;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  margin: 50px auto;
+  max-width: 1100px;
+  min-width: 640px;
+  background-color: var(--bg-light);
+  color: var(--dark);
+  letter-spacing: 1px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+pre {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  font-size: 12px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin: 10px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+}
+
+#ad-slot-1 {
+  min-width: 300px;
+  min-height: 600px;
+  background-color: var(--white);
+  overflow: auto;
+}
+
+footer img {
+  display: block;
+  margin: 30px auto;
+  max-width: 150px;
+}
+
+label {
+  font-size: 14px;
+  align-self: center;
+}
+
+fieldset  {
+  border: 1px solid var(--light);
+}
+
+legend {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size:12px;
+}
+
+div#code-preview {
+  padding: 10px;
+  background-color: var(--white);
+  overflow-y: auto;
+  height: 580px;
+}
