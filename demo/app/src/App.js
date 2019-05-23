@@ -6,7 +6,11 @@ import { Input } from "baseui/input";
 import { Slider } from "baseui/slider";
 import { StatefulTabs, Tab } from "baseui/tabs";
 import AdsSizes from "./components/adsSizes";
-import { sliderOverrides, checkboxOverrides } from "./helpers/overrides";
+import {
+  sliderOverrides,
+  checkboxOverrides,
+  adActionBlock
+} from "./helpers/overrides";
 
 window.previewInstance = null;
 
@@ -260,9 +264,7 @@ const App = () => {
                 step={5}
                 value={[refreshRate]}
                 onChange={({ value }) => setRefreshRate(value[0])}
-                overrides={sliderOverrides(autoRefreshPlugin, false, 0, 60, [
-                  refreshRate
-                ])}
+                overrides={sliderOverrides}
               />
             </Block>
 
@@ -287,9 +289,7 @@ const App = () => {
                 step={10}
                 value={[offset]}
                 onChange={({ value }) => setOffset(value[0])}
-                overrides={sliderOverrides(autoRenderPlugin, true, -100, 200, [
-                  refreshRate
-                ])}
+                overrides={sliderOverrides}
               />
             </Block>
             <Checkbox
@@ -356,15 +356,7 @@ const App = () => {
       </StatefulTabs>
       <Block
         as="div"
-        overrides={{
-          Block: {
-            style: {
-              gridRowStart: 2,
-              gridColumnStart: 1,
-              justifySelf: "center"
-            }
-          }
-        }}
+        overrides={adActionBlock}
       >
         <Button
           kind={KIND.minimal}
