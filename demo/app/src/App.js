@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Block } from "baseui/block";
-import { Button } from "baseui/button";
+import { Button, KIND } from "baseui/button";
 import { Checkbox, STYLE_TYPE } from "baseui/checkbox";
 import { Input } from "baseui/input";
 import { Slider } from "baseui/slider";
 import { StatefulTabs, Tab } from "baseui/tabs";
 import AdsSizes from "./components/adsSizes";
+import { sliderOverrides, checkboxOverrides } from "./helpers/overrides";
 
 window.previewInstance = null;
 
@@ -237,100 +238,99 @@ const App = () => {
         </Tab>
         <Tab title="Plugins">
           <fieldset>
-            <legend>Refresh</legend>
+            <legend>Viewability / Optimisation</legend>
             <Checkbox
               checked={autoRefreshPlugin}
               onChange={() => setAutoRefreshPlugin(!autoRefreshPlugin)}
               checkmarkType={STYLE_TYPE.toggle}
+              overrides={checkboxOverrides}
             >
-              on/off
+              AutoRefresh
             </Checkbox>
 
-            <Slider
-              disabled={!autoRefreshPlugin}
-              min={0}
-              max={60}
-              step={5}
-              value={[refreshRate]}
-              onChange={({ value }) => setRefreshRate(value[0])}
-              overrides={{
-                TickBar: {
-                  style: {
-                    display: "none"
-                  }
-                }
-              }}
-            />
-          </fieldset>
-          <fieldset>
-            <legend>Rendering</legend>
+            <Block
+              gridTemplateColumns="160px 1fr"
+              display={autoRefreshPlugin ? "grid" : "none"}
+            >
+              <label>refreshRateInSeconds</label>
+              <Slider
+                disabled={!autoRefreshPlugin}
+                min={0}
+                max={60}
+                step={5}
+                value={[refreshRate]}
+                onChange={({ value }) => setRefreshRate(value[0])}
+                overrides={sliderOverrides(autoRefreshPlugin, false, 0, 60, [
+                  refreshRate
+                ])}
+              />
+            </Block>
+
             <Checkbox
               checked={autoRenderPlugin}
               onChange={() => setAutoRenderPlugin(!autoRenderPlugin)}
               checkmarkType={STYLE_TYPE.toggle}
+              overrides={checkboxOverrides}
             >
-              on/off
+              AutoRender
             </Checkbox>
 
-            <label />
-            <Slider
-              disabled={!autoRenderPlugin}
-              min={-200}
-              max={200}
-              step={10}
-              value={[offset]}
-              onChange={({ value }) => setOffset(value[0])}
-              overrides={{
-                TickBar: {
-                  style: {
-                    display: "none"
-                  }
-                }
-              }}
-            />
-          </fieldset>
-
-          <fieldset>
-            <legend>Debug</legend>
-            <Checkbox
-              checked={debugPlugin}
-              onChange={() => setDebugPlugin(!debugPlugin)}
-              checkmarkType={STYLE_TYPE.toggle}
+            <Block
+              gridTemplateColumns="160px 1fr"
+              display={autoRenderPlugin ? "grid" : "none"}
             >
-              on/off
-            </Checkbox>
-          </fieldset>
-
-          <fieldset>
-            <legend>Logging</legend>
-            <Checkbox
-              checked={loggingPlugin}
-              onChange={() => setLoggingPlugin(!loggingPlugin)}
-              checkmarkType={STYLE_TYPE.toggle}
-            >
-              on/off
-            </Checkbox>
-          </fieldset>
-
-          <fieldset>
-            <legend>Responsive</legend>
-            <Checkbox
-              checked={responsivePlugin}
-              onChange={() => setResponsivePlugin(!responsivePlugin)}
-              checkmarkType={STYLE_TYPE.toggle}
-            >
-              on/off
-            </Checkbox>
-          </fieldset>
-
-          <fieldset>
-            <legend>Sticky</legend>
+              <label>offset</label>
+              <Slider
+                disabled={!autoRenderPlugin}
+                min={-200}
+                max={200}
+                step={10}
+                value={[offset]}
+                onChange={({ value }) => setOffset(value[0])}
+                overrides={sliderOverrides(autoRenderPlugin, true, -100, 200, [
+                  refreshRate
+                ])}
+              />
+            </Block>
             <Checkbox
               checked={stickyPlugin}
               onChange={() => setStickyPlugin(!stickyPlugin)}
               checkmarkType={STYLE_TYPE.toggle}
+              overrides={checkboxOverrides}
             >
-              on/off
+              Sticky
+            </Checkbox>
+          </fieldset>
+
+          <fieldset>
+            <legend>Developmnent tools</legend>
+            <Checkbox
+              checked={debugPlugin}
+              onChange={() => setDebugPlugin(!debugPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+              overrides={checkboxOverrides}
+            >
+              Debug
+            </Checkbox>
+            <Checkbox
+              checked={loggingPlugin}
+              onChange={() => setLoggingPlugin(!loggingPlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+              overrides={checkboxOverrides}
+            >
+              Logging
+            </Checkbox>
+          </fieldset>
+
+          <fieldset>
+            <legend>Miscellaneous</legend>
+            <Checkbox
+              checked={responsivePlugin}
+              onChange={() => setResponsivePlugin(!responsivePlugin)}
+              checkmarkType={STYLE_TYPE.toggle}
+              overrides={checkboxOverrides}
+            >
+              Responsive
             </Checkbox>
           </fieldset>
         </Tab>
@@ -354,15 +354,60 @@ const App = () => {
           />
         </Tab>
       </StatefulTabs>
+      <Block
+        as="div"
+        overrides={{
+          Block: {
+            style: {
+              gridRowStart: 2,
+              gridColumnStart: 1,
+              justifySelf: "center"
+            }
+          }
+        }}
+      >
+        <Button
+          kind={KIND.minimal}
+          onClick={() => {
+            window.previewInstance.clear();
+          }}
+        >
+          Clear
+        </Button>
+        <Block as="span" marginLeft="scale300" />
+        <Button
+          kind={KIND.minimal}
+          onClick={() => {
+            window.previewInstance.refresh();
+          }}
+        >
+          Refresh
+        </Button>
+        <Block as="span" marginLeft="scale300" />
+        <Button
+          kind={KIND.minimal}
+          onClick={() => {
+            window.previewInstance.destroy();
+          }}
+        >
+          Destroy
+        </Button>
+        <Block as="span" marginLeft="scale300" />
+        <Button
+          kind={KIND.minimal}
+          onClick={() => {
+            window.previewInstance.render();
+          }}
+        >
+          Render
+        </Button>
+      </Block>
       <Button
         className="preview"
         onClick={previewAd}
         overrides={{
           BaseButton: {
-            style: {
-              gridRowStart: 2,
-              gridColumnStart: 2
-            }
+            style: {}
           }
         }}
       >
