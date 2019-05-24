@@ -18,11 +18,6 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@types/doubleclick-gpt@^238.0.1":
-  version "238.0.2"
-  resolved "https://registry.yarnpkg.com/@types/doubleclick-gpt/-/doubleclick-gpt-238.0.2.tgz#bf15821c61ac3a0a452a71c7c4a42cb3d9ecbbaa"
-  integrity sha512-+yW0WxmjBI7y99PbG4Qn7zDiUr+YLm9sX+tM8+J6WceBe7ZMiJs9v4zBCqrhr9Zqf9M2XmBRDScMOZQ9gnDwdQ==
-
 "@types/events@*":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
@@ -6526,6 +6521,11 @@ unique-string@^1.0.0:
   integrity sha1-nhBXzKhRq7kzmPizOuGHuZyuwRo=
   dependencies:
     crypto-random-string "^1.0.0"
+
+unminified-webpack-plugin@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/unminified-webpack-plugin/-/unminified-webpack-plugin-2.0.0.tgz#9cd9c3f420003e968d6ed5ea365085be5e72df14"
+  integrity sha512-Um2Yw2OfAhRuIXC9G3CDlR2Df1TkYRihwS4QEuQs5qe/nq+l1OEH+Getq9OjHspqtjR+e09m7rUQWi5fNfYj4g==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
