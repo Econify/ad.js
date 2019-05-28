@@ -71,18 +71,6 @@ class DfpAd implements INetworkInstance {
             },
           );
 
-          /*
-          googletag.pubads().addEventListener(
-            'slotOnload',
-
-            (event: any) => {
-              if (event.slot === slot) {
-                console.log('SLOT LOADED');
-              }
-            },
-          );
-           */
-
           googletag.pubads().refresh([slot], { changeCorrelator: false });
 
           // if no Sizes Set
