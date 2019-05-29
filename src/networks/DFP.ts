@@ -64,24 +64,12 @@ class DfpAd implements INetworkInstance {
           googletag.pubads().addEventListener(
             'slotRenderEnded',
 
-            (event: any) => {
+            (event: googletag.events.SlotRenderEndedEvent) => {
               if (event.slot === slot) {
                 resolve();
               }
             },
           );
-
-          /*
-          googletag.pubads().addEventListener(
-            'slotOnload',
-
-            (event: any) => {
-              if (event.slot === slot) {
-                console.log('SLOT LOADED');
-              }
-            },
-          );
-           */
 
           googletag.pubads().refresh([slot], { changeCorrelator: false });
 
