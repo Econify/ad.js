@@ -1,6 +1,5 @@
 import { ILoadedModulesCache, LoadedModules } from './types';
 
-import Bucket from './Bucket';
 import Page from './Page';
 import isServer from './utils/isServer';
 
@@ -73,7 +72,7 @@ const Vendors = new Proxy(_ADJS.Vendors, PluginsHandler);
 
 const AdJS = {
   Page,
-  Bucket,
+  Bucket: Page,
   Plugins,
   Networks,
   Vendors,
