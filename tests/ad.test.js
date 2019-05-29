@@ -3,15 +3,15 @@ import insertElement from 'utils/insertElement';
 import MockNetwork from 'networks/Mock';
 
 describe('Ad', () => {
-  let bucket;
+  let page;
   let ad;
 
   beforeEach(() => {
     const el = insertElement('div', {}, document.body);
 
-    bucket = new AdJS.Bucket(MockNetwork);
+    page = new AdJS.Page(MockNetwork);
 
-    ad = bucket.createAd(el, { sizes: [], breakpoints: {} });
+    ad = page.createAd(el, { sizes: [], breakpoints: {} });
   });
 
   describe('render()', () => {
