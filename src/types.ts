@@ -45,7 +45,7 @@ export interface IVendor {
   name: string;
 }
 
-export interface IBucketConfiguration {
+export interface IPageConfiguration {
   plugins?: IPluginConstructorOrSingleton[];
   vendors?: IVendor[];
   defaults?: {};
