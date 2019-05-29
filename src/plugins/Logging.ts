@@ -1,3 +1,4 @@
+import dispatchEvent from '../utils/dispatchEvent';
 import onEvent from '../utils/onEvent';
 import GenericPlugin from './GenericPlugin';
 
@@ -16,58 +17,56 @@ class LoggingPlugin extends GenericPlugin {
     );
 
     onEvent(ad, (event) => {
-      console.log(
-        BASE_MESSAGE, 'Custom Event',
-      );
+      console.log(BASE_MESSAGE, event);
     });
   }
 
   public beforeRender() {
-    console.log(BASE_MESSAGE, 'Render has been called on ad.');
+    dispatchEvent(this.ad, 'logging', 'beforeRender', 'Render has been called on ad.');
   }
 
   public onRender() {
-    console.log(BASE_MESSAGE, 'Ad actively rendering.');
+    dispatchEvent(this.ad, 'logging', 'onRender', 'Ad actively rendering.');
   }
 
   public afterRender() {
-    console.log(BASE_MESSAGE, 'Ad render has completed.');
+    dispatchEvent(this.ad, 'logging', 'afterRender', 'Ad render has completed.');
   }
 
   public beforeRefresh() {
-    console.log(BASE_MESSAGE, 'Refresh has been called on ad.');
+    dispatchEvent(this.ad, 'logging', 'beforeRefresh', 'Refresh has been called on ad.');
   }
 
   public onRefresh() {
-    console.log(BASE_MESSAGE, 'Ad actively refreshing.');
+    dispatchEvent(this.ad, 'logging', 'onRefresh', 'Ad actively refreshing.');
   }
 
   public afterRefresh() {
-    console.log(BASE_MESSAGE, 'Ad refresh has completed.');
+    dispatchEvent(this.ad, 'logging', 'afterRefresh', 'Ad refresh has completed.');
   }
 
   public beforeClear() {
-    console.log(BASE_MESSAGE, 'Clear has been called on ad.');
+    dispatchEvent(this.ad, 'logging', 'beforeClear', 'Clear has been called on ad.');
   }
 
   public onClear() {
-    console.log(BASE_MESSAGE, 'Ad actively clearing.');
+    dispatchEvent(this.ad, 'logging', 'onClear', 'Ad actively clearing.');
   }
 
   public afterClear() {
-    console.log(BASE_MESSAGE, 'Ad clear has completed.');
+    dispatchEvent(this.ad, 'logging', 'afterCler', 'Ad clear has completed.');
   }
 
   public beforeDestroy() {
-    console.log(BASE_MESSAGE, 'Destroy has been called on ad.');
+    dispatchEvent(this.ad, 'logging', 'beforeDestroy', 'Destroy has been called on ad.');
   }
 
   public onDestroy() {
-    console.log(BASE_MESSAGE, 'Ad actively destroying.');
+    dispatchEvent(this.ad, 'logging', 'onDestroy', 'Ad actively destroying.');
   }
 
   public afterDestroy() {
-    console.log(BASE_MESSAGE, 'Ad destroy has completed.');
+    dispatchEvent(this.ad, 'logging', 'afterDestroy', 'Ad destroy has completed.');
   }
 }
 

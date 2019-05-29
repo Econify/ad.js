@@ -1,4 +1,5 @@
 import scrollMonitor, { IWatcher } from 'scrollmonitor';
+import dispatchEvent from '../utils/dispatchEvent';
 import GenericPlugin from './GenericPlugin';
 
 const ONE_SECOND = 1000;
@@ -13,6 +14,7 @@ class AutoRefreshPlugin extends GenericPlugin {
 
   public afterRender() {
     this.startMonitoringViewability();
+    dispatchEvent(this.ad, 'autoRefresh', 'afterRender', event);
   }
 
   public beforeClear() {
