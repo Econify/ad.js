@@ -35,7 +35,9 @@ class Debug extends GenericPlugin {
       googletag.pubads().addEventListener(
         'slotRenderEnded',
         (event: googletag.events.SlotRenderEndedEvent) => {
-          this.insertMetadata(event);
+          if (event.slot === this.ad.slot) {
+            this.insertMetadata(event);
+          }
         },
       );
     });
