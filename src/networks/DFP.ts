@@ -101,7 +101,15 @@ class DfpAd implements INetworkInstance {
 
         googletag.pubads().refresh([slot], { changeCorrelator: false });
 
-        resolve();
+        googletag.pubads().addEventListener(
+          'slotRenderEnded',
+
+          (event: googletag.events.SlotRenderEndedEvent) => {
+            if (event.slot === slot) {
+              resolve();
+            }
+          },
+        );
       });
     });
   }
