@@ -1,10 +1,10 @@
 # Interacting with Ad.js
 There are four methods for you to get a reference to your ad for interaction with the methods below.
 
-1. Assigning to variable:  `const bannerAd = new bucket.Ad(el, 'banner');`
-2. Lookup via SlotID:  `bucket.find('banner')`
-3. Lookup via Element:`bucket.find(DOMElement)`
-4. Lookup via instances array:`bucket.instances[0]`
+1. Assigning to variable:  `const bannerAd = new page.Ad(el, 'banner');`
+2. Lookup via SlotID:  `page.find('banner')`
+3. Lookup via Element:`page.find(DOMElement)`
+4. Lookup via instances array:`page.instances[0]`
 
 ## Lifecycle
 Once your ad has been created, Ad.js provides you a functional interface to interact and control your ads.
@@ -32,7 +32,7 @@ If your ad is refreshed (and your provider supports ad refresh), a typical lifec
 Even though most Ad lifecycle actions require network requests and are therefore asynchronous, Ad.js interfaces are synchronous. When async methods are still pending, Ad.js will automatically queue up your action and replay them in the order received. Because of this code like this is safe!
 
 ```js
-    const ad = bucket.find('banner');
+    const ad = page.find('banner');
     
     ad.on('render', () => {
       console.log('render');
@@ -58,7 +58,7 @@ Even though most Ad lifecycle actions require network requests and are therefore
 However should you want to link into the completion of the action you invoke, the actions return their promise in the chain. Example:
 
 ```js
-    const ad = new bucket.Ad(el, bucket: { 'slot1' });
+    const ad = new page.Ad(el, page: { 'slot1' });
     
     ad.render()
       .then(() => console.log('rendered'));
@@ -68,7 +68,7 @@ However should you want to link into the completion of the action you invoke, th
 Whether you have set autoRender to false or you need to explicitly render at a specific point Ad.js provides you with a render method. Simply call render() to force render an ad that has not yet been rendered. Note: Calling render on an already rendered Ad is a noop, however calling render on an ad that has been cleared will render a new ad.
 
 ```js
-    const ad = new bucket.Ad(el, { slot: 'ad1' });
+    const ad = new page.Ad(el, { slot: 'ad1' });
     
     ad.render();
 ```
@@ -89,7 +89,7 @@ Freeze will hold all actions to an ad and pause all timers for refresh. Calling 
 Unfreeze will remove an ad from a frozen state and resume timers. Unfreeze takes a single parameter instructing Ad.js whether to play all actions the ad has received while paused. The default for this param is false. Example:
 
 ```js
-    const ad = new bucket.Ad(el, { slot: 'adtobefrozen' });
+    const ad = new page.Ad(el, { slot: 'adtobefrozen' });
     
     ad.freeze();
     ad.render(); // does nothing
@@ -106,7 +106,7 @@ Every ad in enigma contains an event bus for you to monitor and interact with th
 ```js
     import EVENTS from 'adjs/Events';
     
-    const ad = new bucket.Ad(el, options);
+    const ad = new page.Ad(el, options);
     ad.on(EVENTS.RENDER, function (event) {
      console.log('rendered into', this, 'because of', event);
     });

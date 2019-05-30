@@ -17,7 +17,7 @@ import DFP from 'adjs/networks/DFP';
 
 import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
 
-const bucket = new AdJS.Bucket(DFP, {
+const page = new AdJS.Page(DFP, {
   plugins: [
     AutoRefreshPlugin,
   ]
@@ -39,7 +39,7 @@ __Example__:
   </head>
   <body>
     <script>
-      const bucket = new AdJS.Bucket(AdJS.Networks.DFP, {
+      const page = new AdJS.Page(AdJS.Networks.DFP, {
         plugins: [
           AdJS.Plugins.AutoRefresh
         ]
@@ -59,12 +59,12 @@ The AutoRefresh Plugin adds two options to ad instantiation
 
 ## Examples
 
-Configuration via Bucket (will affect all ads within the bucket). It is common to implement refresh on a bucket level as your refresh strategy will usually be the same site wide.
+Configuration via Page (will affect all ads within the page). It is common to implement refresh on a page level as your refresh strategy will usually be the same site wide.
 ```js
 import AdJS from 'adjs';
 import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
-const bucket = new AdJS.Bucket(Network, {
+const page = new AdJS.Page(Network, {
   plugins: [
     AutoRefresh,
   ],
@@ -83,9 +83,9 @@ import DFPNetwork from 'adjs/networks/DFP';
 
 import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
 
-const bucket = new AdJS.Bucket(DFPNetwork);
+const page = new AdJS.Page(DFPNetwork);
 
-const ad = new bucket.createAd(el, {
+const ad = new page.createAd(el, {
   plugins: [
     AutoRefreshPlugin
   ],

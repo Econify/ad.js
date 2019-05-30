@@ -13,7 +13,7 @@ __Example__:
 import AdJS from 'adjs';
 import DFPNetwork from 'adjs/networks/DFP';
 
-const bucket = new AdJS.Bucket(DFPNetwork);
+const page = new AdJS.Page(DFPNetwork);
 ```
 
 ### Script Tag
@@ -29,7 +29,7 @@ __Example__:
   </head>
   <body>
     <script>
-      const bucket = new AdJS.Bucket(AdJS.Networks.DFP);
+      const page = new AdJS.Page(AdJS.Networks.DFP);
     </script>
   </body>
 </html>
@@ -50,9 +50,9 @@ __Using Standard Sizes__
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
 
-const bucket = new AdJS.Bucket(DFPNetwork);
+const page = new AdJS.Page(DFPNetwork);
 
-const ad = new bucket.Ad(el, {
+const ad = new page.Ad(el, {
   path: '/example/adunit/path',
 
   targeting: {
@@ -71,7 +71,7 @@ __Using Breakpoints__
 const AdJS = require('adjs');
 const DFPNetwork = require('adjs/networks/dfp');
 
-const bucket = new AdJS.Bucket(DFPNetwork, {
+const page = new AdJS.Page(DFPNetwork, {
   plugins: [
     require('adjs/plugins/responsive')
   ],
@@ -84,7 +84,7 @@ const bucket = new AdJS.Bucket(DFPNetwork, {
   }
 });
 
-const ad = new bucket.Ad(el, {
+const ad = new page.Ad(el, {
   path: '/example/adunit/path',
 
   targeting: {

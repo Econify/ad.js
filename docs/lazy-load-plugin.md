@@ -28,7 +28,7 @@ import DFPNetwork from 'adjs/networks/DFP';
 
 import AutoRender from 'adjs/plugins/AutoRender';
 
-const bucket = new AdJS.Bucket(DFPNetwork, {
+const page = new AdJS.Page(DFPNetwork, {
   plugins: [
     AutoRender,
   ]
@@ -50,7 +50,7 @@ __Example__:
   </head>
   <body>
     <script>
-      const bucket = new AdJS.Bucket(AdJS.Networks.DFP, {
+      const page = new AdJS.Page(AdJS.Networks.DFP, {
         plugins: [
           AdJS.Plugins.AutoRender
         ]
@@ -70,12 +70,12 @@ The Auto Render Plugin adds two options to ad instantiation
 
 ## Examples
 
-Configuration via Bucket (will affect all ads within the bucket)
+Configuration via Page (will affect all ads within the page)
 ```js
 import AdJS from 'adjs';
 import AutoRender from 'adjs/plugins/AutoRender';
 
-const bucket = new AdJS.Bucket(Network, {
+const page = new AdJS.Page(Network, {
   plugins: [
     AutoRender,
   ],
@@ -92,9 +92,9 @@ Configuraton on an individual Ad
 import AdJS from 'adjs';
 import AutoRender from 'adjs/plugins/AutoRender';
 
-const bucket = new AdJS.Bucket(Network);
+const page = new AdJS.Page(Network);
 
-const ad = new bucket.createAd(el, {
+const ad = new page.createAd(el, {
   plugins: [
     AutoRender
   ],
