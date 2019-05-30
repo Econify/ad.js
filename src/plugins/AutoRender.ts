@@ -1,4 +1,6 @@
 import scrollMonitor from 'scrollmonitor';
+import { LOG_LEVELS } from '../types';
+import dispatchEvent from '../utils/dispatchEvent';
 import GenericPlugin from './GenericPlugin';
 
 class AutoRender extends GenericPlugin {
@@ -7,8 +9,10 @@ class AutoRender extends GenericPlugin {
     const { offset = 0 } = configuration;
 
     const renderWatcher = scrollMonitor.create(container, offset);
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender', `Ad's scroll monitor has been created.`);
 
     renderWatcher.enterViewport(() => {
+      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender', 'Ad has entered the viewport. Calling render().');
       this.ad.render();
     });
   }

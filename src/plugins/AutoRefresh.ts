@@ -1,4 +1,6 @@
 import scrollMonitor, { IWatcher } from 'scrollmonitor';
+import { LOG_LEVELS } from '../types';
+import dispatchEvent from '../utils/dispatchEvent';
 import GenericPlugin from './GenericPlugin';
 
 const ONE_SECOND = 1000;
@@ -12,15 +14,19 @@ class AutoRefreshPlugin extends GenericPlugin {
   private timerReference?: number;
 
   public afterRender() {
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Adding monitoring for ad.');
     this.startMonitoringViewability();
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad viewability is being monitored.');
   }
 
   public beforeClear() {
     this.stopMonitoringViewability();
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad viewability monitor has been removed.');
   }
 
   public beforeDestroy() {
     this.stopMonitoringViewability();
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad viewability monitor has been removed.');
   }
 
   private startMonitoringViewability(): void {
@@ -57,6 +63,12 @@ class AutoRefreshPlugin extends GenericPlugin {
     }
 
     const { refreshRateInSeconds = 30 } = this.ad.configuration;
+    dispatchEvent(
+      this.ad.id,
+      LOG_LEVELS.INFO,
+      'AutoRefresh',
+      `Ad is in view. Beginning timer for ${refreshRateInSeconds}.`,
+    );
 
     this.timerReference = window.setInterval(async () => {
       this.timeInView += 1;
@@ -64,6 +76,13 @@ class AutoRefreshPlugin extends GenericPlugin {
       // Determine whether the ad should refresh
       if (!this.isRefreshing && this.timeInView >= refreshRateInSeconds) {
         this.isRefreshing = true;
+
+        dispatchEvent(
+          this.ad.id,
+          LOG_LEVELS.INFO,
+          'AutoRefresh',
+          `Ad viewability met. Refreshing Ad and resetting timer.`,
+        );
 
         await this.ad.refresh();
 
@@ -77,7 +96,7 @@ class AutoRefreshPlugin extends GenericPlugin {
     if (!this.timerReference) {
       return;
     }
-
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad is no longer in view.');
     clearInterval(this.timerReference);
     this.timerReference = undefined;
   }

@@ -127,6 +127,10 @@ class Ad implements IAd {
     return this.bucket.network;
   }
 
+  get slot(): googletag.Slot {
+    return this.networkInstance.slot;
+  }
+
   private get vendors() {
     return [
       ...this.bucket.vendors,
