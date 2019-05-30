@@ -73,8 +73,7 @@ class DfpAd implements INetworkInstance {
           googletag.pubads().addEventListener(
             'slotRenderEnded',
 
-            (event: any) => {
-
+            (event: googletag.events.SlotRenderEndedEvent) => {
               if (event.slot === slot) {
                 dispatchEvent(
                   Number(this.id.substring(this.id.length, this.id.length - 1)),
