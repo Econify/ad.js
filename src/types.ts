@@ -31,7 +31,7 @@ export interface IAdEventListener {
 }
 
 export interface IAd {
-  id?: number;
+  id: number;
 
   configuration: IAdConfiguration;
 
