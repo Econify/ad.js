@@ -1,4 +1,4 @@
-type ValidErrorCode = 'MISCONFIGURATION' | 'INVALID_PARAMETERS' | 'MALFORMED_REQUEST';
+type ValidErrorCode = 'Misconfiguration' | 'Invalid Parameters' | 'Malformed Request';
 
 class AdJsError extends Error {
   public code: ValidErrorCode;

@@ -23,7 +23,7 @@ function validateSizes(configuration: IAdConfiguration): void {
   const { sizes, breakpoints } = configuration;
 
   if (!Array.isArray(sizes) && !breakpoints) {
-    throw new AdJsError('MISCONFIGURATION', 'Sizes must be of type `Array` unless breakpoints have been specified');
+    throw new AdJsError('Misconfiguration', 'Sizes must be of type `Array` unless breakpoints have been specified');
   }
 }
 

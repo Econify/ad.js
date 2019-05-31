@@ -23,7 +23,7 @@ class DfpAd implements INetworkInstance {
     const { id } = el;
 
     if (!id) {
-      throw new AdJsError('MALFORMED_REQUEST', 'Ad does not have an id');
+      throw new AdJsError('Malformed Request', 'Ad does not have an id');
     }
 
     this.id = id;
@@ -142,11 +142,11 @@ const DoubleClickForPublishers: INetwork = {
     const { sizes, targeting, path, breakpoints } = configuration;
 
     if (!sizes) {
-      throw new AdJsError('MALFORMED_REQUEST', 'Sizes must be defined.');
+      throw new AdJsError('Malformed Request', 'Sizes must be defined.');
     }
 
     if (!path) {
-      throw new AdJsError('MALFORMED_REQUEST', 'Ad Path must be defined.');
+      throw new AdJsError('Malformed Request', 'Ad Path must be defined.');
     }
 
     return new DfpAd(el, path, sizes, breakpoints, targeting);

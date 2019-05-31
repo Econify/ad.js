@@ -4,6 +4,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import { terser } from "rollup-plugin-terser";
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
+const errorMinifier = require('./rollup-plugins/error-minify');
 
 const WEB_FORMAT = 'iife';
 const NODE_FORMAT = 'cjs';
@@ -53,6 +54,7 @@ function createNodeConfiguration({ type, file, path }) {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
+      errorMinifier()
     ],
     output: {
       file: outputFile,

@@ -1,6 +1,6 @@
 # Common Errors
 
-## Code 1: Networks/Plugins Used Without Script Installation
+## <div id="1">Networks/Plugins Used Without Script Installation</div>
 
 Using the Networks or Plugins property on AdJS is only available when installing via script. If you are compiling the AdJS library locally within your project, use `require` to specify the plugin directly.
 
@@ -17,9 +17,9 @@ Example:
   });
 ```
 
-## Code 2: Missing Plugin/Network
+## <div id="2">Missing Plugin/Network</div>
 
-The Plugin or Network has not been included in your bundle. Please manually include the script tag associated with this plugin or network. You can see documentation on https://adjs.dev.
+The Plugin or Network has not been included in your bundle. Please manually include the script tag associated with this plugin or network.
 
 Example:
 
@@ -37,7 +37,7 @@ Example:
   </script>
 ```
 
-## Code 3: No Ad Passed Into Generic Plugin
+## <div id="3">No Ad Passed Into Generic Plugin</div>
 
 An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin and overrides the constructor, make sure you are calling `super` and that you are passing in an instance of an ad as the first parameter. Alternatively, you can hook into the `onCreate` method which gets called by the constructor.
 
@@ -56,25 +56,25 @@ Example:
     constructor(ad) {
       super(ad);
 
-      console.log('Example Plugin Started Succesfully');
+      console.log('Example Plugin Started Successfully');
     }
   }
 ```
 
 ## Codes 4-7: Ad Configuration Errors
 
-### No ID
+### <div id="4">No ID</div>
 
 The ad does not have an id.
 
-### No Size
+### <div id="5">No Size</div>
 
 The ad does not have any sizes. Sizes must be defined.
 
-### No Path
+### <div id="6">No Path</div>
 
 The ad does not have a path. An ad's path must be defined.
 
-## Wrong Size type
+## <div id="7">Wrong Size type</div>
 
 Unless breakpoints are specified, ad sizes must be of type "Array."
