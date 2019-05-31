@@ -6,12 +6,12 @@ import GenericPlugin from './GenericPlugin';
 const BASE_MESSAGE = '[ADJS]';
 
 const colorMap: { [key: string]: string } = {
-  AutoRefresh: 'blue',
-  AutoRender: 'purple',
-  Logging: 'red',
-  Responsive: 'green',
-  Sticky: 'brown',
-  DFPNetwork: 'gray',
+  'AutoRefresh Plugin': 'blue',
+  'AutoRender Plugin': 'purple',
+  'Logging Plugin': 'red',
+  'Responsive Plugin': 'green',
+  'Sticky Plugin': 'brown',
+  'DFP Network': 'gray',
 };
 
 class LoggingPlugin extends GenericPlugin {
