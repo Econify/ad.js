@@ -30,4 +30,4 @@ function insertElement(
   return element;
 }
 
-export = insertElement;
+export default insertElement;

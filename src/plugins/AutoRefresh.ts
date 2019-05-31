@@ -83,4 +83,4 @@ class AutoRefreshPlugin extends GenericPlugin {
   }
 }
 
-export = AutoRefreshPlugin;
+export default AutoRefreshPlugin;

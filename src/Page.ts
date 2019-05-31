@@ -1,5 +1,5 @@
-import MainSingleton from '.';
 import Ad from './Ad';
+import MainSingleton from './index';
 import { IAdConfiguration, INetwork, IPageConfiguration, IPlugin, IVendor } from './types';
 
 export default class Page {

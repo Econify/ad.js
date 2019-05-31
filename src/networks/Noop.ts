@@ -21,4 +21,4 @@ const Noop: INetwork = {
   async resetCorrelator() {},
 };
 
-export = Noop;
+export default Noop;
