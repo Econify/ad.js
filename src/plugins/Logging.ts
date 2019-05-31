@@ -30,58 +30,58 @@ class LoggingPlugin extends GenericPlugin {
       const { level, creator, message, data } = event.detail;
       // @ts-ignore
       console[level](
-        `%c${BASE_MESSAGE} ${creator} ${message} ${data || ''}`,
+        `%c${BASE_MESSAGE} [${creator}] ${message} ${data || ''}`,
         `color: ${colorMap[creator] || 'black'}; font-weight: bold`,
       );
     });
   }
 
   public beforeRender() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Render has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Render has been called on ad.');
   }
 
   public onRender() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad actively rendering.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively rendering.');
   }
 
   public afterRender() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad render has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad render has completed.');
   }
 
   public beforeRefresh() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad render has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad render has completed.');
   }
 
   public onRefresh() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad actively refreshing.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively refreshing.');
   }
 
   public afterRefresh() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad refresh has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad refresh has completed.');
   }
 
   public beforeClear() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Clear has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Clear has been called on ad.');
   }
 
   public onClear() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad actively clearing.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively clearing.');
   }
 
   public afterClear() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad clear has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad clear has completed.');
   }
 
   public beforeDestroy() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Destroy has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Destroy has been called on ad.');
   }
 
   public onDestroy() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad actively destroying.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively destroying.');
   }
 
   public afterDestroy() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging', 'Ad destroy has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad destroy has completed.');
   }
 }
 

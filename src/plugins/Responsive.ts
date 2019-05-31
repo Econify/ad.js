@@ -13,7 +13,7 @@ class ResponsivePlugin extends GenericPlugin {
 
   public beforeCreate() {
     if (this.isRefreshDisabled()) {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive', `Ad refresh is disabled.`);
+      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Ad refresh is disabled.`);
 
       return;
     }
@@ -33,7 +33,7 @@ class ResponsivePlugin extends GenericPlugin {
         dispatchEvent(
           this.ad.id,
           LOG_LEVELS.INFO,
-          'Responsive',
+          'Responsive Plugin',
           `Viewport dimensions have entered a new breakpoint. Calling refresh.`,
         );
 
@@ -45,12 +45,12 @@ class ResponsivePlugin extends GenericPlugin {
   }
 
   public beforeClear() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive', `Removing window resize listener for ad.`);
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Removing window resize listener for ad.`);
     window.removeEventListener(this.EVENT_KEY, this.listener);
   }
 
   public beforeDestroy() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive', `Removing window resize listener for ad.`);
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Removing window resize listener for ad.`);
     window.removeEventListener(this.EVENT_KEY, this.listener);
   }
 

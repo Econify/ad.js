@@ -14,19 +14,19 @@ class AutoRefreshPlugin extends GenericPlugin {
   private timerReference?: number;
 
   public afterRender() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Adding monitoring for ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Adding monitoring for ad.');
     this.startMonitoringViewability();
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad viewability is being monitored.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability is being monitored.');
   }
 
   public beforeClear() {
     this.stopMonitoringViewability();
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad viewability monitor has been removed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability monitor has been removed.');
   }
 
   public beforeDestroy() {
     this.stopMonitoringViewability();
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad viewability monitor has been removed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability monitor has been removed.');
   }
 
   private startMonitoringViewability(): void {
@@ -66,7 +66,7 @@ class AutoRefreshPlugin extends GenericPlugin {
     dispatchEvent(
       this.ad.id,
       LOG_LEVELS.INFO,
-      'AutoRefresh',
+      'AutoRefresh Plugin',
       `Ad is in view. Beginning timer for ${refreshRateInSeconds}.`,
     );
 
@@ -80,7 +80,7 @@ class AutoRefreshPlugin extends GenericPlugin {
         dispatchEvent(
           this.ad.id,
           LOG_LEVELS.INFO,
-          'AutoRefresh',
+          'AutoRefresh Plugin',
           `Ad viewability met. Refreshing Ad and resetting timer.`,
         );
 
@@ -96,7 +96,7 @@ class AutoRefreshPlugin extends GenericPlugin {
     if (!this.timerReference) {
       return;
     }
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh', 'Ad is no longer in view.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad is no longer in view.');
     clearInterval(this.timerReference);
     this.timerReference = undefined;
   }

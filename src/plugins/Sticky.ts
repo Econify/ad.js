@@ -10,14 +10,14 @@ class StickyPlugin extends GenericPlugin {
     const { container } = this.ad;
 
     const stickybit = stickybits(container);
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky', `Sticky container added to ad.`);
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Sticky container added to ad.`);
 
     this.stickybit = stickybit;
   }
 
   public onDestroy() {
     if (this.stickybit) {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky', `Removed sticky container from ad.`);
+      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Removed sticky container from ad.`);
       this.stickybit.cleanup();
     }
 

@@ -9,10 +9,10 @@ class AutoRender extends GenericPlugin {
     const { offset = 0 } = configuration;
 
     const renderWatcher = scrollMonitor.create(container, offset);
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender', `Ad's scroll monitor has been created.`);
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
 
     renderWatcher.enterViewport(() => {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender', 'Ad has entered the viewport. Calling render().');
+      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has entered the viewport. Calling render().');
       this.ad.render();
     });
   }
