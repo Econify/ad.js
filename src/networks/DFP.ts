@@ -110,6 +110,11 @@ class DfpAd implements INetworkInstance {
             }
           },
         );
+
+        // if no Sizes Set
+        if (!slot.getContentUrl()) {
+          resolve();
+        }
       });
     });
   }
