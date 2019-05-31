@@ -27,11 +27,11 @@ describe('Plugin', () => {
 
     beforeEach(() => {
       const el = insertElement('div', {}, document.body);
-      const bucket = new AdJS.Bucket(MockNetwork, {
+      const page = new AdJS.Page(MockNetwork, {
         plugins: [TEST_PLUGIN],
       });
 
-      ad = bucket.createAd(el, { sizes: [], breakpoints: {} });
+      ad = page.createAd(el, { sizes: [], breakpoints: {} });
 
       jest.spyOn(TEST_PLUGIN, 'onCreate');
       jest.spyOn(TEST_PLUGIN, 'beforeRender');

@@ -22,7 +22,7 @@ Note: If you are using the script include, please make sure to also include the 
 Example Configuration
 
 ```js
-const homepageAdBucket = new AdJS.Bucket(AdJS.Networks.DFP, {
+const homepageAdPage = new AdJS.Page(AdJS.Networks.DFP, {
   vendors: [
     new AdJS.Vendors.Krux("KRUX ID"),
     new AdJS.Vendors.AdmantX({
@@ -44,15 +44,15 @@ const homepageAdBucket = new AdJS.Bucket(AdJS.Networks.DFP, {
   }
 });
 ```
-Once you've created an Ad.js Bucket, you can creat Ad instances inside of them via `bucketName.createAd()`
+Once you've created an Ad.js Page, you can creat Ad instances inside of them via `pageName.createAd()`
 
 __Example:__
 ```js
-new homepageBucket.Ad(DomElement, ?Options);
+new homepagePage.Ad(DomElement, ?Options);
 
 // or
 
-homepageBucket.createAd(DomElement, ?Options);
+homepagePage.createAd(DomElement, ?Options);
 ```
 
 __Dom Element__:
@@ -79,7 +79,7 @@ Example Ad Creation
 ```js
 const el = document.findElementById('example');
 
-const bannerAd = new homepageAdBucket.Ad(el, {
+const bannerAd = new homepageAdPage.Ad(el, {
   path: '/1234/example/homepage',
   offset: -10,
 });

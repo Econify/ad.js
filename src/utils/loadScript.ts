@@ -27,4 +27,4 @@ const loadScript = (url: string, attributes: IScriptAttributes = {}): Promise<vo
     document.getElementsByTagName('head')[0].appendChild(scriptTag);
   });
 
-export = loadScript;
+export default loadScript;

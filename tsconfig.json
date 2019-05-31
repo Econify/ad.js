@@ -4,7 +4,7 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "ES2017",
-    "module": "commonjs",
+    "module": "ESNext",
     "lib": [
       "dom",
       "es2017",
@@ -12,8 +12,9 @@
     ],
     "strict": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
     "allowJs": true
   },
   "include": [

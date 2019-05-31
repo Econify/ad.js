@@ -1,6 +1,6 @@
 .DS_Store
 *.swp
 node_modules
-dist
-umd
+build
 coverage
+.rpt2_cache/

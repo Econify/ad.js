@@ -13,7 +13,7 @@ __Example__:
 import AdJS from 'adjs';
 import TestNetwork from 'adjs/networks/Noop';
 
-const bucket = new AdJS.Bucket(TestNetwork);
+const page = new AdJS.Page(TestNetwork);
 ```
 
 ### Script Tag
@@ -29,7 +29,7 @@ __Example__:
   </head>
   <body>
     <script>
-      const bucket = new AdJS.Bucket(AdJS.Networks.Noop);
+      const page = new AdJS.Page(AdJS.Networks.Noop);
     </script>
   </body>
 </html>
