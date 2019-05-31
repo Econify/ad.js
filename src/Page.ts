@@ -1,6 +1,7 @@
 import Ad from './Ad';
 import MainSingleton from './index';
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD:src/Page.ts
 import { IAdConfiguration, INetwork, IPageConfiguration, IPlugin, IVendor } from './types';
 =======
@@ -9,6 +10,9 @@ import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } fr
 =======
 import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
 >>>>>>> [SB] Switch to Rollup
+=======
+import { IAdConfiguration, INetwork, IPageConfiguration, IPlugin, IVendor } from './types';
+>>>>>>> Remove ad code and fix tests
 
 export default class Page {
   public ads: Ad[] = [];
