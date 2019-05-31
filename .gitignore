@@ -3,3 +3,6 @@
 node_modules
 dist
 umd
+coverage
+lib
+.rpt2_cache/

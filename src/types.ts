@@ -30,6 +30,7 @@ export interface IAd {
   el: HTMLElement;
 
   network: INetwork;
+  slot: googletag.Slot;
 
   render(): Promise<void>;
   refresh(): Promise<void>;

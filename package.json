@@ -1,22 +1,18 @@
 {
   "name": "adjs",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.5",
   "description": "Ad Library to simplify and optimize integration with ad networks such as DFP",
-  "main": "./index.js",
+  "main": "./core.js",
   "types": "./types.d.ts",
   "scripts": {
-    "build": "npm run build:client && npm run build:nodejs",
-    "build:client": "npm run build:rollup",
-    "build:nodejs": "tsc --pretty -p .",
-    "build:rollup": "rollup -c",
-    "build:webpack": "webpack",
-    "clean": "rm -rf ./umd && rm -rf ./build",
+    "build": "npm run clean && rollup -c",
+    "clean": "rm -rf ./umd && rm -rf ./dist",
     "docs": "docsify serve docs",
-    "lint": "tslint -c tslint.json --fix 'src/**/*.ts'",
-    "lint:no-fix": "tslint -c tslint.json 'src/**/*.ts'",
-    "release": "npm run clean && npm run build; cp ./package.json dist; cp ./README.md dist; cp -R umd dist; cd dist; npm publish",
-    "start": "concurrently -k \"rollup --watch -c\" \"http-server -p 8080\"",
-    "test": "NODE_PATH=./src jest ./tests --no-cache",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint:fix": "tslint -c tslint.json --fix 'src/**/*.ts'",
+    "release": "npm run clean && npm run build; cp ./package.json dist; cp ./README.md dist; cp src/types.ts dist; cp -R umd dist; cd dist; npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN; npm publish",
+    "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
+    "test": "NODE_PATH=./src jest --coverage ./tests --no-cache",
     "ts": "tsc --pretty"
   },
   "repository": {
@@ -31,31 +27,29 @@
   "homepage": "https://github.com/econify/ad.js#readme",
   "dependencies": {
     "scrollmonitor": "^1.2.4",
-    "stickybits": "^3.6.4"
+    "stickybits": "^3.6.5"
   },
   "devDependencies": {
     "@types/jest": "^23.3.0",
     "concurrently": "^3.6.0",
     "docsify": "^4.9.4",
     "docsify-cli": "^4.3.0",
+    "estree-walker": "^0.6.1",
     "http-server": "^0.11.1",
     "husky": "^1.0.0-rc.13",
     "jest": "^23.4.1",
+    "lodash.orderby": "^4.6.0",
+    "magic-string": "^0.25.2",
     "rollup": "^1.11.3",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript": "^1.0.1",
     "source-map-loader": "^0.2.3",
-    "terser-webpack-plugin": "^1.2.3",
     "ts-jest": "^23.0.1",
     "ts-loader": "^4.4.2",
     "tslint": "^5.11.0",
-    "typescript": "^3.4.5",
-    "unminified-webpack-plugin": "^2.0.0",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.3.1"
+    "typescript": "^3.5.1"
   },
   "jest": {
     "transform": {
@@ -73,7 +67,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint:no-fix && npm test"
+      "pre-commit": "npm run lint && npm test"
     }
   }
 }

@@ -5,9 +5,9 @@ import {
   Maybe,
 } from './types';
 
-import AdJS from '.';
 import Bucket from './Bucket';
 import EVENTS from './Events';
+import AdJS from './index';
 import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
@@ -127,6 +127,10 @@ class Ad implements IAd {
     return this.bucket.network;
   }
 
+  get slot(): googletag.Slot {
+    return this.networkInstance.slot;
+  }
+
   private get vendors() {
     return [
       ...this.bucket.vendors,
@@ -205,7 +209,7 @@ class Ad implements IAd {
     // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
     const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];
     if (localConfiguration && localConfiguration.plugins) {
-      this.plugins.push(...localConfiguration.plugins);
+      plugins.push(...localConfiguration.plugins);
     }
 
     // Instantiate all class based plugins and reference them
@@ -403,21 +407,6 @@ class Ad implements IAd {
         },
       ),
     );
-  }
-
-  private validateParameters(params: { adPath?: string }) {
-    const providedParams = Object.keys(params);
-    const { requiredParams = [], name: networkName } = this.network;
-
-    if (!params.adPath) {
-      throw new AdJsError('INVALID_PARAMETERS', '${adPath} is required for all networks.');
-    }
-
-    requiredParams.forEach((param) => {
-      if (providedParams.indexOf(param) === -1) {
-        throw new AdJsError('INVALID_PARAMETERS', `'${param}' is a required parameter in '${networkName}'`);
-      }
-    });
   }
 }
 

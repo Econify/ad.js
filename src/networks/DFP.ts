@@ -29,8 +29,8 @@ class DfpAd implements INetworkInstance {
     this.id = id;
 
     googletag.cmd.push(() => {
-      this.slot =
-        googletag.defineSlot(path, [], this.id);
+      const adSizes = Array.isArray(sizes) ? sizes : [];
+      this.slot = googletag.defineSlot(path, adSizes, this.id);
 
       if (targeting) {
         Object.entries(targeting)
@@ -41,6 +41,7 @@ class DfpAd implements INetworkInstance {
 
       if (!Array.isArray(sizes) && breakpoints) {
         const sizing = googletag.sizeMapping();
+
         Object.entries(breakpoints).map(([device, dimensions]) => {
           sizing.addSize([dimensions.from, 1], sizes[device] || []);
         });
@@ -60,37 +61,22 @@ class DfpAd implements INetworkInstance {
         googletag.cmd.push(() => {
           const { slot } = this;
 
-          const contentUrl = slot.getContentUrl();
-
-          if (!contentUrl) {
-            resolve();
-
-            return;
-          }
-
           googletag.pubads().addEventListener(
             'slotRenderEnded',
 
-            (event: any) => {
+            (event: googletag.events.SlotRenderEndedEvent) => {
               if (event.slot === slot) {
                 resolve();
               }
             },
           );
 
-          /*
-          googletag.pubads().addEventListener(
-            'slotOnload',
-
-            (event: any) => {
-              if (event.slot === slot) {
-                console.log('SLOT LOADED');
-              }
-            },
-          );
-           */
-
           googletag.pubads().refresh([slot], { changeCorrelator: false });
+
+          // if no Sizes Set
+          if (!slot.getContentUrl()) {
+            resolve();
+          }
         });
       },
     );
