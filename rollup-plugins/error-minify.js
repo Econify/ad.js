@@ -1,5 +1,6 @@
 const MagicString = require('magic-string');
 const { walk } = require('estree-walker');
+<<<<<<< HEAD
 const orderBy = require('lodash.orderby');
 const fs = require('fs');
 
@@ -93,12 +94,22 @@ const createNewNode = (originalNode) => {
   return newNode;
 }
 
+=======
+const fs = require('fs');
+
+const errorFile = fs.createWriteStream('./docs/error.md')
+errorFile.write(`# Common Errors
+`);
+errorFile.end();
+
+>>>>>>> add build script
 module.exports = function () {
   return {
     name: 'Error Minifier',
     transform(code, id) {
       const ast = this.parse(code, id);
       const s = new MagicString(code);
+<<<<<<< HEAD
 
       walk(ast, {
         leave(node) {
@@ -111,11 +122,36 @@ module.exports = function () {
               if (start !== end) {
                 s.overwrite(start, end, value);
               }
+=======
+      walk(ast, {
+        leave(node) {
+          if (node.type === 'ThrowStatement') {
+            if (node.argument.arguments) {
+              let mappedStatements = node.argument.arguments.reduce((acc, el) => {
+                if (el.type === 'TemplateLiteral') {
+                  console.log(el.quasis[0].value.cooked);
+                  return acc + ' ' + el.quasis[0].value.cooked;
+                } else if (el.type === 'TaggedTemplateExpression')  {
+                  return acc + ' ' + el.quasi.quasis[0].value.cooked;
+                } else {
+                  return acc + ' ' + el.value;
+                }
+              }, '');
+
+              fs.appendFile('./docs/error.md', mappedStatements, (err) => {
+                if (err) throw err;
+              });
+>>>>>>> add build script
             }
           }
         }
       });
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> add build script
       return {
         code: s.toString(),
         map: s.generateMap(),

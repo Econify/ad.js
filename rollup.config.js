@@ -6,12 +6,16 @@ import { terser } from "rollup-plugin-terser";
 <<<<<<< HEAD
 import copy from 'rollup-plugin-copy';
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
+<<<<<<< HEAD
 const minifyErrors = require('./rollup-plugins/error-minify');
 
 const BUILD_DIR = 'build';
 =======
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 >>>>>>> [SB] Switch to Rollup
+=======
+const errorMinifier = require('./rollup-plugins/error-minify');
+>>>>>>> add build script
 
 const WEB_FORMAT = 'iife';
 const NODE_FORMAT = 'cjs';
@@ -81,6 +85,7 @@ function createNodeConfiguration({ type, file, path }) {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
+      errorMinifier()
     ],
     output: {
       file: outputFile,
