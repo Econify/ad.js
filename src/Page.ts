@@ -1,6 +1,6 @@
 import Ad from './Ad';
 import MainSingleton from './index';
-import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
+import { IAdConfiguration, INetwork, IPageConfiguration, IPlugin, IVendor } from './types';
 
 export default class Page {
   public ads: Ad[] = [];
