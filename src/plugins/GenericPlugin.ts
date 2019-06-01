@@ -39,4 +39,4 @@ class GenericPlugin implements IPlugin {
   }
 }
 
-export = GenericPlugin;
+export default GenericPlugin;

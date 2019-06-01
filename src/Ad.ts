@@ -5,8 +5,8 @@ import {
   Maybe,
 } from './types';
 
-import AdJS from '.';
 import EVENTS from './Events';
+import AdJS from './index';
 import Page from './Page';
 import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
@@ -412,4 +412,4 @@ class Ad implements IAd {
   }
 }
 
-export = Ad;
+export default Ad;

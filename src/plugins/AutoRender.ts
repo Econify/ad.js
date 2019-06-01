@@ -18,4 +18,4 @@ class AutoRender extends GenericPlugin {
   }
 }
 
-export = AutoRender;
+export default AutoRender;

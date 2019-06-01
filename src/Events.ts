@@ -10,4 +10,4 @@ enum Events {
   CLEAR = 'clear',
 }
 
-export = Events;
+export default Events;
