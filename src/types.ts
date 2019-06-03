@@ -15,6 +15,13 @@ export interface ILoadedModulesCache {
   Vendors: LoadedModules;
 }
 
+export enum LOG_LEVELS {
+  DEBUG = 'log',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error',
+}
+
 export interface IEventType {
   [key: string]: string;
 }
@@ -24,6 +31,8 @@ export interface IAdEventListener {
 }
 
 export interface IAd {
+  id: number;
+
   configuration: IAdConfiguration;
 
   container: HTMLElement;

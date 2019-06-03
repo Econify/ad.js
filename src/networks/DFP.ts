@@ -1,5 +1,7 @@
 import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance } from '../types';
+import { LOG_LEVELS } from '../types';
 import AdJsError from '../utils/AdJsError';
+import dispatchEvent from '../utils/dispatchEvent';
 import loadScript from '../utils/loadScript';
 
 declare global {
@@ -37,6 +39,13 @@ class DfpAd implements INetworkInstance {
           .forEach(([key, value]) => {
             this.slot.setTargeting(key, value);
           });
+
+        dispatchEvent(
+          Number(this.id.substring(this.id.length, this.id.length - 1)),
+          LOG_LEVELS.INFO,
+          'DFP Network',
+          `Targeting detected for ad. Adding to configuration.`,
+        );
       }
 
       if (!Array.isArray(sizes) && breakpoints) {
@@ -66,6 +75,13 @@ class DfpAd implements INetworkInstance {
 
             (event: googletag.events.SlotRenderEndedEvent) => {
               if (event.slot === slot) {
+                dispatchEvent(
+                  Number(this.id.substring(this.id.length, this.id.length - 1)),
+                  LOG_LEVELS.INFO,
+                  'DFP Network',
+                  `Ad slot has been rendered.`,
+                );
+
                 resolve();
               }
             },
@@ -75,6 +91,12 @@ class DfpAd implements INetworkInstance {
 
           // if no Sizes Set
           if (!slot.getContentUrl()) {
+            dispatchEvent(
+              Number(this.id.substring(this.id.length, this.id.length - 1)),
+              LOG_LEVELS.WARN,
+              'DFP Network',
+              `Ad sizes missing. Bypassing ad.`,
+            );
             resolve();
           }
         });

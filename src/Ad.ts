@@ -15,8 +15,8 @@ import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
 
 let adId = 0;
 
-function nextId(): string {
-  return `adjs-ad-container-${++adId}`;
+function nextId(): number {
+  return ++adId;
 }
 
 function validateSizes(configuration: IAdConfiguration): void {
@@ -140,6 +140,7 @@ class Ad implements IAd {
 
   // TODO: Rethink
   public correlatorId?: string;
+  public id: number;
 
   public state: { [key: string]: boolean } = {
     creating: false,
@@ -201,8 +202,9 @@ class Ad implements IAd {
       ...localConfiguration,
     };
 
+    this.id = nextId();
     this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
-    this.el = insertElement('div', { id: nextId() }, this.container);
+    this.el = insertElement('div', { id: `adjs-ad-container-${this.id}` }, this.container);
 
     validateSizes(this.configuration);
 

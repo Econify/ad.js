@@ -1,67 +1,87 @@
+import { LOG_LEVELS } from '../types';
+import dispatchEvent from '../utils/dispatchEvent';
+import onEvent from '../utils/onEvent';
 import GenericPlugin from './GenericPlugin';
 
-const BASE_MESSAGE = '[DEBUG]';
+const BASE_MESSAGE = '[ADJS]';
 
-let adId = 0;
+const colorMap: { [key: string]: string } = {
+  'AutoRefresh Plugin': 'blue',
+  'AutoRender Plugin': 'purple',
+  'Logging Plugin': 'red',
+  'Responsive Plugin': 'green',
+  'Sticky Plugin': 'brown',
+  'DFP Network': 'gray',
+};
 
 class LoggingPlugin extends GenericPlugin {
   public onCreate() {
-    const id = ++adId;
-    (window as any)[`ad${id}`] = this.ad;
+    const { ad } = this;
+    const { id } = ad;
 
+    (window as any)[`ad${id}`] = ad;
     console.log(
       BASE_MESSAGE,
       'Ad Instantiated and assigned as',
-      `window.ad${adId}`,
+      `window.ad${id}`,
     );
+
+    onEvent(id, (event) => {
+      const { level, creator, message, data } = event.detail;
+      // @ts-ignore
+      console[level](
+        `%c${BASE_MESSAGE} [${creator}] ${message} ${data || ''}`,
+        `color: ${colorMap[creator] || 'black'}; font-weight: bold`,
+      );
+    });
   }
 
   public beforeRender() {
-    console.log(BASE_MESSAGE, 'Render has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Render has been called on ad.');
   }
 
   public onRender() {
-    console.log(BASE_MESSAGE, 'Ad actively rendering.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively rendering.');
   }
 
   public afterRender() {
-    console.log(BASE_MESSAGE, 'Ad render has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad render has completed.');
   }
 
   public beforeRefresh() {
-    console.log(BASE_MESSAGE, 'Refresh has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad render has completed.');
   }
 
   public onRefresh() {
-    console.log(BASE_MESSAGE, 'Ad actively refreshing.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively refreshing.');
   }
 
   public afterRefresh() {
-    console.log(BASE_MESSAGE, 'Ad refresh has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad refresh has completed.');
   }
 
   public beforeClear() {
-    console.log(BASE_MESSAGE, 'Clear has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Clear has been called on ad.');
   }
 
   public onClear() {
-    console.log(BASE_MESSAGE, 'Ad actively clearing.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively clearing.');
   }
 
   public afterClear() {
-    console.log(BASE_MESSAGE, 'Ad clear has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad clear has completed.');
   }
 
   public beforeDestroy() {
-    console.log(BASE_MESSAGE, 'Destroy has been called on ad.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Destroy has been called on ad.');
   }
 
   public onDestroy() {
-    console.log(BASE_MESSAGE, 'Ad actively destroying.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad actively destroying.');
   }
 
   public afterDestroy() {
-    console.log(BASE_MESSAGE, 'Ad destroy has completed.');
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Logging Plugin', 'Ad destroy has completed.');
   }
 }
 
