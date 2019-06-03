@@ -157,6 +157,8 @@ export interface IAdConfiguration {
   autoRender?: boolean;
   breakpoints?: IAdBreakpoints;
   offset?: number;
+  logging?: boolean;
+  overlay?: boolean;
   path?: string;
   plugins?: IPluginConstructorOrSingleton[];
   refreshOnBreakpoint?: boolean;

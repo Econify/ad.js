@@ -8,7 +8,7 @@
 	* [Responsive Ads](responsive-plugin.md)
 	* [Auto Refresh](refresh-plugin.md)
 	* [Sticky Ads](sticky-plugin.md)
-	* [Debug](debug-plugin.md)
+	* [Developer Tools](tools-plugin.md)
 
 * Networks
   * [Default / Dev](default-network.md)
@@ -17,6 +17,6 @@
 
 * Advanced Usage
   * [Single Page App](spa.md)
-  * [Debugging](debug-tools.md)
+  * [Debugging](tools-plugin.md)
   * [Writing Plugins](writing-plugins.md)
   * [Custom Networks](custom-networks.md)

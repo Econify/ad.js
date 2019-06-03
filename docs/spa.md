@@ -34,8 +34,7 @@ import Refresh from 'adjs/plugins/AutoRefresh';
 import AutoRender from 'adjs/plugins/AutoRender';
 import Responsive from 'adjs/plugins/Responsive';
 import Sticky from 'adjs/plugins/Sticky';
-import Logging from 'adjs/plugins/Logging';
-import Debug from 'adjs/plugins/Debug';
+import DeveloperTools from 'adjs/plugins/DeveloperTools';
 import Banner from 'adjs/plugins/Banner';
 
 import Krux from 'adjs/vendors/Krux';
@@ -46,8 +45,7 @@ const homepageAdPage = new AdJS.Page(DFPNetwork, {
     Refresh,
     AutoRender,
     Sticky,
-    Logging,
-    Debug,
+    DeveloperTools,
   ],
   plugins: [
     new Krux("KRUX_ID"),

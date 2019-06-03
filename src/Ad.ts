@@ -6,7 +6,6 @@ import {
 } from './types';
 
 import EVENTS from './Events';
-import AdJS from './index';
 import Page from './Page';
 import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
@@ -30,6 +29,8 @@ function validateSizes(configuration: IAdConfiguration): void {
 const DEFAULT_CONFIGURATION: IAdConfiguration = {
   autoRender: true,
   autoRefresh: true,
+  logging: true,
+  overlay: true,
   offset: 0,
   refreshRateInSeconds: 30,
   targeting: {},
@@ -204,7 +205,8 @@ class Ad implements IAd {
 
     this.id = nextId();
     this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
-    this.el = insertElement('div', { id: `adjs-ad-container-${this.id}` }, this.container);
+    // change this back to temp literal after rollup fix
+    this.el = insertElement('div', { id: 'adjs-ad-container-' + this.id }, this.container);
 
     validateSizes(this.configuration);
 

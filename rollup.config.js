@@ -145,9 +145,8 @@ createConfigurations({
   files: [
     'AutoRender',
     'AutoRefresh',
-    'Debug',
+    'DeveloperTools',
     'GenericPlugin',
-    'Logging',
     'Sticky',
     'Responsive',
   ]
