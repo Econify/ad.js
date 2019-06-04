@@ -106,7 +106,7 @@ Available plugins include:
 - [Responsive Ads](responsive-plugin)
 - [Auto Refresh](refresh-plugin)
 - [Sticky Ads](sticky-plugin)
-- [Debug Tools](debug-plugin)
+- [Developer Tools](tools-plugin)
 
 See each the documentation of the respective plugins to understand their purpose and usage.
 
