@@ -64,12 +64,8 @@ const generateUrl = (string) => {
 const createNewNode = (originalNode, newText) => {
   const newNode = {};
 
-  const nodes = orderBy([
-    ...originalNode.argument.arguments
-  ], ['start']);
-
-  newNode.start = nodes[0].start;
-  newNode.end = nodes[nodes.length - 1].end;
+  newNode.start = originalNode.start;
+  newNode.end = originalNode.end;
   newNode.value = generateUrl(newText)
 
   return newNode
@@ -84,19 +80,17 @@ module.exports = function () {
 
       walk(ast, {
         leave(node) {
-          if (node.type === 'ThrowStatement') {
-            if (node.argument.arguments) {
+          if (node.type === 'NewExpression') {
+            if (node.arguments) {
               let isRollupError = false;
-              const arguments = node.argument.arguments;
+              const arguments = node.arguments;
               const formatted = formatArgs(arguments);
 
               const formattedStatements = formatted[0];
               const splitStatements = formatted[1];
 
-              console.log("FORMATTED STATEMENTS", formattedStatements)
-
               if (formattedStatements) {
-                const { start, end, value } = createNewNode(node, splitStatements[0]);
+                const { start, end, value } = createNewNode(node.arguments[0], splitStatements[0]);
 
                 console.log(start, end, value)
 
@@ -106,12 +100,12 @@ module.exports = function () {
 
                 if (!errors[splitStatements[0]]) {
                   pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
-                  node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
+                  node.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
                   errors[splitStatements[0]] = [...splitStatements.slice(1)]
                   errorCounter++
                 } else if (!errors[splitStatements[0]].includes(splitStatements[1])) {
                   pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
-                  node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
+                  node.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
                   errors[splitStatements[0]] = [...errors[splitStatements[0]], splitStatements[1]]
                   errorCounter++
                 }
