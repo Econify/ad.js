@@ -7,7 +7,6 @@ import copy from 'rollup-plugin-copy';
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const envBasedExclusion = require('./rollup-plugins/env-based-exclusion');
 
-
 const BUILD_DIR = 'build';
 
 const WEB_FORMAT = 'iife';
