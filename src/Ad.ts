@@ -5,9 +5,9 @@ import {
   Maybe,
 } from './types';
 
-import Bucket from './Bucket';
 import EVENTS from './Events';
 import AdJS from './index';
+import Page from './Page';
 import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
@@ -39,7 +39,7 @@ const DEFAULT_CONFIGURATION: IAdConfiguration = {
 
 // Define LifeCycle Method will automatically wrap each
 // lifecycle with important items such as "queue" when frozen,
-// awaiting bucket queues and implementing vendors
+// awaiting page queues and implementing vendors
 function attachAsLifecycleMethod(
   target: any,
   propertyName: string,
@@ -92,7 +92,7 @@ function attachAsLifecycleMethod(
     this.state[executingState] = true;
 
     /*
-     * Queue up the lifecycle method's execution to ensure all bucket async tasks
+     * Queue up the lifecycle method's execution to ensure all page async tasks
      * have completed and that it executes in order.
      *
      * e.g. if ad.render() is called before ad.destroy(), ensure ad.render()
@@ -124,7 +124,7 @@ function attachAsLifecycleMethod(
 
 class Ad implements IAd {
   get network(): INetwork {
-    return this.bucket.network;
+    return this.page.network;
   }
 
   get slot(): googletag.Slot {
@@ -133,7 +133,7 @@ class Ad implements IAd {
 
   private get vendors() {
     return [
-      ...this.bucket.vendors,
+      ...this.page.vendors,
       ...this.localVendors,
     ];
   }
@@ -184,18 +184,18 @@ class Ad implements IAd {
     after: {},
   };
 
-  constructor(private bucket: Bucket, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
+  constructor(private page: Page, el: HTMLElement, localConfiguration: Maybe<IAdConfiguration>) {
     /*
-     * Add the parent buckets promise chain onto each Ad instance's
-     * promise chain to ensure that any async actions the parent bucket
+     * Add the parent pages promise chain onto each Ad instance's
+     * promise chain to ensure that any async actions the parent page
      * makes (e.g. Krux) are completed before allowing a lifecycle
      * method (e.g. render) to execute
      */
-    this.promiseStack = this.promiseStack.then(() => this.bucket.promiseStack);
+    this.promiseStack = this.promiseStack.then(() => this.page.promiseStack);
 
     this.configuration = {
-      // Bucket Defaults
-      ...this.bucket.defaults,
+      // page Defaults
+      ...this.page.defaults,
 
       // Constructor Overrides
       ...localConfiguration,
@@ -206,8 +206,8 @@ class Ad implements IAd {
 
     validateSizes(this.configuration);
 
-    // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Bucket
-    const plugins: IPluginConstructorOrSingleton[] = [...this.bucket.plugins];
+    // Merge Locally Provided Plugins for this ad with Plugins that are specified on the Page
+    const plugins: IPluginConstructorOrSingleton[] = [...this.page.plugins];
     if (localConfiguration && localConfiguration.plugins) {
       plugins.push(...localConfiguration.plugins);
     }
@@ -268,13 +268,13 @@ class Ad implements IAd {
 
   @attachAsLifecycleMethod
   public async render(): Promise<void> {
-    await this.bucket.setAsActive();
+    await this.page.setAsActive();
     await this.networkInstance.render();
   }
 
   @attachAsLifecycleMethod
   public async refresh(): Promise<void> {
-    await this.bucket.setAsActive();
+    await this.page.setAsActive();
 
     if (typeof this.networkInstance.refresh !== 'undefined') {
       await this.networkInstance.refresh();

@@ -18,7 +18,7 @@ import AdJS from 'adjs';
 import DFP from 'adjs/networks/DFP';
 import ResponsivePlugin from 'adjs/plugins/Responsive';
 
-const bucket = new AdJS.Bucket(DFP, {
+const page = new AdJS.Page(DFP, {
   plugins: [
     ResponsivePlugin,
   ]
@@ -39,7 +39,7 @@ __Example__:
   </head>
   <body>
     <script>
-      const bucket = new AdJS.Bucket(AdJS.Networks.DFP, {
+      const page = new AdJS.Page(AdJS.Networks.DFP, {
         plugins: [
           AdJS.Plugins.Responsive
         ]
@@ -58,7 +58,7 @@ The Responsive Plugin adds one option to Ad configuration.
 
 ## Examples
 
-Configuration via Bucket (will affect all ads within the bucket). It is preferred for you to define the breakpoints on the bucket (as
+Configuration via Page (will affect all ads within the page). It is preferred for you to define the breakpoints on the page (as
 generally the site's breakpoints will not change) and to define the sizes on each ad implementation.
 ```js
 import AdJS from 'adjs';
@@ -66,7 +66,7 @@ import DFP from 'adjs/networks/DFP';
 
 import Responsive from 'adjs/plugins/Responsive';
 
-const bucket = new AdJS.Bucket(DFP, {
+const page = new AdJS.Page(DFP, {
   plugins: [
     Responsive,
   ],
@@ -79,7 +79,7 @@ const bucket = new AdJS.Bucket(DFP, {
   }
 });
 
-const ad = new bucket.createAd(el, {
+const ad = new page.createAd(el, {
   sizes: {
     tablet: [
       [300, 250]
@@ -98,9 +98,9 @@ import AdJS from 'adjs';
 import DFP from 'adjs/networks/DFP';
 import Responsive from 'adjs/plugins/Responsive';
 
-const bucket = new AdJS.Bucket(DFP);
+const page = new AdJS.Page(DFP);
 
-const ad = new bucket.createAd(el, {
+const ad = new page.createAd(el, {
   plugins: [
     Responsive
   ],

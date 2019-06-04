@@ -47,18 +47,18 @@
       <img src="http://www.econify.com/assets/econify_logo.png">
       <small>Copyright &copy; 2018 Econify, LLC. All Rights Reserved.</small>
     </div>
-    <script type="text/javascript" src="http://localhost:8080/umd/core.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/networks.dfp.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/plugins.logging.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/plugins.autorender.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/plugins.debug.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/plugins.sticky.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/plugins.autorefresh.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/umd/plugins.responsive.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/core.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/networks.dfp.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.logging.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.autorender.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.debug.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.sticky.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.autorefresh.development.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.responsive.development.js"></script>
 
     <script type="text/javascript">
       // import. (manipulated)
-      const mainPage = new AdJS.Bucket(AdJS.Networks.DFP, {
+      const mainPage = new AdJS.Page(AdJS.Networks.DFP, {
         plugins: [
           AdJS.Plugins.Logging,
           AdJS.Plugins.AutoRender,

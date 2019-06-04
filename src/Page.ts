@@ -1,8 +1,8 @@
 import Ad from './Ad';
 import MainSingleton from './index';
-import { IAdConfiguration, IBucketConfiguration, INetwork, IPlugin, IVendor } from './types';
+import { IAdConfiguration, INetwork, IPageConfiguration, IPlugin, IVendor } from './types';
 
-class Bucket {
+export default class Page {
   public ads: Ad[] = [];
 
   public promiseStack: Promise<void> = Promise.resolve();
@@ -10,7 +10,7 @@ class Bucket {
   public vendors: IVendor[] = [];
   public defaults: IAdConfiguration = {};
 
-  constructor(public network: INetwork, providedConfiguration: IBucketConfiguration = {}) {
+  constructor(public network: INetwork, providedConfiguration: IPageConfiguration = {}) {
     const { defaults, plugins, vendors } = providedConfiguration;
 
     if (defaults) {
@@ -58,5 +58,3 @@ class Bucket {
     await this.network.resetCorrelator();
   }
 }
-
-export default Bucket;

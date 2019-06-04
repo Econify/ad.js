@@ -8,7 +8,7 @@ describe('GenericPlugin', () => {
 
       return plugin;
     } catch (e) {
-      expect(e.code).toEqual('MISCONFIGURATION');
+      expect(e.code).toEqual('Misconfiguration');
     }
   });
 

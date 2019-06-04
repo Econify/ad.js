@@ -3,8 +3,11 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import { terser } from "rollup-plugin-terser";
+import copy from 'rollup-plugin-copy';
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
-const errorMinifier = require('./rollup-plugins/error-minify');
+const minifyErrors = require('./rollup-plugins/error-minify');
+
+const BUILD_DIR = 'build';
 
 const WEB_FORMAT = 'iife';
 const NODE_FORMAT = 'cjs';
@@ -12,11 +15,22 @@ const NODE_FORMAT = 'cjs';
 const SOURCEMAP = true;
 const INDENT = false;
 
+const FILES_TO_COPY = [
+  './package.json',
+  './README.md',
+  './src/types.ts',
+];
+
 const BASE_PLUGINS = [
   typescript(),
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
+  minifyErrors(),
+  copy({
+    targets: FILES_TO_COPY,
+    outputFolder: BUILD_DIR,
+  }),
 ];
 
 const configurations = [];
@@ -48,13 +62,12 @@ function createConfiguration(options) {
 }
 
 function createNodeConfiguration({ type, file, path }) {
-  const outputFile = `./dist/${type}/${file}.js`;
+  const outputFile = `./${BUILD_DIR}/${type}/${file}.js`;
 
   const configuration = {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
-      errorMinifier()
     ],
     output: {
       file: outputFile,
@@ -63,14 +76,14 @@ function createNodeConfiguration({ type, file, path }) {
   };
 
   if (!type) {
-    configuration.output.file = `./dist/${file}.js`;
+    configuration.output.file = `./${BUILD_DIR}/${file}.js`;
   }
 
   return configuration;
 }
 
 function createDevelopmentConfiguration({ type, file, path, name }) {
-  const outputFile = `./umd/${type}.${file}.development.js`.toLowerCase();
+  const outputFile = `./${BUILD_DIR}/umd/${type}.${file}.development.js`.toLowerCase();
 
   const configuration = {
     input: path,
@@ -93,7 +106,7 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
   }
 
   if (!type) {
-    configuration.output.file = `./umd/${file}.development.js`;
+    configuration.output.file = `./${BUILD_DIR}/umd/${file}.development.js`;
   }
 
   return configuration;
@@ -107,7 +120,7 @@ function createProductionConfiguration({ type, file, path, name }) {
       terser()
     ],
     output: {
-      file: `./umd/${type}.${file}.production.min.js`.toLowerCase(),
+      file: `./${BUILD_DIR}/umd/${type}.${file}.production.min.js`.toLowerCase(),
       name: `_ADJS.${type}.${file}`,
 
       format: WEB_FORMAT,
@@ -122,7 +135,7 @@ function createProductionConfiguration({ type, file, path, name }) {
   }
 
   if (!type) {
-    configuration.output.file = `./umd/${file}.production.min.js`;
+    configuration.output.file = `./${BUILD_DIR}/umd/${file}.production.min.js`;
   }
 
   return configuration;

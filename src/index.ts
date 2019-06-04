@@ -1,6 +1,6 @@
 import { ILoadedModulesCache, LoadedModules } from './types';
 
-import Bucket from './Bucket';
+import Page from './Page';
 import isServer from './utils/isServer';
 
 const LOADED_MODULES: ILoadedModulesCache = {
@@ -33,7 +33,7 @@ const PluginsHandler = {
           import DFP from 'adjs/networks/DFP';
           import AutoRender from 'adjs/plugins/AutoRender';
 
-          new AdJS.Bucket(DFP, {
+          new AdJS.Page(DFP, {
             plugins: [
               AutoRender,
             ],
@@ -43,9 +43,8 @@ const PluginsHandler = {
 
     if (!plugins[cleanedProperty]) {
       throw new Error(`
-        The ${cleanedProperty} Plugin or Network has not been included in your bundle. Please
-        manually include the script tag associated with this plugin or network. You can see
-        documentation on https://adjs.dev.
+        The Plugin or Network has not been included in your bundle.
+        Please manually include the script tag associated with this plugin or network.
 
         Example:
           <script src="https://cdn.adjs.dev/core.min.js"></script>
@@ -53,7 +52,7 @@ const PluginsHandler = {
           <script src="https://cdn.adjs.dev/AutoRender.min.js"></script>
 
           <script>
-            new AdJS.Bucket(AdJS.Networks.DFP, {
+            new AdJS.Page(AdJS.Networks.DFP, {
               plugins: [
                 AdJS.Plugins.AutoRender,
               ],
@@ -71,8 +70,8 @@ const Networks = new Proxy(_ADJS.Networks, PluginsHandler);
 const Vendors = new Proxy(_ADJS.Vendors, PluginsHandler);
 
 const AdJS = {
-  Bucket,
-
+  Page,
+  Bucket: Page,
   Plugins,
   Networks,
   Vendors,

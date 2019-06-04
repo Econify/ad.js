@@ -17,7 +17,6 @@ class GenericPlugin implements IPlugin {
         which gets called by the constructor.
 
         Example:
-        js
           class ExamplePlugin extends GenericPlugin {
             onCreate() {
               console.log('Example Plugin Started Succesfully');
