@@ -3,7 +3,7 @@ this._ADJS.Plugins = this._ADJS.Plugins || {};
 this._ADJS.Plugins.Logging = (function () {
 'use strict';
 
-class AdJsError extends Error {
+class Error extends Error {
     constructor(code, message) {
         super(message);
         this.code = code;
@@ -17,7 +17,7 @@ class GenericPlugin {
     }
     constructor(ad) {
         if (!ad) {
-            throw new AdJsError('Misconfiguration', `
+            throw new Error('Misconfiguration', `
 An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin
 and overrides the constructor make sure you are calling "super" and that you are passing in an
 instance of an ad as the first parameter. Alternatively, you can hook into the onCreate method

@@ -1,6 +1,6 @@
 'use strict';
 
-class AdJsError extends Error {
+class Error extends Error {
     constructor(code, message) {
         super(message);
         this.code = code;
@@ -32,7 +32,7 @@ class DfpAd {
         DoubleClickForPublishers.prepare();
         const { id } = el;
         if (!id) {
-            throw new AdJsError('Malformed Request', 'Ad does not have an id');
+            throw new Error('Malformed Request', 'Ad does not have an id');
         }
         this.id = id;
         googletag.cmd.push(() => {
@@ -118,10 +118,10 @@ const DoubleClickForPublishers = {
         const { el, configuration } = ad;
         const { sizes, targeting, path, breakpoints } = configuration;
         if (!sizes) {
-            throw new AdJsError('Malformed Request', 'Sizes must be defined.');
+            throw new Error('Malformed Request', 'Sizes must be defined.');
         }
         if (!path) {
-            throw new AdJsError('Malformed Request', 'Ad Path must be defined.');
+            throw new Error('Malformed Request', 'Ad Path must be defined.');
         }
         return new DfpAd(el, path, sizes, breakpoints, targeting);
     },

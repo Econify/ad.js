@@ -36,7 +36,7 @@ var Events;
 })(Events || (Events = {}));
 var EVENTS = Events;
 
-class AdJsError extends Error {
+class Error extends Error {
     constructor(code, message) {
         super(message);
         this.code = code;
@@ -76,7 +76,7 @@ function nextId() {
 function validateSizes(configuration) {
     const { sizes, breakpoints } = configuration;
     if (!Array.isArray(sizes) && !breakpoints) {
-        throw new AdJsError('Misconfiguration', 'Sizes must be of type `Array` unless breakpoints have been specified');
+        throw new Error('Sizes must be of type `Array` unless breakpoints have been specified');
     }
 }
 // Define LifeCycle Method will automatically wrap each

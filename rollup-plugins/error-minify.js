@@ -1,5 +1,6 @@
 const MagicString = require('magic-string');
 const { walk } = require('estree-walker');
+const orderBy = require('lodash.orderby');
 const fs = require('fs');
 
 const errorFile = fs.createWriteStream('./docs/error.md');
@@ -16,13 +17,19 @@ const formatArgs = (args) => {
   // second, an array to keep track of error subject lines so we don't repeat
   // ourselves
   let statements = [];
+
   let formatted = args.reduce((acc, el) => {
     if (el.type === 'TemplateLiteral' && el.quasis[0].value.raw) {
       let hasExample = false;
+      let hasIndent = false;
+
       let formattedLiteral = el.quasis[0].value.raw.split(" ").map((word) => {
         if (word.includes("Example:")) {
           hasExample = true;
           return `${word} \n \`\`\` \n`;
+        } else if (word.includes(".") && !hasIndent)  {
+          hasIndent = true;
+          return `${word} \n`
         } else {
           return word
         }
@@ -32,10 +39,10 @@ const formatArgs = (args) => {
         formattedLiteral = formattedLiteral + `\n \`\`\``;
       }
 
-      statements.push(el.quasis[0].value.raw)
+      statements = [...statements, ...el.quasis[0].value.raw.split('.')]
       return `${acc} ${formattedLiteral} \n`;
     }  else if (el.value) {
-      statements.push(el.value)
+      statements = [...statements, ...el.value.split('.')]
       return `${acc} ${el.value} \n`;
     }
   }, '');
@@ -43,15 +50,29 @@ const formatArgs = (args) => {
   return [formatted, statements];
 }
 
-let pushToErrs = (statements) => {
+const pushToErrs = (statements) => {
   fs.appendFile('./docs/error.md', statements, (err) => {
     if (err) throw err;
   });
 }
 
-let generateUrl = (string) => {
+const generateUrl = (string) => {
   let urlString = string.split(" ").join("-")
   return `https://www.adjs.dev/error?id=${urlString}`
+}
+
+const createNewNode = (originalNode, newText) => {
+  const newNode = {};
+
+  const nodes = orderBy([
+    ...originalNode.argument.arguments
+  ], ['start']);
+
+  newNode.start = nodes[0].start;
+  newNode.end = nodes[nodes.length - 1].end;
+  newNode.value = generateUrl(newText)
+
+  return newNode
 }
 
 module.exports = function () {
@@ -65,34 +86,34 @@ module.exports = function () {
         leave(node) {
           if (node.type === 'ThrowStatement') {
             if (node.argument.arguments) {
+              let isRollupError = false;
               const arguments = node.argument.arguments;
               const formatted = formatArgs(arguments);
 
               const formattedStatements = formatted[0];
               const splitStatements = formatted[1];
 
+              console.log("FORMATTED STATEMENTS", formattedStatements)
+
               if (formattedStatements) {
-                if (splitStatements.length === 1) {
-                  if (!errors[splitStatements[0]]) {
-                    pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
-                    node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
-                    errors[splitStatements[0]] = [];
-                    errorCounter++
-                  }
-                } else {
-                  if (!errors[splitStatements[0]]) {
-                    pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
-                    node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
-                    node.argument.arguments[1].value = null
-                    errors[splitStatements[0]] = [splitStatements[1]]
-                    errorCounter++
-                  } else if (!errors[splitStatements[0]].includes(splitStatements[1])) {
-                    pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
-                    node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
-                    node.argument.arguments[1].value = null
-                    errors[splitStatements[0]] = [...errors[splitStatements[0]], splitStatements[1]]
-                    errorCounter++
-                  }
+                const { start, end, value } = createNewNode(node, splitStatements[0]);
+
+                console.log(start, end, value)
+
+                if (start !== end) {
+                  s.overwrite(start, end, value);
+                }
+
+                if (!errors[splitStatements[0]]) {
+                  pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
+                  node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
+                  errors[splitStatements[0]] = [...splitStatements.slice(1)]
+                  errorCounter++
+                } else if (!errors[splitStatements[0]].includes(splitStatements[1])) {
+                  pushToErrs(`### ${errorCounter}: ${formattedStatements}`)
+                  node.argument.arguments[0].value = [generateUrl(`${errorCounter}: ${splitStatements[0]}`)]
+                  errors[splitStatements[0]] = [...errors[splitStatements[0]], splitStatements[1]]
+                  errorCounter++
                 }
               }
 
