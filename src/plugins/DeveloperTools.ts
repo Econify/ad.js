@@ -193,9 +193,14 @@ if ('__DEV__') {
     }
   };
 } else {
-  (window as any)[`ADJS`] = {
+  (window as any)[`AD_JS`] = {
     DEBUG: () => {
-      // fetch other ad.js code and run overwrite script
+      /*
+        TODO:
+        Since there is no server that we can just fetch
+        the developer bundle from, we need to decide how to get
+        new code to overwrite existing bundle.
+      */
       return 'Enabling Developer tools. This may take a second.';
     },
   };
