@@ -5,6 +5,8 @@ import typescript from 'rollup-plugin-typescript';
 import { terser } from "rollup-plugin-terser";
 import copy from 'rollup-plugin-copy';
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
+const envBasedExclusion = require('./rollup-plugins/env-based-exclusion');
+
 
 const BUILD_DIR = 'build';
 
@@ -115,6 +117,7 @@ function createProductionConfiguration({ type, file, path, name }) {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
+      envBasedExclusion(),
       terser()
     ],
     output: {
