@@ -141,32 +141,6 @@ function createProductionConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
-/*
-createConfigurations({
-  type: 'Plugins',
-  basePath: './src/plugins',
-  files: [
-    'AutoRender',
-    'AutoRefresh',
-    'Debug',
-    'GenericPlugin',
-    'Logging',
-    'Sticky',
-    'Responsive',
-  ]
-});
-
-createConfigurations({
-  type: 'Networks',
-  basePath: './src/networks',
-  files: [
-    'DFP',
-    'Mock',
-    'Noop',
-  ]
-});
-*/
-
 createConfiguration({
   name: 'AdJS',
   path: './src/index.ts',
