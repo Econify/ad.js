@@ -11,7 +11,11 @@ module.exports = function () {
       walk(ast, {
         leave(node) {
           if (node.type === 'IfStatement' && node.test.value === '__DEV__') {
-            s.overwrite(node.start, node.end, '');
+            if (node.alternate) {
+              s.overwrite(node.start, node.alternate.start, '');
+            } else {
+              s.overwrite(node.start, node.end, '');
+            }
           }
         }
       });
