@@ -8,7 +8,6 @@ import {
 import EVENTS from './Events';
 import AdJS from './index';
 import Page from './Page';
-import AdJsError from './utils/AdJsError';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
 import uppercaseFirstLetter from './utils/uppercaseFirstLetter';
@@ -23,7 +22,7 @@ function validateSizes(configuration: IAdConfiguration): void {
   const { sizes, breakpoints } = configuration;
 
   if (!Array.isArray(sizes) && !breakpoints) {
-    throw new AdJsError('Misconfiguration', 'Sizes must be of type `Array` unless breakpoints have been specified');
+    throw new Error('Sizes must be of type `Array` unless breakpoints have been specified');
   }
 }
 

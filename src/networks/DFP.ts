@@ -1,7 +1,4 @@
 import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance } from '../types';
-import { LOG_LEVELS } from '../types';
-import AdJsError from '../utils/AdJsError';
-import dispatchEvent from '../utils/dispatchEvent';
 import loadScript from '../utils/loadScript';
 
 declare global {
@@ -25,7 +22,7 @@ class DfpAd implements INetworkInstance {
     const { id } = el;
 
     if (!id) {
-      throw new AdJsError('Malformed Request', 'Ad does not have an id');
+      throw new Error('Ad does not have an id');
     }
 
     this.id = id;
@@ -177,11 +174,11 @@ const DoubleClickForPublishers: INetwork = {
     const { sizes, targeting, path, breakpoints } = configuration;
 
     if (!sizes) {
-      throw new AdJsError('Malformed Request', 'Sizes must be defined.');
+      throw new Error('Sizes must be defined.');
     }
 
     if (!path) {
-      throw new AdJsError('Malformed Request', 'Ad Path must be defined.');
+      throw new Error('Ad Path must be defined.');
     }
 
     return new DfpAd(el, path, sizes, breakpoints, targeting);
