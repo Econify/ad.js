@@ -6,7 +6,7 @@
   "types": "./types.d.ts",
   "scripts": {
     "build": "npm run clean && rollup -c",
-    "clean": "rm -rf ./build",
+    "clean": "rm -rf ./build && rm docs/error.md",
     "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:fix": "tslint -c tslint.json --fix 'src/**/*.ts'",

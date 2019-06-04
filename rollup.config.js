@@ -141,6 +141,7 @@ function createProductionConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
+/*
 createConfigurations({
   type: 'Plugins',
   basePath: './src/plugins',
@@ -164,6 +165,7 @@ createConfigurations({
     'Noop',
   ]
 });
+*/
 
 createConfiguration({
   name: 'AdJS',
