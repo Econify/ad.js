@@ -44,10 +44,10 @@ DeveloperTools = class extends GenericPlugin {
 
   public onCreate() {
     console.warn(`
-      c% [ADJS] ATTENTION! DeveloperTools module has been detected.
+      %c [ADJS] ATTENTION! DeveloperTools module has been detected.
       This plugin is meant to be used in development only. If you wish to enable for your current session,
       in your console type 'AD_JS.DEBUG()'.
-    `);
+    `, 'font-weight: bold;');
   }
 };
 
@@ -191,6 +191,13 @@ if ('__DEV__') {
 
       insertElement('p', { style: MESSAGE_STYLE }, this.debugOverlay, message);
     }
+  };
+} else {
+  (window as any)[`ADJS`] = {
+    DEBUG: () => {
+      // fetch other ad.js code and run overwrite script
+      return 'Enabling Developer tools. This may take a second.';
+    },
   };
 }
 
