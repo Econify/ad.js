@@ -24,8 +24,8 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@latest/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@latest/umd/networks.Noop.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/core.production.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/networks.noop.production.min.js"></script>
   </head>
   <body>
     <script>

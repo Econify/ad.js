@@ -33,9 +33,9 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@latest/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@latest/umd/networks.DFP.min.js"></script>
-    <script src="https://unpkg.com/adjs@latest/umd/plugins.Breakpoints.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/core.production.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/networks.dfp.production.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/plugins.responsive.production.min.js"></script>
   </head>
   <body>
     <script>
