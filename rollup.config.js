@@ -6,6 +6,7 @@ import { terser } from "rollup-plugin-terser";
 import copy from 'rollup-plugin-copy';
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const envBasedExclusion = require('./rollup-plugins/env-based-exclusion');
+const minifyErrors = require('./rollup-plugins/error-minify');
 
 const BUILD_DIR = 'build';
 
@@ -117,6 +118,7 @@ function createProductionConfiguration({ type, file, path, name }) {
     plugins: [
       ...BASE_PLUGINS,
       envBasedExclusion(),
+      minifyErrors(),
       terser()
     ],
     output: {
@@ -140,29 +142,6 @@ function createProductionConfiguration({ type, file, path, name }) {
 
   return configuration;
 }
-
-createConfigurations({
-  type: 'Plugins',
-  basePath: './src/plugins',
-  files: [
-    'AutoRender',
-    'AutoRefresh',
-    'DeveloperTools',
-    'GenericPlugin',
-    'Sticky',
-    'Responsive',
-  ]
-});
-
-createConfigurations({
-  type: 'Networks',
-  basePath: './src/networks',
-  files: [
-    'DFP',
-    'Mock',
-    'Noop',
-  ]
-});
 
 createConfiguration({
   name: 'AdJS',

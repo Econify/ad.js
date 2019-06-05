@@ -20,3 +20,4 @@
   * [Debugging](tools-plugin.md)
   * [Writing Plugins](writing-plugins.md)
   * [Custom Networks](custom-networks.md)
+  * [Common Errors](error.md)
