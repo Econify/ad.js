@@ -32,10 +32,10 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/core.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/networks.DFP.min.js"></script>
 
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/plugins.AutoRefresh.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/plugins.AutoRefresh.min.js"></script>
   </head>
   <body>
     <script>
