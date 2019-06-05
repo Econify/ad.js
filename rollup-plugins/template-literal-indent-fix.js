@@ -41,6 +41,9 @@ function createNewNode(originalNode) {
     ...originalNode.quasis,
   ], ['start']);
 
+
+  
+
   newNode.start = nodes[0].start;
   newNode.end = nodes[nodes.length - 1].end;
 
