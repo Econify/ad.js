@@ -1,7 +1,6 @@
 # Common Errors
 
 ## Error Code 1:
-
 Description: Using the Networks or Plugins property on AdJS is only available when installing via script.
 If you are compiling the AdJS library locally within your project, use require to
 specify the plugin directly.
@@ -15,78 +14,9 @@ Example:
 	  AutoRender,
 	],
   });
-
-## Error Code 5:
-
-Description: Symbol.asyncIterator is not defined.
-
-
-## Error Code 6:
-
-Description: Symbol.asyncIterator is not defined.
-
+ ```
 
 ## Error Code 2:
-
-Description: The Plugin or Network has not been included in your bundle.
-Please manually include the script tag associated with this plugin or network.
-
-Example:
-  <script src="https://cdn.adjs.dev/core.min.js"></script>
-  <script src="https://cdn.adjs.dev/DFP.min.js"></script>
-  <script src="https://cdn.adjs.dev/AutoRender.min.js"></script>
-
-  <script>
-	new AdJS.Page(AdJS.Networks.DFP, {
-	  plugins: [
-		AdJS.Plugins.AutoRender,
-	  ],
-	});
-  </script>
-
-## Error Code 4:
-
-Description: Generator is already executing.
-
-
-## Error Code 3:
-
-Description: Sizes must be of type `Array` unless breakpoints have been specified
-
-
-## Error Code 7:
-
-Description: Using the Networks or Plugins property on AdJS is only available when installing via script.
-If you are compiling the AdJS library locally within your project, use require to
-specify the plugin directly.
-
-Example:
-  import DFP from 'adjs/networks/DFP';
-  import AutoRender from 'adjs/plugins/AutoRender';
-
-  new AdJS.Page(DFP, {
-	plugins: [
-	  AutoRender,
-	],
-  });
-
-## Error Code 9:
-
-Description: Sizes must be of type `Array` unless breakpoints have been specified
-
-
-## Error Code 12:
-
-Description: Symbol.asyncIterator is not defined.
-
-
-## Error Code 11:
-
-Description: Symbol.asyncIterator is not defined.
-
-
-## Error Code 8:
-
 Description: The Plugin or Network has not been included in your bundle.
 Please manually include the script tag associated with this plugin or network.
 
@@ -160,4 +90,3 @@ Description: Sizes must be of type `Array` unless breakpoints have been specifie
 ## Error Code 16:
 
 Description: Generator is already executing.
-
