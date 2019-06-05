@@ -1,6 +1,6 @@
 {
   "name": "adjs",
-  "version": "2.0.0-beta.5",
+  "version": "2.0.0-beta.6",
   "description": "Ad Library to simplify and optimize integration with ad networks such as DFP",
   "main": "./core.js",
   "types": "./types.d.ts",
@@ -10,7 +10,7 @@
     "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:fix": "tslint -c tslint.json --fix 'src/**/*.ts'",
-    "release": "npm run build; cp ./package.json dist; cp ./README.md dist; cp src/types.ts dist; cp -R umd dist; cd dist; npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN; npm publish",
+    "release": "npm run build; cd build; npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN; npm publish",
     "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
     "test": "NODE_PATH=./src jest --coverage ./tests --no-cache",
     "ts": "tsc --pretty"
