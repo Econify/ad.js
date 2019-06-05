@@ -43,7 +43,7 @@ const PluginsHandler = {
 
     if (!plugins[cleanedProperty]) {
       throw new Error(`
-        The ${cleanedProperty} Plugin or Network has not been included in your bundle. Please
+        The Plugin or Network has not been included in your bundle. Please
         manually include the script tag associated with this plugin or network. You can see
         documentation on https://adjs.dev.
 
