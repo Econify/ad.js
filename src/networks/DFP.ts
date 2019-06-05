@@ -1,4 +1,5 @@
-import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance } from '../types';
+import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance, LOG_LEVELS } from '../types';
+import dispatchEvent from '../utils/dispatchEvent';
 import loadScript from '../utils/loadScript';
 
 declare global {

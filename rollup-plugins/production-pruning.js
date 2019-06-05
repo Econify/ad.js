@@ -3,6 +3,13 @@ const { walk } = require('estree-walker');
 const orderBy = require('lodash.orderby');
 const fs = require('fs');
 
+const ERROR_LINK_FUNCTION_NAME = 'linkToError';
+const ERROR_LINK_FUNCTION = `
+function ${ERROR_LINK_FUNCTION_NAME}(id) {
+  return 'https://adjs.dev/e?id=Error-' + id;
+}
+`;
+
 const errorFile = fs.createWriteStream('./docs/error.md');
 errorFile.write('# Common Errors\n');
 errorFile.end();
@@ -46,7 +53,8 @@ const formatMessage = (node) => {
       case 'Literal':
         return `${acc} ${el.value}\n`
       default:
-        throw new Error('Type not defined');
+        console.log(el.type);
+        return '';
     }
   }, 'Description:');
 
@@ -55,30 +63,25 @@ const formatMessage = (node) => {
 
 const createErrorDocumentation = (node) => {
   const errorMessage = formatMessage(node);
-  let errorIndex = errors.indexOf(errorMessage);
+  const errorIndex = errors.push(errorMessage);
 
-  if (errorIndex > -1) {
-    return `Error-Code-${errorIndex + 1}`;
-  } else {
-    const errorIndex = errors.push(errorMessage);
+  const markdownOutput = `
+## Error ${errorIndex}:
 
-    const markdownOutput = `
-## Error Code ${errorIndex}:
 ${errorMessage}
-  `;
+`;
 
-    fs.appendFile('./docs/error.md', markdownOutput, (err) => {
-      if (err) throw err;
-    });
+  fs.appendFile('./docs/error.md', markdownOutput, (err) => {
+    if (err) throw err;
+  });
 
-    return `Error-Code-${errorIndex}`;
-  }
+  return errorIndex;
 }
 
 const generateUrlFor = (node) => {
   const errorID = createErrorDocumentation(node);
-
-  return `'https://www.adjs.dev/error?id=${errorID}'`
+  
+  return `${ERROR_LINK_FUNCTION_NAME}(${errorID})`
 }
 
 const createNewNode = (originalNode) => {
@@ -126,6 +129,8 @@ module.exports = function () {
           }
         }
       });
+
+      s.append(ERROR_LINK_FUNCTION);
 
       return {
         code: s.toString(),
