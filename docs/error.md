@@ -7,7 +7,7 @@ specify the plugin directly.
 
 Example:
 
- ``` 
+ ```
   import DFP from 'adjs/networks/DFP';
   import AutoRender from 'adjs/plugins/AutoRender';
 
@@ -17,7 +17,7 @@ Example:
 	],
   });
  ```
-  
+
 ## Error Code 2:
 Description: The Plugin or Network has not been included in your bundle. Please
 manually include the script tag associated with this plugin or network. You can see
@@ -25,7 +25,7 @@ documentation on https://adjs.dev.
 
 Example:
 
- ``` 
+ ```
   <script src="https://cdn.adjs.dev/core.min.js"></script>
   <script src="https://cdn.adjs.dev/DFP.min.js"></script>
   <script src="https://cdn.adjs.dev/AutoRender.min.js"></script>
@@ -38,8 +38,6 @@ Example:
 	});
   </script>
  ```
-  
+
 ## Error Code 3:
 Description: Sizes must be of type `Array` unless breakpoints have been specified
-
-  

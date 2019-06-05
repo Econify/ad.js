@@ -43,9 +43,8 @@ const PluginsHandler = {
 
     if (!plugins[cleanedProperty]) {
       throw new Error(`
-        The Plugin or Network has not been included in your bundle. Please
-        manually include the script tag associated with this plugin or network. You can see
-        documentation on https://adjs.dev.
+        The Plugin or Network has not been included in your bundle.
+        Please manually include the script tag associated with this plugin or network.
 
         Example:
           <script src="https://cdn.adjs.dev/core.min.js"></script>
