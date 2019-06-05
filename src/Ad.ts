@@ -283,11 +283,6 @@ class Ad implements IAd {
     if (typeof this.networkInstance.refresh !== 'undefined') {
       await this.networkInstance.refresh();
     } else {
-      console.warn(`
-        ${this.network.name} Network does not support ad refreshing natively.
-        Destroying and Recreating the ad. Make sure this is what you intended.
-      `);
-
       await this.networkInstance.destroy();
 
       this.networkInstance = this.network.createAd(this);
