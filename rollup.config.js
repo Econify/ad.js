@@ -13,6 +13,7 @@ const WEB_FORMAT = 'iife';
 const NODE_FORMAT = 'cjs';
 
 const SOURCEMAP = true;
+const SOURCEMAP_IN_PRODUCTION = false;
 const INDENT = false;
 
 const FILES_TO_COPY = [
@@ -126,7 +127,7 @@ function createProductionConfiguration({ type, file, path, name }) {
       format: WEB_FORMAT,
 
       indent: INDENT,
-      sourcemap: SOURCEMAP,
+      sourcemap: SOURCEMAP_IN_PRODUCTION,
     },
   };
 
