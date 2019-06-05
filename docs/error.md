@@ -1,13 +1,56 @@
 # Common Errors
 
 ## Error Code 1:
+Description: An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin
+		and overrides the constructor make sure you are calling "super" and that you are passing in an
+		instance of an ad as the first parameter. Alternatively, you can hook into the onCreate method
+		which gets called by the constructor.
+
+		Example:
+		js
+		
+ ``` 
+  class ExamplePlugin extends GenericPlugin {
+			onCreate() {
+			  console.log('Example Plugin Started Succesfully');
+			}
+		  }
+
+		  // Or
+
+		  class ExamplePlugin extends GenericPlugin {
+			constructor(ad) {
+			  super(ad);
+
+			  console.log('Example Plugin Started Succesfully');
+			}
+		  }
+ ```
+  
+## Error Code 2:
+Description: Dynamic requires are not currently supported by rollup-plugin-commonjs
+
+  
+## Error Code 3:
+Description: Ad does not have an id
+
+  
+## Error Code 4:
+Description: Sizes must be defined.
+
+  
+## Error Code 5:
+Description: Ad Path must be defined.
+
+  
+## Error Code 6:
 Description: Using the Networks or Plugins property on AdJS is only available when installing via script.
 If you are compiling the AdJS library locally within your project, use require to
 specify the plugin directly.
 
 Example:
 
- ```
+ ``` 
   import DFP from 'adjs/networks/DFP';
   import AutoRender from 'adjs/plugins/AutoRender';
 
@@ -17,15 +60,14 @@ Example:
 	],
   });
  ```
-
-## Error Code 2:
-Description: The Plugin or Network has not been included in your bundle. Please
-manually include the script tag associated with this plugin or network. You can see
-documentation on https://adjs.dev.
+  
+## Error Code 7:
+Description: The Plugin or Network has not been included in your bundle.
+Please manually include the script tag associated with this plugin or network.
 
 Example:
 
- ```
+ ``` 
   <script src="https://cdn.adjs.dev/core.min.js"></script>
   <script src="https://cdn.adjs.dev/DFP.min.js"></script>
   <script src="https://cdn.adjs.dev/AutoRender.min.js"></script>
@@ -38,6 +80,8 @@ Example:
 	});
   </script>
  ```
-
-## Error Code 3:
+  
+## Error Code 8:
 Description: Sizes must be of type `Array` unless breakpoints have been specified
+
+  

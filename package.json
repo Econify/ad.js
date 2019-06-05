@@ -10,7 +10,7 @@
     "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:fix": "tslint -c tslint.json --fix 'src/**/*.ts'",
-    "release": "npm run clean && npm run build; cp ./package.json dist; cp ./README.md dist; cp src/types.ts dist; cp -R umd dist; cd dist; npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN; npm publish",
+    "release": "npm run build; cp ./package.json dist; cp ./README.md dist; cp src/types.ts dist; cp -R umd dist; cd dist; npm config set '//registry.npmjs.org/:_authToken' $NPM_TOKEN; npm publish",
     "start": "concurrently -k \"webpack-dev-server --port 8081\" \"http-server ./demo -p 8080\"",
     "test": "NODE_PATH=./src jest --coverage ./tests --no-cache",
     "ts": "tsc --pretty"
