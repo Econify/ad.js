@@ -201,7 +201,7 @@ if ('__DEV__') {
         the developer bundle from, we need to decide how to get
         new code to overwrite existing bundle.
       */
-      return 'Enabling Developer tools. This may take a second.';
+      return 'This feature is coming soon!. Please use the development build for the time being.';
     },
   };
 }

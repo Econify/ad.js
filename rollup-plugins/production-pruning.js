@@ -95,23 +95,34 @@ const createNewNode = (originalNode) => {
 
 module.exports = function () {
   return {
-    name: 'Error Minifier',
+    name: 'Production Pruning',
     transform(code, id) {
       const ast = this.parse(code, id);
       const s = new MagicString(code);
 
       walk(ast, {
         leave(node) {
+
+          /*
+            Remove all string from errors and replace with urls
+            for the Ad.Js documentation for reference / lookup.
+          */
           if (node.type === 'NewExpression' && node.callee.name === "Error") {
             if (node.arguments && !node.arguments[0].left) {
-              const args = node.arguments;
-
               const { start, end, value } = createNewNode(node);
 
               if (start !== end) {
                 s.overwrite(start, end, value);
               }
             }
+          }
+
+          /*
+              Remove all code wrapped in if ('__DEV__') {}
+              Currently, only the DeveloperTools Plugin is using this.
+          */
+          if (node.type === 'IfStatement' && node.test.value === '__DEV__') {
+            s.overwrite(node.start, node.alternate ? node.alternate.start : node.end, '');
           }
         }
       });
