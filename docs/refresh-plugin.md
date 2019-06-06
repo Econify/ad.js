@@ -15,11 +15,11 @@ __Example__:
 import AdJS from 'adjs';
 import DFP from 'adjs/networks/DFP';
 
-import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
-    AutoRefreshPlugin,
+    AutoRefresh,
   ]
 });
 ```
@@ -32,10 +32,10 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/networks.DFP.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/core.production.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/networks.dfp.production.min.js"></script>
 
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/plugins.AutoRefresh.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/plugins.autorefresh.production.min.js"></script>
   </head>
   <body>
     <script>
@@ -81,13 +81,13 @@ Configuraton on an individual Ad
 import AdJS from 'adjs';
 import DFPNetwork from 'adjs/networks/DFP';
 
-import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
 const page = new AdJS.Page(DFPNetwork);
 
 const ad = new page.createAd(el, {
   plugins: [
-    AutoRefreshPlugin
+    AutoRefresh
   ],
 
   refreshRateInSeconds: 30,

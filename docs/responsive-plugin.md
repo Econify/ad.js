@@ -16,11 +16,11 @@ __Example__:
 ```js
 import AdJS from 'adjs';
 import DFP from 'adjs/networks/DFP';
-import ResponsivePlugin from 'adjs/plugins/Responsive';
+import Responsive from 'adjs/plugins/Responsive';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
-    ResponsivePlugin,
+    Responsive,
   ]
 });
 ```
@@ -33,9 +33,9 @@ __Example__:
 ```html
 <html>
   <head>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/core.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/networks.DFP.min.js"></script>
-    <script src="https://unpkg.com/adjs@2.0.0-beta.2/umd/plugins.Breakpoints.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/core.production.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/networks.dfp.production.min.js"></script>
+    <script src="https://unpkg.com/adjs@latest/umd/plugins.responsive.production.min.js"></script>
   </head>
   <body>
     <script>
