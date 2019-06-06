@@ -63,24 +63,29 @@ const formatMessage = (node) => {
 
 const createErrorDocumentation = (node) => {
   const errorMessage = formatMessage(node);
-  const errorIndex = errors.push(errorMessage);
+  let errorIndex = errors.indexOf(errorMessage);
 
-  const markdownOutput = `
-## Error ${errorIndex}:
+  if (errorIndex > -1) {
+    return errorIndex;
+  } else {
+    const errorIndex = errors.push(errorMessage);
 
+    const markdownOutput = `
+## Error Code ${errorIndex}:
 ${errorMessage}
-`;
+  `;
 
-  fs.appendFile('./docs/error.md', markdownOutput, (err) => {
-    if (err) throw err;
-  });
+    fs.appendFile('./docs/error.md', markdownOutput, (err) => {
+      if (err) throw err;
+    });
 
-  return errorIndex;
+    return errorIndex;
+  }
 }
 
 const generateUrlFor = (node) => {
   const errorID = createErrorDocumentation(node);
-  
+
   return `${ERROR_LINK_FUNCTION_NAME}(${errorID})`
 }
 
