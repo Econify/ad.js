@@ -85,7 +85,6 @@ ${errorMessage}
 
 const generateUrlFor = (node) => {
   const errorID = createErrorDocumentation(node);
-
   return `${ERROR_LINK_FUNCTION_NAME}(${errorID})`
 }
 
