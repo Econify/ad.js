@@ -63,15 +63,14 @@ const formatMessage = (node) => {
 
 const createErrorDocumentation = (node) => {
   const errorMessage = formatMessage(node);
-  let errorIndex = errors.indexOf(errorMessage);
 
-  if (errorIndex > -1) {
+  if (errors.includes(errorMessage)) {
     return errorIndex;
   } else {
     const errorIndex = errors.push(errorMessage);
 
     const markdownOutput = `
-## Error Code ${errorIndex}:
+## Error ${errorIndex}:
 ${errorMessage}
   `;
 
