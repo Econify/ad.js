@@ -65,7 +65,7 @@ const createErrorDocumentation = (node) => {
   const errorMessage = formatMessage(node);
 
   if (errors.includes(errorMessage)) {
-    return errorIndex;
+    return errors.indexOf(errorMessage);
   } else {
     const errorIndex = errors.push(errorMessage);
 
@@ -78,7 +78,7 @@ ${errorMessage}
       if (err) throw err;
     });
 
-    return errorIndex;
+    return errors.indexOf(errorMessage);
   }
 }
 
