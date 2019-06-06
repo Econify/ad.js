@@ -142,33 +142,39 @@ function createProductionConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
-createConfigurations({	
-  type: 'Plugins',	
-  basePath: './src/plugins',	
-  files: [	
-    'AutoRender',	
-    'AutoRefresh',	
-    'DeveloperTools',	
-    'GenericPlugin',	
-    'Sticky',	
-    'Responsive',	
-  ]	
-});	
+createConfigurations({
+  type: 'Plugins',
+  basePath: './src/plugins',
+  files: [
+    'AutoRender',
+    'AutoRefresh',
+    'DeveloperTools',
+    'GenericPlugin',
+    'Sticky',
+    'Responsive',
+  ]
+});
 
-createConfigurations({	
-  type: 'Networks',	
-  basePath: './src/networks',	
-  files: [	
-    'DFP',	
-    'Mock',	
-    'Noop',	
-  ]	
-});	
+createConfigurations({
+  type: 'Networks',
+  basePath: './src/networks',
+  files: [
+    'DFP',
+    'Mock',
+    'Noop',
+  ]
+});
 
 createConfiguration({
   name: 'AdJS',
   path: './src/index.ts',
   file: 'core',
+});
+
+createConfiguration({
+  name: 'AdJSComplete',
+  path: './src/completeIndex.ts',
+  file: 'complete',
 });
 
 export default configurations;
