@@ -124,6 +124,10 @@ module.exports = function () {
           if (node.type === 'IfStatement' && node.test.value === '__DEV__') {
             s.overwrite(node.start, node.alternate ? node.alternate.start : node.end, '');
           }
+
+          if (node.callee && node.callee.name === "dispatchEvent") {
+            s.remove(node.start, node.end);
+          }
         }
       });
 
