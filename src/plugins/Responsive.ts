@@ -5,7 +5,7 @@ import isBetween from '../utils/isBetween';
 import throttle from '../utils/throttle';
 import GenericPlugin from './GenericPlugin';
 
-class ResponsivePlugin extends GenericPlugin {
+class Responsive extends GenericPlugin {
   public currentConfines: ICurrentConfines = {};
   private EVENT_KEY: string = 'resize';
   private THROTTLE_DURATION: number = 250;
@@ -82,4 +82,4 @@ class ResponsivePlugin extends GenericPlugin {
   }
 }
 
-export default ResponsivePlugin;
+export default Responsive;

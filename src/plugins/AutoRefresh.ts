@@ -5,7 +5,7 @@ import GenericPlugin from './GenericPlugin';
 
 const ONE_SECOND = 1000;
 
-class AutoRefreshPlugin extends GenericPlugin {
+class AutoRefresh extends GenericPlugin {
   public timeInView: number = 0;
   private watcher?: IWatcher;
   private isRefreshing: boolean = false;
@@ -102,4 +102,4 @@ class AutoRefreshPlugin extends GenericPlugin {
   }
 }
 
-export default AutoRefreshPlugin;
+export default AutoRefresh;

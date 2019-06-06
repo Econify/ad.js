@@ -15,11 +15,11 @@ __Example__:
 import AdJS from 'adjs';
 import DFP from 'adjs/networks/DFP';
 
-import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
-    AutoRefreshPlugin,
+    AutoRefresh,
   ]
 });
 ```
@@ -81,13 +81,13 @@ Configuraton on an individual Ad
 import AdJS from 'adjs';
 import DFPNetwork from 'adjs/networks/DFP';
 
-import AutoRefreshPlugin from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/plugins/AutoRefresh';
 
 const page = new AdJS.Page(DFPNetwork);
 
 const ad = new page.createAd(el, {
   plugins: [
-    AutoRefreshPlugin
+    AutoRefresh
   ],
 
   refreshRateInSeconds: 30,
