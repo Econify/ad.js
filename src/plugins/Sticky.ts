@@ -3,7 +3,7 @@ import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
 import GenericPlugin from './GenericPlugin';
 
-class StickyPlugin extends GenericPlugin {
+class Sticky extends GenericPlugin {
   public stickybit?: StickyBits;
 
   public onCreate() {
@@ -25,4 +25,4 @@ class StickyPlugin extends GenericPlugin {
   }
 }
 
-export default StickyPlugin;
+export default Sticky;

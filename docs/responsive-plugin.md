@@ -16,11 +16,11 @@ __Example__:
 ```js
 import AdJS from 'adjs';
 import DFP from 'adjs/networks/DFP';
-import ResponsivePlugin from 'adjs/plugins/Responsive';
+import Responsive from 'adjs/plugins/Responsive';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
-    ResponsivePlugin,
+    Responsive,
   ]
 });
 ```

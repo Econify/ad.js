@@ -1,4 +1,4 @@
-import ResponsivePlugin from '../../src/plugins/Responsive';
+import Responsive from '../../src/plugins/Responsive';
 
 describe('ResponsivePlugin', async () => {
   const ad = {
@@ -18,9 +18,9 @@ describe('ResponsivePlugin', async () => {
 
   it('creates two identical instances', () => {
     // @ts-ignore
-    const responsivePlugin = new ResponsivePlugin(ad);
+    const responsivePlugin = new Responsive(ad);
     // @ts-ignore
-    const responsivePlugin2 = new ResponsivePlugin(ad);
+    const responsivePlugin2 = new Responsive(ad);
     expect(responsivePlugin).toEqual(responsivePlugin2);
   });
 
@@ -28,7 +28,7 @@ describe('ResponsivePlugin', async () => {
     it('throws AdJs error when breakpoints not provided', () => {
       try {
         // @ts-ignore
-        const responsivePlugin = new ResponsivePlugin(ad);
+        const responsivePlugin = new Responsive(ad);
         delete ad.configuration.breakpoints;
         responsivePlugin.beforeCreate(ad);
       } catch (e) {
@@ -39,7 +39,7 @@ describe('ResponsivePlugin', async () => {
 
     it('sets currentConfines correctly for all three screen sizes', () => {
       // @ts-ignore
-      const responsivePlugin = new ResponsivePlugin(ad);
+      const responsivePlugin = new Responsive(ad);
       ad.configuration.breakpoints = {
         mobile: { from: 0, to: 767 },
         tablet: { from: 768, to: 999 },
@@ -66,7 +66,7 @@ describe('ResponsivePlugin', async () => {
   describe('#isRefreshDisabled', () => {
     it('returns false if refreshOnBreakpoint not specified', () => {
       // @ts-ignore
-      const responsivePlugin = new ResponsivePlugin(ad);
+      const responsivePlugin = new Responsive(ad);
       const value = responsivePlugin.isRefreshDisabled();
       expect(value).toEqual(false);
     });
@@ -75,7 +75,7 @@ describe('ResponsivePlugin', async () => {
       // @ts-ignore
       ad.configuration.refreshOnBreakpoint = false;
       // @ts-ignore
-      const responsivePlugin = new ResponsivePlugin(ad);
+      const responsivePlugin = new Responsive(ad);
       const value = responsivePlugin.isRefreshDisabled();
       expect(value).toEqual(true);
     });
