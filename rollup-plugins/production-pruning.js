@@ -70,7 +70,7 @@ const createErrorDocumentation = (node) => {
     const errorIndex = errors.push(errorMessage);
 
     const markdownOutput = `
-## Error ${errorIndex}:
+## Error ${errorIndex}
 ${errorMessage}
   `;
 
