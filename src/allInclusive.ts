@@ -1,28 +1,12 @@
-import DoubleClickForPublishers from './networks/DFP';
-import MockAdNetwork from './networks/Mock';
-import Noop from './networks/Noop';
+import networkList from './networks/index';
 import Page from './Page';
-import AutoRefresh from './plugins/AutoRefresh';
-import AutoRender from './plugins/AutoRender';
-import GenericPlugin from './plugins/GenericPlugin';
-import Responsive from './plugins/Responsive';
-import Sticky from './plugins/Sticky';
+import pluginList from './plugins/index';
 import { ILoadedModulesCache, LoadedModules } from './types';
 import isServer from './utils/isServer';
 
 const LOADED_MODULES: ILoadedModulesCache = {
-  Plugins: {
-    AutoRefresh: AutoRefresh(),
-    AutoRender: AutoRender(),
-    GenericPlugin: GenericPlugin(),
-    Responsive: Responsive(),
-    Sticky: Sticky(),
-  },
-  Networks: {
-    DoubleClickForPublishers: DoubleClickForPublishers(),
-    MockAdNetwork: MockAdNetwork(),
-    Noop: Noop(),
-  },
+  Plugins: pluginList,
+  Networks: networkList,
   Vendors: {},
 };
 

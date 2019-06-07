@@ -173,7 +173,7 @@ createConfiguration({
 
 createConfiguration({
   name: 'AdJSComplete',
-  path: './src/completeIndex.ts',
+  path: './src/allInclusive.ts',
   file: 'complete',
 });
 
