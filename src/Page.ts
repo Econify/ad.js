@@ -12,6 +12,7 @@ export default class Page {
 
   constructor(public network: INetwork, providedConfiguration: IPageConfiguration = {}) {
     const { defaults, plugins, vendors } = providedConfiguration;
+    const globalAdJS = (window as any).AdJS;
 
     if (defaults) {
       this.defaults = defaults;
@@ -23,6 +24,15 @@ export default class Page {
 
     if (vendors) {
       this.vendors = vendors;
+    }
+
+    // This should be pushed to the AdJS.cmd once enabled
+    if (globalAdJS) {
+      if (!globalAdJS.pages) {
+        globalAdJS.pages = [];
+      }
+
+      globalAdJS.pages.push(this);
     }
   }
 
