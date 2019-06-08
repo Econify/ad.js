@@ -193,9 +193,7 @@ if ('__DEV__') {
 
   (window as any)[`AD_JS`] = {
     DEBUG: async () => {
-      // TODO: Switch out this url with the unpkg
-      // const url = 'https://unpkg.com/adjs@latest/umd/debug.production.min.js';
-      const url = 'http://localhost:8080/build/umd/debug.production.min.js';
+      const url = 'https://unpkg.com/adjs@latest/umd/debug.production.min.js';
       const options = { async: true, defer: true };
 
       await loadScript(url, options);
