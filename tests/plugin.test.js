@@ -27,6 +27,7 @@ describe('Plugin', () => {
 
     beforeEach(() => {
       const el = insertElement('div', {}, document.body);
+      global.AdJS = AdJS;
       const page = new AdJS.Page(MockNetwork, {
         plugins: [TEST_PLUGIN],
       });

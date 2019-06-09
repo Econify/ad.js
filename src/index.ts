@@ -71,6 +71,7 @@ const Vendors = new Proxy(_ADJS.Vendors, PluginsHandler);
 
 const AdJS = {
   Page,
+  pages: [],
   Bucket: Page,
   Plugins,
   Networks,
