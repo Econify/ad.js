@@ -69,9 +69,9 @@ const PluginsHandler = {
 const Plugins = new Proxy(_ADJS.Plugins, PluginsHandler);
 const Networks = new Proxy(_ADJS.Networks, PluginsHandler);
 const Vendors = new Proxy(_ADJS.Vendors, PluginsHandler);
-const Debug = async () => {
-  console.log('Loading developer tools...');
-  await loadScript('https://unpkg.com/adjs@latest/umd/debug.production.min.js', { async: true, defer: true });
+const Debug = () => {
+  loadScript('https://unpkg.com/adjs@latest/umd/debug.production.min.js', { async: true, defer: true });
+  return 'Loading developer tools...';
 };
 
 const AdJS = {
