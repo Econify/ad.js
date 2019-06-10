@@ -1,7 +1,6 @@
 import { IPlugin, LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
 import insertElement from '../utils/insertElement';
-import loadScript from '../utils/loadScript';
 import onEvent from '../utils/onEvent';
 import padTime from '../utils/padTime';
 import GenericPlugin from './GenericPlugin';
