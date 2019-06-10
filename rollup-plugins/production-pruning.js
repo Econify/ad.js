@@ -75,7 +75,9 @@ ${errorMessage}
   `;
 
     fs.appendFile('./docs/error.md', markdownOutput, (err) => {
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
     });
 
     return errors.indexOf(errorMessage);
