@@ -186,18 +186,9 @@ if ('__DEV__') {
       console.warn(`
         %c [ADJS] ATTENTION! DeveloperTools module has been detected.
         This plugin is meant to be used in development only. If you wish to enable for your current session,
-        in your console type 'AD_JS.DEBUG()'.
+        in your console type 'AdJS.DEBUG()'.
       `, 'font-weight: bold;');
     }
-  };
-
-  (window as any)[`AD_JS`] = {
-    DEBUG: async () => {
-      const url = 'https://unpkg.com/adjs@latest/umd/debug.production.min.js';
-      const options = { async: true, defer: true };
-
-      await loadScript(url, options);
-    },
   };
 }
 
