@@ -24,6 +24,12 @@ const pluginKeys = Object.keys(plugins);
 
 pluginKeys.forEach((plugin) => {
   if (!(window as any)[`_ADJS`].Plugins[plugin]) {
+
+    // If user doesn't include plugin in configuration, we add it here.
+    if (plugin === 'DeveloperTools') {
+      (window as any)[`_ADJS`].Plugins.DeveloperTools = DeveloperTools;
+    }
+
     return;
   }
 
