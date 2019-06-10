@@ -63,24 +63,29 @@ const formatMessage = (node) => {
 
 const createErrorDocumentation = (node) => {
   const errorMessage = formatMessage(node);
-  const errorIndex = errors.push(errorMessage);
 
-  const markdownOutput = `
-## Error ${errorIndex}:
+  if (errors.includes(errorMessage)) {
+    return errors.indexOf(errorMessage);
+  } else {
+    const errorIndex = errors.push(errorMessage);
 
+    const markdownOutput = `
+## Error ${errorIndex}
 ${errorMessage}
-`;
+  `;
 
-  fs.appendFile('./docs/error.md', markdownOutput, (err) => {
-    if (err) throw err;
-  });
+    fs.appendFile('./docs/error.md', markdownOutput, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
 
-  return errorIndex;
+    return errors.indexOf(errorMessage);
+  }
 }
 
 const generateUrlFor = (node) => {
   const errorID = createErrorDocumentation(node);
-  
   return `${ERROR_LINK_FUNCTION_NAME}(${errorID})`
 }
 
