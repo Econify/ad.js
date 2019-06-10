@@ -34,13 +34,13 @@ Description: Dynamic requires are not currently supported by rollup-plugin-commo
 ## Error 3:
 Description: Ad does not have an id
 
-  
-## Error 5:
-Description: Ad Path must be defined.
 
-  
 ## Error 4:
 Description: Sizes must be defined.
+
+
+## Error 5:
+Description: Ad Path must be defined.
 
   
 ## Error 6:
