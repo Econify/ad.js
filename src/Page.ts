@@ -25,7 +25,7 @@ export default class Page {
       this.vendors = vendors;
     }
 
-    (window as any).AdJS.pages.push(this);
+    MainSingleton.pages.push(this);
   }
 
   public Ad(el: HTMLElement, options?: IAdConfiguration): Ad {
