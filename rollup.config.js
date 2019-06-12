@@ -112,12 +112,13 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
-function createProductionConfiguration({ type, file, path, name }) {
+function createProductionConfiguration({ type, file, path, name, prune = true }) {
+  console.log(prune);
   const configuration = {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
-      file !== 'debug' ? productionPruning() : null,
+      prune ? productionPruning() : null,
       terser(),
     ],
     output: {
@@ -173,6 +174,7 @@ createConfiguration({
 
 configurations.push(createProductionConfiguration({
   path: './src/debug.ts',
+  prune: false,
   file: 'debug',
 }));
 

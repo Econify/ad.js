@@ -1,6 +1,6 @@
 # Common Errors
 
-## Error 1:
+## Error 1
 Description: An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin
 		and overrides the constructor make sure you are calling "super" and that you are passing in an
 		instance of an ad as the first parameter. Alternatively, you can hook into the onCreate method
@@ -27,23 +27,23 @@ Description: An ad must be passed into the GenericPlugin class. If your Plugin i
 		  }
  ```
   
-## Error 2:
+## Error 2
 Description: Dynamic requires are not currently supported by rollup-plugin-commonjs
 
   
-## Error 3:
+## Error 3
 Description: Ad does not have an id
 
-
-## Error 4:
+  
+## Error 4
 Description: Sizes must be defined.
 
-
-## Error 5:
+  
+## Error 5
 Description: Ad Path must be defined.
 
   
-## Error 6:
+## Error 6
 Description: Using the Networks or Plugins property on AdJS is only available when installing via script.
 If you are compiling the AdJS library locally within your project, use require to
 specify the plugin directly.
@@ -61,7 +61,7 @@ Example:
   });
  ```
   
-## Error 7:
+## Error 7
 Description: The Plugin or Network has not been included in your bundle.
 Please manually include the script tag associated with this plugin or network.
 
@@ -81,7 +81,7 @@ Example:
   </script>
  ```
   
-## Error 8:
+## Error 8
 Description: Sizes must be of type `Array` unless breakpoints have been specified
 
   
