@@ -112,13 +112,14 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
-function createProductionConfiguration({ type, file, path, name }) {
+function createProductionConfiguration({ type, file, path, name, prune = true }) {
+  console.log(prune);
   const configuration = {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
-      productionPruning(),
-      terser()
+      prune ? productionPruning() : null,
+      terser(),
     ],
     output: {
       file: `./${BUILD_DIR}/umd/${type}.${file}.production.min.js`.toLowerCase(),
@@ -170,5 +171,11 @@ createConfiguration({
   path: './src/index.ts',
   file: 'core',
 });
+
+configurations.push(createProductionConfiguration({
+  path: './src/debug.ts',
+  prune: false,
+  file: 'debug',
+}));
 
 export default configurations;
