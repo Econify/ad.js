@@ -1,13 +1,15 @@
-import { LOG_LEVELS } from '../types';
+import { IPlugin, LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
 import insertElement from '../utils/insertElement';
 import onEvent from '../utils/onEvent';
 import padTime from '../utils/padTime';
 import GenericPlugin from './GenericPlugin';
 
-const BASE_MESSAGE = '[ADJS]';
+let DeveloperTools!: IPlugin;
 
-const COLOR_MAP: { [key: string]: string } = {
+if ('__DEV__') {
+  const BASE_MESSAGE = '[ADJS]';
+  const COLOR_MAP: { [key: string]: string } = {
   'AutoRefresh Plugin': 'blue',
   'AutoRender Plugin': 'purple',
   'DeveloperTools Plugin': 'red',
@@ -15,8 +17,7 @@ const COLOR_MAP: { [key: string]: string } = {
   'Sticky Plugin': 'brown',
   'DFP Network': 'gray',
 };
-
-const OVERLAY_STYLE = `
+  const OVERLAY_STYLE = `
   position: absolute;
   background: rgba(0, 0, 0, 0.7);
   color: white;
@@ -30,29 +31,12 @@ const OVERLAY_STYLE = `
   color: yellow;
   font-size: 12px;
 `;
-
-const MESSAGE_STYLE = `
+  const MESSAGE_STYLE = `
   padding: 5px 0;
   color: white;
   border-bottom: 1px solid grey;
 `;
 
-let DeveloperTools;
-
-DeveloperTools = class extends GenericPlugin {
-  public debugOverlay?: HTMLElement;
-
-  public onCreate() {
-    console.warn(`
-      %c [ADJS] ATTENTION! DeveloperTools module has been detected.
-      This plugin is meant to be used in development only. If you wish to enable for your current session,
-      in your console type 'AD_JS.DEBUG()'.
-    `, 'font-weight: bold;');
-  }
-};
-
-if ('__DEV__') {
-  // tslint:disable-next-line: max-classes-per-file
   DeveloperTools = class extends GenericPlugin {
     public debugOverlay?: HTMLElement;
 
@@ -193,16 +177,17 @@ if ('__DEV__') {
     }
   };
 } else {
-  (window as any)[`AD_JS`] = {
-    DEBUG: () => {
-      /*
-        TODO:
-        Since there is no server that we can just fetch
-        the developer bundle from, we need to decide how to get
-        new code to overwrite existing bundle.
-      */
-      return 'This feature is coming soon!. Please use the development build for the time being.';
-    },
+  // tslint:disable-next-line: max-classes-per-file
+  DeveloperTools = class extends GenericPlugin {
+    public debugOverlay?: HTMLElement;
+
+    public onCreate() {
+      console.warn(`
+        %c [ADJS] ATTENTION! DeveloperTools module has been detected.
+        This plugin is meant to be used in development only. If you wish to enable for your current session,
+        in your console type 'AdJS.DEBUG()'.
+      `, 'font-weight: bold;');
+    }
   };
 }
 

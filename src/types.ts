@@ -67,6 +67,9 @@ export type IPluginConstructorOrSingleton = IPluginConstructor | IPlugin;
 export type IPluginConstructor = new(ad: IAd) => IPlugin;
 
 export interface IPlugin {
+  // this is for prototyping on plugins
+  [x: string]: any;
+
   name: string;
 
   beforeCreate?: IPluginHook;

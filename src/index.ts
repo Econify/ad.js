@@ -1,4 +1,5 @@
-import { ILoadedModulesCache, LoadedModules } from './types';
+import { ILoadedModulesCache, IPageConfiguration, LoadedModules } from './types';
+import loadScript from './utils/loadScript';
 
 import Page from './Page';
 import isServer from './utils/isServer';
@@ -68,14 +69,20 @@ const PluginsHandler = {
 const Plugins = new Proxy(_ADJS.Plugins, PluginsHandler);
 const Networks = new Proxy(_ADJS.Networks, PluginsHandler);
 const Vendors = new Proxy(_ADJS.Vendors, PluginsHandler);
+const pages: IPageConfiguration[] = [];
+const Debug = () => {
+  loadScript('https://unpkg.com/adjs@latest/umd/debug.production.min.js', { async: true, defer: true });
+  return 'Loading developer tools...';
+};
 
 const AdJS = {
   Page,
+  pages,
   Bucket: Page,
   Plugins,
   Networks,
   Vendors,
-
+  DEBUG: Debug,
   activeCorrelatorId: null,
 };
 
