@@ -171,10 +171,4 @@ createConfiguration({
   file: 'core',
 });
 
-createConfiguration({
-  name: 'AdJSComplete',
-  path: './src/allInclusive.ts',
-  file: 'complete',
-});
-
 export default configurations;
