@@ -9,6 +9,7 @@ describe('Ad', () => {
   beforeEach(() => {
     const el = insertElement('div', {}, document.body);
 
+    global.AdJS = AdJS;
     page = new AdJS.Page(MockNetwork);
 
     ad = page.createAd(el, { sizes: [], breakpoints: {} });
