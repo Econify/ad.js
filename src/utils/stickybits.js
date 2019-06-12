@@ -1,17 +1,12 @@
 class Stickybits {
   constructor (target) {
-    this.userAgent = window.navigator.userAgent || 'no `userAgent` provided by the browser'
     this.props = {
       stickyBitStickyOffset: 0,
-      parentClass: 'js-stickybit-parent',
-      stickyClass: 'js-is-sticky',
-      stuckClass: 'js-is-stuck',
       verticalPosition: 'top',
     }
+    this.target = target
 
     this.props.positionVal = this.definePosition() || 'fixed'
-
-    this.instances = []
 
     const {
       positionVal,
@@ -21,20 +16,9 @@ class Stickybits {
     const verticalPositionStyle = verticalPosition === 'top' && `${stickyBitStickyOffset}px`
     const positionStyle = positionVal !== 'fixed' ? positionVal : ''
 
-    this.els = typeof target === 'string' ? document.querySelectorAll(target) : target
-
-    if (!('length' in this.els)) this.els = [this.els]
-
-    for (let i = 0; i < this.els.length; i++) {
-      const el = this.els[i]
-
-      // set vertical position
-      el.style[verticalPosition] = verticalPositionStyle
-      el.style.position = positionStyle
-
-      // instances are an array of objects
-      this.instances.push(this.addInstance(el, this.props))
-    }
+    // set vertical position
+    this.target.style[verticalPosition] = verticalPositionStyle
+    this.target.style.position = positionStyle
   }
 
   definePosition () {
@@ -49,30 +33,12 @@ class Stickybits {
     return stickyProp;
   }
 
-  removeInstance (instance) {
-    const e = instance.el
-    const p = instance.props
-    const tC = this.toggleClasses
-    e.style.position = ''
-    e.style[p.verticalPosition] = ''
-    tC(e, p.stickyClass)
-    tC(e, p.stuckClass)
-    tC(e.parentNode, p.parentClass)
-  }
-
   cleanup () {
-    for (let i = 0; i < this.instances.length; i += 1) {
-      const instance = this.instances[i]
-      if (instance.stateContainer) {
-        window.removeEventListener('scroll', instance.stateContainer)
-      }
-      this.removeInstance(instance)
-    }
-    this.manageState = false
-    this.instances = []
+      this.target.style.position = ''
+      this.target.style[this.props.verticalPosition] = '';
   }
 }
 
-export default function stickybits (target, o) {
-  return new Stickybits(target, o)
+export default function stickybits (target) {
+  return new Stickybits(target)
 }
