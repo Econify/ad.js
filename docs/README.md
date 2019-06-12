@@ -3,12 +3,15 @@ Ad.js is an ad library that aims to simplify and optimize client integrations wi
 
 ## Installation
 
-To install Ad.js you have two options
+To install Ad.js you have multiple options
 
 - NPM:  `npm install adjs`
-- Script include: `<script src="https://unpkg.com/adjs@latest/umd/core.production.min.js"></script>`
 
-Note: If you are using the script include, please make sure to also include the scripts for all plugins you will be using as well. You can find the index of all hosted plugins for script include [here](https://unpkg.com/adjs@latest/umd/)
+- Script include (Fully Featured): `<script src="https://unpkg.com/adjs@latest/umd/bundle.production.min.js"></script>`
+
+- Script include (With feature specific imports): `<script src="https://unpkg.com/adjs@latest/umd/core.production.min.js"></script>`
+Note: Using this import, please make sure to also include the scripts for all plugins you will be using as well. You can find the index of all hosted plugins for script include [here](https://unpkg.com/adjs@latest/umd/)
+
 
 ## Configuration
 

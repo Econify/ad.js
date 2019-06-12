@@ -61,6 +61,10 @@ Example:
   });
  ```
   
+## Error 8
+Description: Sizes must be of type `Array` unless breakpoints have been specified
+
+  
 ## Error 7
 Description: The Plugin or Network has not been included in your bundle.
 Please manually include the script tag associated with this plugin or network.
@@ -80,8 +84,4 @@ Example:
 	});
   </script>
  ```
-  
-## Error 8
-Description: Sizes must be of type `Array` unless breakpoints have been specified
-
   

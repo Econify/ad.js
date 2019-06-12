@@ -5,7 +5,7 @@
   "main": "./core.js",
   "types": "./types.d.ts",
   "scripts": {
-    "build": "npm run clean && rollup -c",
+    "build": "npm run clean && rollup -c; bash ./bundle.sh",
     "clean": "rm -rf ./build && rm -f docs/error.md",
     "docs": "docsify serve docs",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
