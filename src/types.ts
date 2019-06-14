@@ -169,3 +169,13 @@ export interface IAdConfiguration {
   sizes?: AdSizes;
   targeting?: IAdTargeting;
 }
+
+export interface IRegisteredAd {
+  element: HTMLElement;
+  offset: number;
+  inView: boolean;
+  fullyInView: boolean;
+  onEnterViewport: any[];
+  onFullyEnterViewport: any[];
+  onExitViewport: any[];
+}

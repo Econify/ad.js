@@ -113,7 +113,6 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
 }
 
 function createProductionConfiguration({ type, file, path, name, prune = true }) {
-  console.log(prune);
   const configuration = {
     input: path,
     plugins: [
