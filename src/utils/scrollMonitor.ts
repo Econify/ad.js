@@ -61,6 +61,10 @@ class ScrollMonitor {
   }
 
   public static unsubscribe = (id: string) => {
+    if (!ScrollMonitor.registeredAds[id]) {
+      return;
+    }
+
     delete ScrollMonitor.registeredAds[id];
     --ScrollMonitor.adCount;
   }
