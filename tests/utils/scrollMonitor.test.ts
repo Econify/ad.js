@@ -1,7 +1,7 @@
 import ScrollMonitor from '../../src/utils/scrollMonitor';
 
-describe('#ScrollMonitor', async () => {
-  describe('#subscribe', () => {
+describe('.ScrollMonitor Static Class', async () => {
+  describe('.subscribe', () => {
     it('adds cbs to existing ad if another plugin has already subscribed it', () => {
       const element = document.createElement('div');
       const cb = () => { };
@@ -29,7 +29,7 @@ describe('#ScrollMonitor', async () => {
     });
   });
 
-  describe('#unsubscribe', () => {
+  describe('.unsubscribe', () => {
     it('removes the correct ad from the dict', () => {
       ScrollMonitor.unsubscribe('ad1');
       expect(ScrollMonitor.adCount).toBe(1);
