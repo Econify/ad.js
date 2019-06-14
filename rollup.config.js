@@ -112,12 +112,12 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
-function createProductionConfiguration({ type, file, path, name }) {
+function createProductionConfiguration({ type, file, path, name, prune = true }) {
   const configuration = {
     input: path,
     plugins: [
       ...BASE_PLUGINS,
-      file !== 'debug' ? productionPruning() : null,
+      prune ? productionPruning() : null,
       terser(),
     ],
     output: {
@@ -142,28 +142,28 @@ function createProductionConfiguration({ type, file, path, name }) {
   return configuration;
 }
 
-createConfigurations({	
-  type: 'Plugins',	
-  basePath: './src/plugins',	
-  files: [	
-    'AutoRender',	
-    'AutoRefresh',	
-    'DeveloperTools',	
-    'GenericPlugin',	
-    'Sticky',	
-    'Responsive',	
-  ]	
-});	
+createConfigurations({
+  type: 'Plugins',
+  basePath: './src/plugins',
+  files: [
+    'AutoRender',
+    'AutoRefresh',
+    'DeveloperTools',
+    'GenericPlugin',
+    'Sticky',
+    'Responsive',
+  ]
+});
 
-createConfigurations({	
-  type: 'Networks',	
-  basePath: './src/networks',	
-  files: [	
-    'DFP',	
-    'Mock',	
-    'Noop',	
-  ]	
-});	
+createConfigurations({
+  type: 'Networks',
+  basePath: './src/networks',
+  files: [
+    'DFP',
+    'Mock',
+    'Noop',
+  ]
+});
 
 createConfiguration({
   name: 'AdJS',
@@ -173,6 +173,7 @@ createConfiguration({
 
 configurations.push(createProductionConfiguration({
   path: './src/debug.ts',
+  prune: false,
   file: 'debug',
 }));
 

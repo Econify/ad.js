@@ -1,13 +1,12 @@
-import scrollMonitor, { IWatcher } from 'scrollmonitor';
 import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
+import ScrollMonitor from '../utils/scrollMonitor';
 import GenericPlugin from './GenericPlugin';
 
 const ONE_SECOND = 1000;
 
 class AutoRefresh extends GenericPlugin {
   public timeInView: number = 0;
-  private watcher?: IWatcher;
   private isRefreshing: boolean = false;
 
   // SetInterval Reference
@@ -20,44 +19,30 @@ class AutoRefresh extends GenericPlugin {
   }
 
   public beforeClear() {
-    this.stopMonitoringViewability();
+    ScrollMonitor.unsubscribe(this.ad.el.id);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability monitor has been removed.');
   }
 
   public beforeDestroy() {
-    this.stopMonitoringViewability();
+    ScrollMonitor.unsubscribe(this.ad.el.id);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability monitor has been removed.');
   }
 
   private startMonitoringViewability(): void {
-    if (this.watcher) {
-      return;
-    }
-
-    const { container } = this.ad;
-
-    this.watcher = scrollMonitor.create(container);
+    const { container, configuration: { offset = 0 }, el } = this.ad;
+    ScrollMonitor.subscribe(
+      el.id,
+      container,
+      offset,
+      undefined,
+      this.markAsInView,
+      this.markAsOutOfView,
+    );
 
     this.timeInView = 0;
-
-    this.watcher.fullyEnterViewport(() => {
-      this.markAsInView();
-    });
   }
 
-  private stopMonitoringViewability(): void {
-    if (!this.watcher) {
-      return;
-    }
-
-    this.watcher.exitViewport(() => {
-      this.markAsOutOfView();
-
-      this.watcher = undefined;
-    });
-  }
-
-  private markAsInView(): void {
+  private markAsInView = () => {
     if (this.timerReference) {
       return;
     }
@@ -92,10 +77,11 @@ class AutoRefresh extends GenericPlugin {
     }, ONE_SECOND);
   }
 
-  private markAsOutOfView(): void {
+  private markAsOutOfView = () => {
     if (!this.timerReference) {
       return;
     }
+
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad is no longer in view.');
     clearInterval(this.timerReference);
     this.timerReference = undefined;
