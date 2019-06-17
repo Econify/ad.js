@@ -69,7 +69,6 @@ class ScrollMonitor {
     --ScrollMonitor.adCount;
   }
 
-  /* Private */
   private static [MONITORING]: boolean = false;
 
   private static [ON_SCROLL] = () => throttle(() => {
