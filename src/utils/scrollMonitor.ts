@@ -2,7 +2,7 @@ import { IRegisteredAd } from '../types';
 import throttle from './throttle';
 
 const MONITORING = Symbol('MONITORING');
-const HANDLE = Symbol('HANDLE');
+const ON_SCROLL = Symbol('ON_SCROLL');
 
 class ScrollMonitor {
   public static throttleDuration: number = 100;
@@ -14,7 +14,7 @@ class ScrollMonitor {
       return;
     }
 
-    window.addEventListener('scroll', ScrollMonitor[HANDLE], false);
+    window.addEventListener('scroll', ScrollMonitor[ON_SCROLL], false);
     ScrollMonitor[MONITORING] = true;
   }
 
@@ -72,7 +72,7 @@ class ScrollMonitor {
   /* Private */
   private static [MONITORING]: boolean = false;
 
-  private static [HANDLE] = () => throttle(() => {
+  private static [ON_SCROLL] = () => throttle(() => {
     if (!ScrollMonitor.adCount) {
       return;
     }
@@ -103,8 +103,6 @@ class ScrollMonitor {
 
     ad.inView = inView;
     ad.fullyInView = fullyInView;
-
-    return ad;
   }
 
   private static getAdIfExists = (id: string) => {
