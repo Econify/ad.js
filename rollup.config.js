@@ -1,6 +1,7 @@
 // rollup.config.js
 import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
+import replace from 'rollup-plugin-replace';
 import typescript from 'rollup-plugin-typescript';
 import { terser } from "rollup-plugin-terser";
 import copy from 'rollup-plugin-copy';
@@ -24,6 +25,7 @@ const FILES_TO_COPY = [
 
 const BASE_PLUGINS = [
   typescript(),
+  replace({ __VERSION__: process.env.VERSION }),
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
@@ -113,7 +115,6 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
 }
 
 function createProductionConfiguration({ type, file, path, name, prune = true }) {
-  console.log(prune);
   const configuration = {
     input: path,
     plugins: [
