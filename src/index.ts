@@ -84,7 +84,7 @@ const AdJS = {
   Vendors,
   DEBUG: Debug,
   activeCorrelatorId: null,
-  Version: '__VERSION__',
+  VERSION: '__VERSION__',
 };
 
 /*
