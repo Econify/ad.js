@@ -35,12 +35,12 @@ Description: Dynamic requires are not currently supported by rollup-plugin-commo
 Description: Ad does not have an id
 
   
-## Error 4
-Description: Sizes must be defined.
-
-  
 ## Error 5
 Description: Ad Path must be defined.
+
+  
+## Error 4
+Description: Sizes must be defined.
 
   
 ## Error 6
@@ -61,10 +61,6 @@ Example:
   });
  ```
   
-## Error 8
-Description: Sizes must be of type `Array` unless breakpoints have been specified
-
-  
 ## Error 7
 Description: The Plugin or Network has not been included in your bundle.
 Please manually include the script tag associated with this plugin or network.
@@ -84,4 +80,8 @@ Example:
 	});
   </script>
  ```
+  
+## Error 8
+Description: Sizes must be of type `Array` unless breakpoints have been specified
+
   

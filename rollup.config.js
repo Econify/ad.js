@@ -1,5 +1,7 @@
 // rollup.config.js
+import fs from 'fs';
 import commonjs from 'rollup-plugin-commonjs';
+import filesize from 'rollup-plugin-filesize';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import { terser } from "rollup-plugin-terser";
@@ -22,15 +24,33 @@ const FILES_TO_COPY = [
   './src/types.ts',
 ];
 
+function writeSizesFile() {
+  return {
+    buildEnd: () => {
+      fs.writeFile(`sizes.json`, JSON.stringify(fullSizesObject), function (err) {
+        if (err) throw err;
+      });
+    }
+  }
+}
+
+const fullSizesObject = {};
+
 const BASE_PLUGINS = [
   typescript(),
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
+  filesize({
+    render: function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
+      fullSizesObject[bundle.file] = { minSize, bundleSize, gzipSize };
+    },
+  }),
   copy({
     targets: FILES_TO_COPY,
     outputFolder: BUILD_DIR,
   }),
+  writeSizesFile(),
 ];
 
 const configurations = [];
@@ -113,7 +133,6 @@ function createDevelopmentConfiguration({ type, file, path, name }) {
 }
 
 function createProductionConfiguration({ type, file, path, name, prune = true }) {
-  console.log(prune);
   const configuration = {
     input: path,
     plugins: [
