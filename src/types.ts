@@ -170,7 +170,7 @@ export interface IAdConfiguration {
   targeting?: IAdTargeting;
 }
 
-export interface IRegisteredAd {
+export interface IScrollMonitorRegisteredAd {
   element: HTMLElement;
   offset: number;
   inView: boolean;

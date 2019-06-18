@@ -1,4 +1,4 @@
-import { IRegisteredAd } from '../types';
+import { IScrollMonitorRegisteredAd } from '../types';
 import throttle from './throttle';
 
 const MONITORING = Symbol('MONITORING');
@@ -6,7 +6,7 @@ const ON_SCROLL = Symbol('ON_SCROLL');
 
 class ScrollMonitor {
   public static throttleDuration: number = 100;
-  public static registeredAds: { [key: string]: IRegisteredAd } = {};
+  public static registeredAds: { [key: string]: IScrollMonitorRegisteredAd } = {};
   public static adCount: number = 0;
 
   public static monitorScroll() {
@@ -45,7 +45,7 @@ class ScrollMonitor {
       return;
     }
 
-    const ad: IRegisteredAd = {
+    const ad: IScrollMonitorRegisteredAd = {
       element,
       offset,
       inView: false,
@@ -76,13 +76,15 @@ class ScrollMonitor {
       return;
     }
 
+    const windowHeight = window.innerHeight;
+
     Object.entries(ScrollMonitor.registeredAds).forEach(([key, ad]) => {
-      ScrollMonitor.evaulateCurrentViewability(ad, window.innerHeight);
+      ScrollMonitor.evaulateCurrentViewability(ad, windowHeight);
     });
 
   }, ScrollMonitor.throttleDuration)
 
-  private static evaulateCurrentViewability = (ad: IRegisteredAd, windowHeight: number) => {
+  private static evaulateCurrentViewability = (ad: IScrollMonitorRegisteredAd, windowHeight: number) => {
     const bounding = ad.element.getBoundingClientRect();
 
     const inView = (bounding.top + ad.offset) <= windowHeight && (bounding.top + bounding.height) >= 0;
