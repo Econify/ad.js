@@ -7,5 +7,5 @@ for f in ./build/umd/* ; do
   fi
 done
 
-#move sizes to umd for publication
+# move sizes to umd for publication
 mv sizes.json build/umd/sizes.json

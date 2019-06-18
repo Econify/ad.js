@@ -24,6 +24,9 @@ const FILES_TO_COPY = [
   './src/types.ts',
 ];
 
+
+const fullSizesObject = {};
+
 function writeSizesFile() {
   return {
     buildEnd: () => {
@@ -34,8 +37,6 @@ function writeSizesFile() {
   }
 }
 
-const fullSizesObject = {};
-
 const BASE_PLUGINS = [
   typescript(),
   nodeResolve(),
@@ -43,7 +44,7 @@ const BASE_PLUGINS = [
   templateLiteralIndentFix(),
   filesize({
     render: function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
-      fullSizesObject[bundle.file] = { minSize, bundleSize, gzipSize };
+      fullSizesObject[bundle.file] = { minSize, bundleSize, gzipSize, brotliSize };
     },
   }),
   copy({
