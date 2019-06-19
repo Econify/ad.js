@@ -27,7 +27,6 @@
   },
   "homepage": "https://github.com/econify/ad.js#readme",
   "dependencies": {
-    "scrollmonitor": "^1.2.4",
     "stickybits": "^3.6.5"
   },
   "devDependencies": {

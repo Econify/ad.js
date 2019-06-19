@@ -1,20 +1,20 @@
-import scrollMonitor from 'scrollmonitor';
 import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
+import ScrollMonitor from '../utils/scrollMonitor';
 import GenericPlugin from './GenericPlugin';
 
 class AutoRender extends GenericPlugin {
   public afterCreate() {
-    const { configuration, container } = this.ad;
+    const { container, configuration, el } = this.ad;
     const { offset = 0 } = configuration;
 
-    const renderWatcher = scrollMonitor.create(container, offset);
+    ScrollMonitor.subscribe(el.id, container, offset, this.onEnterViewport);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
+  }
 
-    renderWatcher.enterViewport(() => {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has entered the viewport. Calling render().');
-      this.ad.render();
-    });
+  private onEnterViewport = () => {
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has entered the viewport. Calling render().');
+    this.ad.render();
   }
 }
 
