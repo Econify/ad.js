@@ -4,6 +4,8 @@ import stickybits from '../utils/stickybits';
 import GenericPlugin from './GenericPlugin';
 
 class Sticky extends GenericPlugin {
+  public stickybit: any;
+
   public onCreate() {
     const { container } = this.ad;
 
