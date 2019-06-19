@@ -1,18 +1,16 @@
-import stickybits, { StickyBits } from 'stickybits';
 import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
+import Stickybits from '../utils/stickybits';
 import GenericPlugin from './GenericPlugin';
 
 class Sticky extends GenericPlugin {
-  public stickybit?: StickyBits;
+  public stickybit?: Stickybits;
 
   public onCreate() {
     const { container } = this.ad;
 
-    const stickybit = stickybits(container);
+    this.stickybit = new Stickybits(container);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Sticky container added to ad.`);
-
-    this.stickybit = stickybit;
   }
 
   public onDestroy() {
