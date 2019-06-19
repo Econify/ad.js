@@ -39,6 +39,4 @@ class Stickybits {
   }
 }
 
-export default function stickybits (target) {
-  return new Stickybits(target)
-}
+export default Stickybits;
