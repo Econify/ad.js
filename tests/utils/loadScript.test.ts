@@ -1,21 +1,25 @@
 import loadScript from '../../src/utils/loadScript';
 
 describe('loadScript', () => {
-  const domHead = document.querySelector('head');
-  const url = 'https://unpkg.com/adjs@latest/umd/debug.production.min.js';
-  const attributes = { id: 'scriptId', class: 'scriptClass' };
+  const domHead: any = document.querySelector('head');
+  const url: string = 'https://unpkg.com/adjs@latest/umd/debug.production.min.js';
+
+  const attributes: { [key: string]: any } = {
+    id: 'scriptId',
+    class: 'scriptClass',
+  };
 
   it('Injects the script into the header of the dom tree with all attributes', () => {
-    const expected = document.createElement("script");
+    const expected: any = document.createElement('script');
     expected.src = url;
-    expected.classList = [attributes.class]
+    expected.classList = [attributes.class];
     expected.id = attributes.id;
 
-    const thisDoesntExistYet = document.getElementById(attributes.id);
+    const thisDoesntExistYet: HTMLElement | null = document.getElementById(attributes.id);
 
     loadScript(url, attributes);
 
-    const thisExistsNow = document.getElementById(attributes.id);
+    const thisExistsNow: HTMLElement | null = document.getElementById(attributes.id);
 
     expect(thisDoesntExistYet).toEqual(null);
     expect(thisExistsNow).toEqual(expected);
@@ -27,7 +31,7 @@ describe('loadScript', () => {
 
     loadScript(url, attributes);
 
-    const injectedScript = document.getElementById(attributes.id);
+    const injectedScript: any = document.getElementById(attributes.id);
 
     expect(injectedScript.hasAttribute('defer')).toEqual(false);
     delete attributes.defer;
@@ -39,7 +43,7 @@ describe('loadScript', () => {
 
     loadScript(url, attributes);
 
-    const injectedScript = document.getElementById(attributes.id);
+    const injectedScript: any = document.getElementById(attributes.id);
 
     expect(injectedScript.hasAttribute('async')).toEqual(true);
     delete attributes.async;
