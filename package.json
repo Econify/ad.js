@@ -26,9 +26,7 @@
     "url": "https://github.com/econify/ad.js/issues"
   },
   "homepage": "https://github.com/econify/ad.js#readme",
-  "dependencies": {
-    "stickybits": "^3.6.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^23.3.0",
     "concurrently": "^3.6.0",
