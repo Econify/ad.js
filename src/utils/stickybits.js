@@ -6,10 +6,10 @@ class Stickybits {
     this.target.style.position = 'sticky -o-sticky -webkit-sticky -moz-sticky -ms-sticky';
 
     if (navigator.appName == 'Netscape') {
-      var ua = navigator.userAgent;
-      var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})");
+      const ua = navigator.userAgent;
+      const re  = new RegExp("Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})");
       if (re.exec(ua) != null) {
-        rv = parseInt( RegExp.$1 );
+        const rv = parseInt( RegExp.$1 );
         if (rv === 11) {
           this.target.style.position = 'fixed';
         }
