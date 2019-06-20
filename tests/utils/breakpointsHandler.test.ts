@@ -56,13 +56,13 @@ describe('breakpointHandler', async () => {
     expect(desktop).toEqual(expected);
   });
 
-  it('returns {} when breakpoints not provided', () => {
+  it('returns { sizesSpecified: true } when breakpoints not provided', () => {
     delete configuration.breakpoints;
 
     // @ts-ignore
     global.innerWidth = 500;
     const mobile = breakpointHandler(configuration.sizes, configuration.breakpoints);
-    expected = {};
+    expected = { sizesSpecified: true };
     expect(mobile).toEqual(expected);
   });
 });
