@@ -1,4 +1,5 @@
 import { AdSizes, IAd, IAdBreakpoints, IAdTargeting, INetwork, INetworkInstance, LOG_LEVELS } from '../types';
+import breakpointHandler from '../utils/breakpointHandler';
 import dispatchEvent from '../utils/dispatchEvent';
 import loadScript from '../utils/loadScript';
 
@@ -10,6 +11,8 @@ declare global {
 class DfpAd implements INetworkInstance {
   private id: string;
   private slot!: googletag.Slot;
+  private sizes!: AdSizes;
+  private breakpoints?: IAdBreakpoints;
 
   constructor(
     private el: HTMLElement,
@@ -27,6 +30,8 @@ class DfpAd implements INetworkInstance {
     }
 
     this.id = id;
+    this.sizes = sizes;
+    this.breakpoints = breakpoints;
 
     googletag.cmd.push(() => {
       const adSizes = Array.isArray(sizes) ? sizes : [];
@@ -63,8 +68,29 @@ class DfpAd implements INetworkInstance {
   }
 
   public render(): Promise<void> {
+    return this.refresh();
+  }
+
+  public clear(): Promise<void> {
+    return new Promise((resolve) => {
+      googletag.cmd.push(() => {
+        const { slot } = this;
+
+        googletag.pubads().clear([slot]);
+
+        resolve();
+      });
+    });
+  }
+
+  // TODO: Clean up event listeners
+  public refresh(): Promise<void> {
     return new Promise(
       (resolve) => {
+        if (!breakpointHandler(this.sizes, this.breakpoints).sizesSpecified) {
+          this.clear().then(resolve);
+        }
+
         googletag.cmd.push(() => {
           const { slot } = this;
 
@@ -87,7 +113,6 @@ class DfpAd implements INetworkInstance {
 
           googletag.pubads().refresh([slot], { changeCorrelator: false });
 
-          // if no Sizes Set
           if (!slot.getContentUrl()) {
             dispatchEvent(
               Number(this.id.substring(this.id.length, this.id.length - 1)),
@@ -100,43 +125,6 @@ class DfpAd implements INetworkInstance {
         });
       },
     );
-  }
-
-  public clear(): Promise<void> {
-    return new Promise((resolve) => {
-      googletag.cmd.push(() => {
-        const { slot } = this;
-
-        googletag.pubads().clear([slot]);
-
-        resolve();
-      });
-    });
-  }
-
-  public refresh(): Promise<void> {
-    return new Promise((resolve) => {
-      googletag.cmd.push(() => {
-        const { slot } = this;
-
-        googletag.pubads().refresh([slot], { changeCorrelator: false });
-
-        googletag.pubads().addEventListener(
-          'slotRenderEnded',
-
-          (event: googletag.events.SlotRenderEndedEvent) => {
-            if (event.slot === slot) {
-              resolve();
-            }
-          },
-        );
-
-        // if no Sizes Set
-        if (!slot.getContentUrl()) {
-          resolve();
-        }
-      });
-    });
   }
 
   // Cannot undo this action

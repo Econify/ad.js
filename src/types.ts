@@ -153,6 +153,8 @@ export interface IAdSizes {
 export interface ICurrentConfines {
   from?: number;
   to?: number;
+  breakpoint?: string;
+  sizesSpecified?: boolean;
 }
 
 export interface IAdConfiguration {
