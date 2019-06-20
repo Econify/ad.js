@@ -5,6 +5,8 @@ describe('stickybits', () => {
     const el = document.createElement('div');
     const stickybit = new Stickybits(el);
 
-    console.log(el);
+    expect(el.style.top).toBe('0px');
+    expect(el.style.position)
+          .toBe('sticky -o-sticky -webkit-sticky -moz-sticky -ms-sticky' || 'fixed')
   })
-})
+});
