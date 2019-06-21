@@ -11,7 +11,7 @@ const FILES_TO_COPY = [
 ];
 
 async function createBundle() {
-  const promises = await configurations.map(async (config) => {
+  return Promise.all(configurations.map(async (config) => {
     const { input, plugins, output } = config;
 
     const inputOptions = { input, plugins };
@@ -19,16 +19,13 @@ async function createBundle() {
 
     const bundle = await rollup.rollup(inputOptions);
     await bundle.write(outputOptions);
-  });
-
-  return Promise.all(promises);
+  }));
 };
 
 async function copyFiles() {
-  for (let i = 0; i < FILES_TO_COPY.length; i += 1) {
-    const file = FILES_TO_COPY[i];
-    await fs.copy(file.path, `${BUILD_DIR}/${file.name}`);
-  }
+  return Promise.all(FILES_TO_COPY.map(async (file) => {
+    await fs.copy(file.path, `${BUILD_DIR}/${file.name}`)
+  }))
 }
 
 const startTime = new Date().getTime();
@@ -39,4 +36,3 @@ createBundle()
     const elapsedTime = new Date().getTime() - startTime;
     console.log(`** Build finished in ${elapsedTime}ms **`);
   });
-
