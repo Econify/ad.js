@@ -1,12 +1,11 @@
 import {
-  IAd,
-  IAdConfiguration, IAdEventListener,
-  INetwork, INetworkInstance, IPlugin, IPluginConstructorOrSingleton, IPluginHook, IVendor,
+  IAd, IAdConfiguration, IAdEventListener,
+  INetwork, INetworkInstance, IPlugin, IPluginConstructorOrSingleton,
+  IVendor,
   Maybe,
 } from './types';
 
 import EVENTS from './Events';
-import AdJS from './index';
 import Page from './Page';
 import insertElement from './utils/insertElement';
 import seriallyResolvePromises from './utils/seriallyResolvePromises';
@@ -25,18 +24,6 @@ function validateSizes(configuration: IAdConfiguration): void {
     throw new Error('Sizes must be of type `Array` unless breakpoints have been specified');
   }
 }
-
-const DEFAULT_CONFIGURATION: IAdConfiguration = {
-  autoRender: true,
-  autoRefresh: true,
-  logging: true,
-  overlay: true,
-  offset: 0,
-  refreshRateInSeconds: 30,
-  targeting: {},
-  breakpoints: {},
-  refreshOnBreakpoint: true,
-};
 
 // Define LifeCycle Method will automatically wrap each
 // lifecycle with important items such as "queue" when frozen,

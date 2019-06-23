@@ -1,4 +1,5 @@
 import Responsive from '../../src/plugins/Responsive';
+import { ICurrentConfines } from '../../src/types';
 
 describe('ResponsivePlugin', async () => {
   const ad = {
@@ -37,9 +38,10 @@ describe('ResponsivePlugin', async () => {
       }
     });
 
-    it('sets currentConfines correctly for all three screen sizes', () => {
+    it('sets currentConfines correctly', () => {
       // @ts-ignore
       const responsivePlugin = new Responsive(ad);
+      let expected: ICurrentConfines = {};
       ad.configuration.breakpoints = {
         mobile: { from: 0, to: 767 },
         tablet: { from: 768, to: 999 },
@@ -49,17 +51,8 @@ describe('ResponsivePlugin', async () => {
       // @ts-ignore
       global.innerWidth = 500;
       responsivePlugin.beforeCreate(ad);
-      expect(responsivePlugin.currentConfines).toEqual({ from: 0, to: 767 });
-
-      // @ts-ignore
-      global.innerWidth = 980;
-      responsivePlugin.beforeCreate(ad);
-      expect(responsivePlugin.currentConfines).toEqual({ from: 768, to: 999 });
-
-      // @ts-ignore
-      global.innerWidth = 1240;
-      responsivePlugin.beforeCreate(ad);
-      expect(responsivePlugin.currentConfines).toEqual({ from: 1000, to: Infinity });
+      expected = { from: 0, to: 767, breakpoint: 'mobile', sizesSpecified: false };
+      expect(responsivePlugin.currentConfines).toEqual(expected);
     });
   });
 

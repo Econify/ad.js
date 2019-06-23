@@ -1,5 +1,6 @@
 import { ICurrentConfines } from '../types';
 import { LOG_LEVELS } from '../types';
+import breakpointHandler from '../utils/breakpointHandler';
 import dispatchEvent from '../utils/dispatchEvent';
 import isBetween from '../utils/isBetween';
 import throttle from '../utils/throttle';
@@ -55,25 +56,8 @@ class Responsive extends GenericPlugin {
   }
 
   public determineCurrentBreakpoint() {
-    const { breakpoints } = this.ad.configuration;
-    let breakpointSpecifiedForViewWidth: boolean = false;
-
-    if (!breakpoints) {
-      return;
-    }
-
-    Object.keys(breakpoints).forEach((key) => {
-      const { from, to } = breakpoints[key];
-
-      if (isBetween(window.innerWidth, from, to)) {
-        breakpointSpecifiedForViewWidth = true;
-        this.currentConfines = { from, to };
-      }
-    });
-
-    if (!breakpointSpecifiedForViewWidth) {
-      this.currentConfines = {};
-    }
+    const { sizes = [], breakpoints } = this.ad.configuration;
+    this.currentConfines = breakpointHandler(sizes, breakpoints);
   }
 
   public isRefreshDisabled() {
