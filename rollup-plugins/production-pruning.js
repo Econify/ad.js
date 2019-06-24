@@ -17,6 +17,16 @@ errorFile.end();
 let errorCounter = 1;
 let errors = [];
 
+function isDispatchEventNode(node) {
+  return (
+    node.callee &&
+    node.callee.object &&
+    node.callee.object.type === 'ThisExpression' &&
+    node.callee.property &&
+    node.callee.property.name === 'dispatchEvent'
+  )
+}
+
 const stringifyTemplateLiteral = (node) => {
   if (node.expressions.length) {
     throw new Error('Not yet configured for embedded variables in TemplateLiterals');
@@ -133,8 +143,11 @@ module.exports = function () {
             s.overwrite(node.start, node.alternate ? node.alternate.start : node.end, '');
           }
 
-          if (node.callee && node.callee.name === "dispatchEvent") {
-            s.remove(node.start, node.end);
+
+          if (isDispatchEventNode(node)) {
+            console.log('removing dispatchEvent');
+            console.log(node.start, '  ', node.end);
+            s.overwrite(node.start, node.end, '');
           }
         }
       });

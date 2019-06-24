@@ -186,6 +186,12 @@ if ('__DEV__') {
         This plugin is meant to be used in development only. If you wish to enable for your current session,
         in your console type 'AdJS.DEBUG()'.
       `, 'font-weight: bold;');
+
+      onEvent(this.ad.id, (event) => {
+        const { level, creator, message, data = '' } = event.detail;
+        // @ts-ignore
+        console[level](event.detail);
+      });
     }
   };
 }

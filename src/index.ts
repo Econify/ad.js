@@ -71,7 +71,8 @@ const Networks = new Proxy(_ADJS.Networks, PluginsHandler);
 const Vendors = new Proxy(_ADJS.Vendors, PluginsHandler);
 const pages: IPageConfiguration[] = [];
 const Debug = () => {
-  loadScript('https://unpkg.com/adjs@latest/umd/debug.production.min.js', { async: true, defer: true });
+  // loadScript('https://unpkg.com/adjs@latest/umd/debug.production.min.js', { async: true, defer: true });
+  loadScript('http://localhost:8080/build/umd/debug.production.min.js', { async: true, defer: true });
   return 'Loading developer tools...';
 };
 

@@ -11,6 +11,7 @@ import DeveloperTools from './plugins/DeveloperTools';
 import Responsive from './plugins/Responsive';
 import Sticky from './plugins/Sticky';
 import { IPlugin } from './types';
+import dispatchEvent from './utils/dispatchEvent';
 
 const plugins: { [key: string]: IPlugin } = {
   AutoRefresh,
@@ -60,6 +61,8 @@ function distributeDeveloperTools() {
     });
   });
 }
+
+(window as any)[`AdJS`].Plugins.GenericPlugin.dispatch = dispatchEvent;
 
 overwritePluginMethods();
 distributeDeveloperTools();

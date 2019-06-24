@@ -2,6 +2,7 @@ import { IAd, IPlugin } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
 
 class GenericPlugin implements IPlugin {
+  public dispatch: any = dispatchEvent;
   protected ad: IAd;
 
   get name(): string {
@@ -9,7 +10,11 @@ class GenericPlugin implements IPlugin {
   }
 
   get dispatchEvent(): any {
-    return dispatchEvent;
+    return this.dispatch;
+  }
+
+  set setDispatch(fn: any) {
+    this.dispatch = fn;
   }
 
   constructor(ad: IAd) {
