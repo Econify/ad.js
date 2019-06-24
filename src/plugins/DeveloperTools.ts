@@ -1,5 +1,4 @@
 import { IPlugin, LOG_LEVELS } from '../types';
-import dispatchEvent from '../utils/dispatchEvent';
 import insertElement from '../utils/insertElement';
 import onEvent from '../utils/onEvent';
 import padTime from '../utils/padTime';
@@ -57,55 +56,55 @@ if ('__DEV__') {
     }
 
     public beforeRender() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Render has been called on ad.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Render has been called on ad.');
     }
 
     public onRender() {
       this.insertMessage('rendered');
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively rendering.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively rendering.');
     }
 
     public afterRender() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad render has completed.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad render has completed.');
     }
 
     public beforeRefresh() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad render has completed.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad render has completed.');
     }
 
     public onRefresh() {
       this.insertMessage('refreshed');
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively refreshing.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively refreshing.');
     }
 
     public afterRefresh() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad refresh has completed.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad refresh has completed.');
     }
 
     public beforeClear() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Clear has been called on ad.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Clear has been called on ad.');
     }
 
     public onClear() {
       this.insertMessage('cleared');
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively clearing.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively clearing.');
     }
 
     public afterClear() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad clear has completed.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad clear has completed.');
     }
 
     public beforeDestroy() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Destroy has been called on ad.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Destroy has been called on ad.');
     }
 
     public onDestroy() {
       this.insertMessage('destroyed');
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively destroying.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad actively destroying.');
     }
 
     public afterDestroy() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad destroy has completed.');
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad destroy has completed.');
     }
 
     private initLogging() {

@@ -1,10 +1,15 @@
 import { IAd, IPlugin } from '../types';
+import dispatchEvent from '../utils/dispatchEvent';
 
 class GenericPlugin implements IPlugin {
   protected ad: IAd;
 
   get name(): string {
     return this.constructor.name;
+  }
+
+  get dispatchEvent(): any {
+    return dispatchEvent;
   }
 
   constructor(ad: IAd) {

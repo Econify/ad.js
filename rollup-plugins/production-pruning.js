@@ -134,6 +134,7 @@ module.exports = function () {
           }
 
           if (node.callee && node.callee.name === "dispatchEvent") {
+            console.log('***********');
             s.remove(node.start, node.end);
           }
         }

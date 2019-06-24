@@ -1,7 +1,6 @@
 import { ICurrentConfines } from '../types';
 import { LOG_LEVELS } from '../types';
 import breakpointHandler from '../utils/breakpointHandler';
-import dispatchEvent from '../utils/dispatchEvent';
 import isBetween from '../utils/isBetween';
 import throttle from '../utils/throttle';
 import GenericPlugin from './GenericPlugin';
@@ -14,7 +13,7 @@ class Responsive extends GenericPlugin {
 
   public beforeCreate() {
     if (this.isRefreshDisabled()) {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Ad refresh is disabled.`);
+      this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Ad refresh is disabled.`);
 
       return;
     }
@@ -31,7 +30,7 @@ class Responsive extends GenericPlugin {
 
         this.determineCurrentBreakpoint();
 
-        dispatchEvent(
+        this.dispatchEvent(
           this.ad.id,
           LOG_LEVELS.INFO,
           'Responsive Plugin',
@@ -46,12 +45,12 @@ class Responsive extends GenericPlugin {
   }
 
   public beforeClear() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Removing window resize listener for ad.`);
+    this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Removing window resize listener for ad.`);
     window.removeEventListener(this.EVENT_KEY, this.listener);
   }
 
   public beforeDestroy() {
-    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Removing window resize listener for ad.`);
+    this.dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Responsive Plugin', `Removing window resize listener for ad.`);
     window.removeEventListener(this.EVENT_KEY, this.listener);
   }
 
