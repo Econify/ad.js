@@ -3,8 +3,8 @@ const rollup = require('rollup');
 const { promisify } = require('util');
 const { configurations, fileSizesObject } = require('./rollup.config.js');
 
-const read = promisify(fs.readFile).bind(fs);
-const write = promisify(fs.writeFile).bind(fs);
+const fsRead = promisify(fs.readFile).bind(fs);
+const fsWrite = promisify(fs.writeFile).bind(fs);
 
 const BUILD_DIR = './build';
 const UMD_DIR = `${BUILD_DIR}/umd`;
@@ -44,13 +44,13 @@ async function createAllInclusiveBundles() {
     const prod = filePath.endsWith('production.min.js');
 
     if (dev || prod) {
-      const data = await read(filePath, 'utf8');
+      const data = await fsRead(filePath, 'utf8');
       dev ? development += data : production += data;
     }
   }
 
-  await write(`${UMD_DIR}/bundle.development.js`, development);
-  await write(`${UMD_DIR}/bundle.production.min.js`, production);
+  await fsWrite(`${UMD_DIR}/bundle.development.js`, development);
+  await fsWrite(`${UMD_DIR}/bundle.production.min.js`, production);
 }
 
 const startTime = new Date().getTime();
