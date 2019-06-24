@@ -15,18 +15,18 @@ class Sticky extends GenericPlugin {
     this.boundary = this.offset(this.sticky.parentElement);
     this.sticky.style.position = 'sticky';
     this.sticky.style.top = '0px';
-    // if (navigator.appName === 'Netscape') {
-    //   const ua = navigator.userAgent;
-    //   const re  = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
-    //   if (re.exec(ua) != null) {
-    //     const rv = parseInt(RegExp.$1, 10);
-    //     if (rv === 11) {
+    if (navigator.appName === 'Netscape') {
+      const ua = navigator.userAgent;
+      const re  = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
+      if (re.exec(ua) != null) {
+        const rv = parseInt(RegExp.$1, 10);
+        if (rv === 11) {
           this.handleIE();
-    //     }
-    //   }
-    // }
+        }
+      }
+    }
 
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Sticky container added to ad.`);
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Sticky container added to ad.`);
   }
 
   public cleanup() {
@@ -46,26 +46,26 @@ class Sticky extends GenericPlugin {
 
   public handleIE() {
     if (this.boundary < window.scrollY) {
-      this.boundary = this.offset(this.sticky.parentElement)
+      this.boundary = this.offset(this.sticky.parentElement);
       this.sticky.style.position = 'fixed';
       this.sticky.style.top = '0px';
-      this.sticky.style.transform = 'translateX(-50%)'
+      this.sticky.style.transform = 'translateX(-50%)';
     }
 
     this.listener = window.addEventListener('scroll', () => {
       throttle(() => {
-        this.boundary = this.offset(this.sticky.parentElement)
+        this.boundary = this.offset(this.sticky.parentElement);
         if (this.boundary.top > window.scrollY) {
           this.sticky.style.position = '';
           this.sticky.style.top = '';
-          this.sticky.style.transform = ''
+          this.sticky.style.transform = '';
         } else if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
           this.sticky.style.top = '';
           this.sticky.style.bottom = '0px';
         } else {
           this.sticky.style.position = 'fixed';
           this.sticky.style.top = '0px';
-          this.sticky.style.transform = 'translateX(-50%)'
+          this.sticky.style.transform = 'translateX(-50%)';
         }
       });
     });
