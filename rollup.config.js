@@ -1,12 +1,13 @@
 // rollup.config.js
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import replace from 'rollup-plugin-replace';
-import typescript from 'rollup-plugin-typescript';
-import { terser } from "rollup-plugin-terser";
-import copy from 'rollup-plugin-copy';
+const commonjs = require('rollup-plugin-commonjs');
+const nodeResolve = require('rollup-plugin-node-resolve');
+const replace = require('rollup-plugin-replace');
+const typescript = require('rollup-plugin-typescript');
+const terser = require("rollup-plugin-terser").terser;
+const filesize = require('rollup-plugin-filesize');
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const productionPruning = require('./rollup-plugins/production-pruning');
+const { version } = require('./package.json');
 
 const BUILD_DIR = 'build';
 
@@ -17,21 +18,19 @@ const SOURCEMAP = true;
 const SOURCEMAP_IN_PRODUCTION = false;
 const INDENT = false;
 
-const FILES_TO_COPY = [
-  './package.json',
-  './README.md',
-  './src/types.ts',
-];
+const fileSizesObject = {};
 
 const BASE_PLUGINS = [
   typescript(),
-  replace({ __VERSION__: process.env.VERSION }),
+  replace({ __VERSION__: version }),
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
-  copy({
-    targets: FILES_TO_COPY,
-    outputFolder: BUILD_DIR,
+  filesize({
+    render: function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
+      fileSizesObject[bundle.file] = { minSize, bundleSize, gzipSize, brotliSize };
+      return bundle.file
+    },
   }),
 ];
 
@@ -179,4 +178,4 @@ configurations.push(createProductionConfiguration({
   file: 'debug',
 }));
 
-export default configurations;
+module.exports = { configurations, fileSizesObject };
