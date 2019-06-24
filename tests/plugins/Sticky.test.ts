@@ -1,6 +1,4 @@
 import Sticky from '../../src/plugins/Sticky';
-import MockAdNetwork from '../../src/networks/Mock';
-import Noop from '../../src/networks/Noop';
 
 describe('Sticky', () => {
   it('applies the correct style to an element in a non-IE11 environment', () => {
@@ -29,5 +27,5 @@ describe('Sticky', () => {
     sticky.onCreate();
     expect(sticky.sticky.style.top).toBe('0px');
     expect(sticky.sticky.style.position).toBe('sticky');
-  })
+  });
 });
