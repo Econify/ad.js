@@ -7,6 +7,7 @@ const read = promisify(fs.readFile).bind(fs);
 const write = promisify(fs.writeFile).bind(fs);
 
 const BUILD_DIR = './build';
+const UMD_DIR = `${BUILD_DIR}/umd`;
 
 const FILES_TO_COPY = [
   { path: './package.json', name: 'package.json' },
@@ -33,12 +34,12 @@ async function copyFiles() {
 }
 
 async function createAllInclusiveBundles() {
-  const files = await fs.readdir('./build/umd/');
+  const files = await fs.readdir(UMD_DIR);
   let development = '';
   let production = '';
 
   for (let i = 0; i < files.length; i += 1) {
-    const filePath = `./build/umd/${files[i]}`;
+    const filePath = `${UMD_DIR}/${files[i]}`;
     const dev = filePath.endsWith('development.js');
     const prod = filePath.endsWith('production.min.js');
 
@@ -48,8 +49,8 @@ async function createAllInclusiveBundles() {
     }
   }
 
-  await write('./build/umd/bundle.development.js', development);
-  await write('./build/umd/bundle.production.min.js', production);
+  await write(`${UMD_DIR}/bundle.development.js`, development);
+  await write(`${UMD_DIR}/bundle.production.min.js`, production);
 }
 
 const startTime = new Date().getTime();
