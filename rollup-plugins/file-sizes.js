@@ -3,30 +3,44 @@ const gzip = require("gzip-size");
 const brotli = require("brotli-size");
 const terser = require("terser");
 
+function getSizes(cb, bundle) {
+  const { code, fileName } = bundle;
+  const minifiedCode = terser.minify(code).code;
+
+  const options = {
+    unix: true,
+  };
+
+  const info = {
+    fileName,
+    bundleSize: {
+      formatted: fileSize(Buffer.byteLength(code), options),
+      bytes: Buffer.byteLength(code),
+    },
+    brotliSize: {
+      formatted: fileSize(brotli.sync(code), options),
+      bytes: brotli.sync(code),
+    },
+    minSize: {
+      formatted: fileSize(minifiedCode.length, options),
+      bytes: minifiedCode.length,
+    },
+    gzipSize: {
+      formatted: fileSize(gzip.sync(minifiedCode), options),
+      bytes: gzip.sync(minifiedCode),
+    },
+  };
+
+  return cb(fileName, info);
+};
+
 function filesize(cb, env) {
-	const getData = function(bundle) {
-    const { code, fileName } = bundle;
-    const minifiedCode = terser.minify(code).code;
-
-    const info = {
-      fileName,
-      bundleSize: fileSize(Buffer.byteLength(code)),
-      brotliSize: fileSize(brotli.sync(code)),
-      minSize: fileSize(minifiedCode.length),
-      gzipSize: fileSize(gzip.sync(minifiedCode)),
-    };
-    
-    console.log(info);
-
-		return cb(fileName, info);
-	};
-
-	return {
-		name: "filesize",
+  return {
+    name: "filesize",
     generateBundle(outputOptions, bundle) {
-			Object.keys(bundle).map(fileName => getData(bundle[fileName]))
-		}
-	};
+      Object.keys(bundle).map(fileName => getSizes(cb, bundle[fileName]))
+    }
+  };
 }
 
 module.exports = filesize;
