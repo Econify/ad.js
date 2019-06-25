@@ -19,13 +19,13 @@ describe('Sticky', () => {
       clear: () => { },
       destroy: () => { },
       freeze: () => { },
-      unfreeze: () => { },
+      unfreeze: () => { }
     };
 
     // @ts-ignore
     const sticky: any = new Sticky(ad);
     sticky.onCreate();
-    expect(sticky.sticky.style.top).toBe('0px');
-    expect(sticky.sticky.style.position).toBe('sticky');
+    expect(ad.container.style.top).toBe('0px');
+    expect(ad.container.style.position).toBe('sticky');
   });
 });

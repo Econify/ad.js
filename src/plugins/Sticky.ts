@@ -3,18 +3,34 @@ import dispatchEvent from '../utils/dispatchEvent';
 import throttle from '../utils/throttle';
 import GenericPlugin from './GenericPlugin';
 
+interface IBoundary {
+  top: number;
+  left: number;
+  right: number;
+}
+
+function getElementOffset(el: any): IBoundary {
+  const rect = el.getBoundingClientRect();
+  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right };
+}
+
 class Sticky extends GenericPlugin {
-  public sticky?: any;
+  public sticky?: HTMLElement;
   public listener?: any;
-  public boundary?: any;
+  public boundary?: IBoundary;
+  public originalStyle?: any;
 
   public onCreate() {
     const { container } = this.ad;
-    this.sticky = container;
+    this.originalStyle = container.style;
+    this.boundary = getElementOffset(container.parentElement);
 
-    this.boundary = this.offset(this.sticky.parentElement);
-    this.sticky.style.position = 'sticky';
-    this.sticky.style.top = '0px';
+    container.style.position = 'sticky';
+    container.style.top = '0px';
+
     if (navigator.appName === 'Netscape') {
       const ua = navigator.userAgent;
       const re  = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
@@ -30,54 +46,51 @@ class Sticky extends GenericPlugin {
   }
 
   public cleanup() {
-    this.sticky.style.position = '';
-    this.sticky.style.top = '';
+    const { container } = this.ad;
+
+    container.style.position = this.originalStyle.position;
+    container.style.top = this.originalStyle.top;
+    container.style.transform = this.originalStyle.transform;
+
     if (this.listener) {
       window.removeEventListener('scroll', this.listener);
     }
   }
 
-  public offset(el: any) {
-    const rect = el.getBoundingClientRect();
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right };
+  public onDestroy() {
+    this.cleanup();
+
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Removed sticky container from ad.`);
   }
 
-  public handleIE() {
-    if (this.boundary < window.scrollY) {
-      this.boundary = this.offset(this.sticky.parentElement);
-      this.sticky.style.position = 'fixed';
-      this.sticky.style.top = '0px';
-      this.sticky.style.transform = 'translateX(-50%)';
+  private handleIE() {
+    const { container } = this.ad;
+
+    if (this.boundary && this.boundary.top < window.scrollY) {
+      this.boundary = getElementOffset(container.parentElement);
+      container.style.position = 'fixed';
+      container.style.top = '0px';
+      container.style.transform = 'translateX(-50%)';
     }
 
     this.listener = window.addEventListener('scroll', () => {
       throttle(() => {
-        this.boundary = this.offset(this.sticky.parentElement);
+        this.boundary = getElementOffset(container.parentElement);
         if (this.boundary.top > window.scrollY) {
-          this.sticky.style.position = '';
-          this.sticky.style.top = '';
-          this.sticky.style.transform = '';
+          container.style.position = this.originalStyle.position;
+          container.style.top = this.originalStyle.top;
+          container.style.transform = this.originalStyle.transform;
         } else if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-          this.sticky.style.top = '';
-          this.sticky.style.bottom = '0px';
+          container.style.top = '';
+          container.style.bottom = '0px';
+          container.style.transform = 'translateX(-50%)';
         } else {
-          this.sticky.style.position = 'fixed';
-          this.sticky.style.top = '0px';
-          this.sticky.style.transform = 'translateX(-50%)';
+          container.style.position = 'fixed';
+          container.style.top = '0px';
+          container.style.transform = 'translateX(-50%)';
         }
       });
     });
-  }
-
-  public onDestroy() {
-    if (this.sticky) {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Removed sticky container from ad.`);
-      this.cleanup();
-    }
-
-    this.sticky = undefined;
   }
 }
 
