@@ -9,20 +9,13 @@ interface IBoundary {
   right: number;
 }
 
-function getElementOffset(el: HTMLElement | null): IBoundary {
-  let rect;
+function getElementOffset(el: HTMLElement): IBoundary {
+  const rect = el.getBoundingClientRect();
 
-  if (el) {
-    rect = el.getBoundingClientRect();
-  }
   const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-  if (rect) {
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right };
-  } else {
-    return { top: -1, left: -1, right: -1 };
-  }
+  return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right };
 }
 
 class Sticky extends GenericPlugin {
@@ -78,8 +71,14 @@ class Sticky extends GenericPlugin {
   private handleIE() {
     const { container } = this.ad;
 
+    const parentElement = container.parentElement;
+
+    if (!parentElement) {
+      throw new Error('Parent element required for sticky plugin.');
+    }
+
     if (this.boundary && this.boundary.top < window.scrollY) {
-      this.boundary = getElementOffset(container.parentElement);
+      this.boundary = getElementOffset(parentElement);
       container.style.position = 'fixed';
       container.style.top = '0px';
       container.style.transform = 'translateX(-50%)';
@@ -87,7 +86,7 @@ class Sticky extends GenericPlugin {
 
     this.listener = window.addEventListener('scroll', () => {
       throttle(() => {
-        this.boundary = getElementOffset(container.parentElement);
+        this.boundary = getElementOffset(parentElement);
         if (this.boundary.top > window.scrollY) {
           container.style.position = this.originalStyle.position;
           container.style.top = this.originalStyle.top;
