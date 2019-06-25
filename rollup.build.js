@@ -59,37 +59,54 @@ async function createAllInclusiveBundles() {
 async function generateSizesFile() {
   const files = await fs.readdir(UMD_DIR);
 
-  const data = await files.reduce(async (acc, cur) => {
-    const resolvedAcc = await acc;
-    
-    if (!cur.endsWith('production.min.js')) {
-      return resolvedAcc;
-    }
-
-    const filePath = `${UMD_DIR}/${cur}`;
-    const data = await fsRead(filePath, 'utf8');
-    const { size } = await fs.stat(filePath);
-    const gzipRaw = gzip.sync(data);
-    const brotliRaw = brotli.sync(data);
-
-    resolvedAcc[cur] = {
-      bundleSize: {
-        formatted: String(size / 1024) + ' KB',
-        raw: size,
-      },
-      brotliSize: {
-        formatted: fileSize(brotliRaw),
-        raw: brotliRaw,
-      },
-      gzipSize: {
-        formatted: fileSize(gzipRaw),
-        raw: gzipRaw,
-      },
-    };
-
-    return resolvedAcc;
-  }, Promise.resolve({}));
+  const data = await Promise.all(
+    files.map(async (file) => {
+      const path = `${UMD_DIR}/${file}`;
   
+      if (!path.endsWith('production.min.js')) {
+        return;
+      }
+  
+      const data = await fsRead(path, 'utf8');
+  
+      const [
+        minifiedRaw,
+        gzipRaw,
+        brotliRaw,
+      ] = await Promise.all([
+        fs.stat(path).then(({ size }) => size),
+        gzip(data),
+        brotli(data),
+      ]);
+  
+      return {
+        name: file,
+        sizes: {
+          minified: {
+            formatted: String(minifiedRaw / 1024) + ' KB',
+            raw: minifiedRaw,
+          },
+          brotli: {
+            formatted: fileSize(brotliRaw),
+            raw: brotliRaw,
+          },
+          gzip: {
+            formatted: fileSize(gzipRaw),
+            raw: gzipRaw,
+          },
+        }
+      }
+    })
+  ).then((files) => (
+    files.reduce((obj, file) => {
+      if (file) {
+        obj[file.name] = file.sizes;
+      }
+
+      return obj;
+    }, {}))
+  );
+
   await fs.writeJson(`${UMD_DIR}/sizes.json`, data)
 };
 
