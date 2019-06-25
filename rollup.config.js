@@ -28,7 +28,6 @@ const BASE_PLUGINS = [
   templateLiteralIndentFix(),
   filesize((fileName, { minSize, gzipSize, brotliSize, bundleSize }) => {
     fileSizesObject[fileName] = { minSize, bundleSize, gzipSize, brotliSize };
-    return fileName;
   }),
 ];
 

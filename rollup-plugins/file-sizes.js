@@ -1,7 +1,7 @@
-const fileSize = require("filesize");
-const gzip = require("gzip-size");
-const brotli = require("brotli-size");
-const terser = require("terser");
+const fileSize = require('filesize');
+const gzip = require('gzip-size');
+const brotli = require('brotli-size');
+const terser = require('terser');
 
 function getSizes(cb, bundle) {
   const { code, fileName } = bundle;
@@ -32,7 +32,7 @@ function getSizes(cb, bundle) {
 
 function filesize(cb, env) {
   return {
-    name: "filesize",
+    name: 'filesize',
     generateBundle(outputOptions, bundle) {
       Object.keys(bundle).map(fileName => getSizes(cb, bundle[fileName]))
     }
