@@ -1,7 +1,10 @@
 const fs = require('fs-extra');
 const rollup = require('rollup');
+const fileSize = require('filesize');
+const gzip = require('gzip-size');
+const brotli = require('brotli-size');
 const { promisify } = require('util');
-const { configurations, fileSizesObject } = require('./rollup.config.js');
+const { configurations } = require('./rollup.config.js');
 
 const fsRead = promisify(fs.readFile).bind(fs);
 const fsWrite = promisify(fs.writeFile).bind(fs);
@@ -53,11 +56,48 @@ async function createAllInclusiveBundles() {
   await fsWrite(`${UMD_DIR}/bundle.production.min.js`, production);
 }
 
+async function generateSizesFile() {
+  const files = await fs.readdir(UMD_DIR);
+
+  const data = await files.reduce(async (acc, cur) => {
+    const resolvedAcc = await acc;
+
+    const filePath = `${UMD_DIR}/${cur}`;
+
+    if (!filePath.endsWith('production.min.js')) {
+      return resolvedAcc;
+    }
+    
+    const data = await fsRead(filePath, 'utf8');
+    const { size } = await fs.stat(filePath);
+
+    resolvedAcc[cur] = {
+      bundleSize: {
+        formatted: String(size / 1024) + ' KB',
+        raw: size,
+      },
+      brotliSize: {
+        formatted: fileSize(brotli.sync(data)),
+        raw: brotli.sync(data),
+      },
+      gzipSize: {
+        formatted: fileSize(gzip.sync(data)),
+        raw: gzip.sync(data),
+      },
+    };
+
+    return resolvedAcc;
+  }, Promise.resolve({}));
+  
+  console.log(data);
+  await fs.writeJson(`${UMD_DIR}/sizes.json`, data)
+};
+
 const startTime = new Date().getTime();
 build()
-  .then(() => fs.writeJson(`${BUILD_DIR}/umd/sizes.json`, fileSizesObject))
   .then(() => copyFiles())
   .then(() => createAllInclusiveBundles())
+  .then(() => generateSizesFile())
   .then(() => {
     const elapsedTime = new Date().getTime() - startTime;
     console.log(`** Build finished in ${elapsedTime}ms **`);

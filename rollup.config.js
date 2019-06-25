@@ -4,7 +4,6 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const typescript = require('rollup-plugin-typescript');
 const terser = require("rollup-plugin-terser").terser;
-const filesize = require('./rollup-plugins/file-sizes');
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const productionPruning = require('./rollup-plugins/production-pruning');
 const { version } = require('./package.json');
@@ -18,17 +17,12 @@ const SOURCEMAP = true;
 const SOURCEMAP_IN_PRODUCTION = false;
 const INDENT = false;
 
-const fileSizesObject = {};
-
 const BASE_PLUGINS = [
   typescript(),
   replace({ __VERSION__: version }),
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
-  filesize((fileName, { minSize, gzipSize, brotliSize, bundleSize }) => {
-    fileSizesObject[fileName] = { minSize, bundleSize, gzipSize, brotliSize };
-  }),
 ];
 
 const configurations = [];
@@ -175,4 +169,4 @@ configurations.push(createProductionConfiguration({
   file: 'debug',
 }));
 
-module.exports = { configurations, fileSizesObject };
+module.exports = { configurations };
