@@ -9,12 +9,20 @@ interface IBoundary {
   right: number;
 }
 
-function getElementOffset(el: any): IBoundary {
-  const rect = el.getBoundingClientRect();
+function getElementOffset(el: HTMLElement | null): IBoundary {
+  let rect;
+
+  if (el) {
+    rect = el.getBoundingClientRect();
+  }
   const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-  return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right };
+  if (rect) {
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right };
+  } else {
+    return { top: -1, left: -1, right: -1 };
+  }
 }
 
 class Sticky extends GenericPlugin {
@@ -26,20 +34,24 @@ class Sticky extends GenericPlugin {
   public onCreate() {
     const { container } = this.ad;
     this.originalStyle = container.style;
-    this.boundary = getElementOffset(container.parentElement);
 
     container.style.position = 'sticky';
     container.style.top = '0px';
 
-    if (navigator.appName === 'Netscape') {
-      const ua = navigator.userAgent;
-      const re  = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
-      if (re.exec(ua) != null) {
-        const rv = parseInt(RegExp.$1, 10);
-        if (rv === 11) {
-          this.handleIE();
+    if (container.parentElement) {
+      this.boundary = getElementOffset(container.parentElement);
+      if (navigator.appName === 'Netscape') {
+        const ua = navigator.userAgent;
+        const re  = new RegExp('Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})');
+        if (re.exec(ua) != null) {
+          const rv = parseInt(RegExp.$1, 10);
+          if (rv === 11) {
+            this.handleIE();
+          }
         }
       }
+    } else {
+      return;
     }
 
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Sticky container added to ad.`);
