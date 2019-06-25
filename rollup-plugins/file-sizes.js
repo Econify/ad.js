@@ -7,27 +7,23 @@ function getSizes(cb, bundle) {
   const { code, fileName } = bundle;
   const minifiedCode = terser.minify(code).code;
 
-  const options = {
-    unix: true,
-  };
-
   const info = {
     fileName,
     bundleSize: {
-      formatted: fileSize(Buffer.byteLength(code), options),
-      bytes: Buffer.byteLength(code),
+      formatted: fileSize(Buffer.byteLength(code)),
+      raw: Buffer.byteLength(code),
     },
     brotliSize: {
-      formatted: fileSize(brotli.sync(code), options),
-      bytes: brotli.sync(code),
+      formatted: fileSize(brotli.sync(code)),
+      raw: brotli.sync(code),
     },
     minSize: {
-      formatted: fileSize(minifiedCode.length, options),
-      bytes: minifiedCode.length,
+      formatted: fileSize(minifiedCode.length),
+      raw: minifiedCode.length,
     },
     gzipSize: {
-      formatted: fileSize(gzip.sync(minifiedCode), options),
-      bytes: gzip.sync(minifiedCode),
+      formatted: fileSize(gzip.sync(minifiedCode)),
+      raw: gzip.sync(minifiedCode),
     },
   };
 
