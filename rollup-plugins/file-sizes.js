@@ -16,7 +16,7 @@ function filesize(cb, env) {
       gzipSize: fileSize(gzip.sync(minifiedCode)),
     };
     
-    // console.log(info);
+    console.log(info);
 
 		return cb(fileName, info);
 	};
