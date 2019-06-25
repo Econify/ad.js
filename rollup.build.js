@@ -4,7 +4,7 @@ const fileSize = require('filesize');
 const gzip = require('gzip-size');
 const brotli = require('brotli-size');
 const { promisify } = require('util');
-const { configurations } = require('./rollup.config.js');
+const configurations = require('./rollup.config.js');
 
 const fsRead = promisify(fs.readFile).bind(fs);
 const fsWrite = promisify(fs.writeFile).bind(fs);
@@ -61,15 +61,16 @@ async function generateSizesFile() {
 
   const data = await files.reduce(async (acc, cur) => {
     const resolvedAcc = await acc;
-
-    const filePath = `${UMD_DIR}/${cur}`;
-
-    if (!filePath.endsWith('production.min.js')) {
+    
+    if (!cur.endsWith('production.min.js')) {
       return resolvedAcc;
     }
-    
+
+    const filePath = `${UMD_DIR}/${cur}`;
     const data = await fsRead(filePath, 'utf8');
     const { size } = await fs.stat(filePath);
+    const gzipRaw = gzip.sync(data);
+    const brotliRaw = brotli.sync(data);
 
     resolvedAcc[cur] = {
       bundleSize: {
@@ -77,19 +78,18 @@ async function generateSizesFile() {
         raw: size,
       },
       brotliSize: {
-        formatted: fileSize(brotli.sync(data)),
-        raw: brotli.sync(data),
+        formatted: fileSize(brotliRaw),
+        raw: brotliRaw,
       },
       gzipSize: {
-        formatted: fileSize(gzip.sync(data)),
-        raw: gzip.sync(data),
+        formatted: fileSize(gzipRaw),
+        raw: gzipRaw,
       },
     };
 
     return resolvedAcc;
   }, Promise.resolve({}));
   
-  console.log(data);
   await fs.writeJson(`${UMD_DIR}/sizes.json`, data)
 };
 

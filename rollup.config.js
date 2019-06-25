@@ -169,4 +169,4 @@ configurations.push(createProductionConfiguration({
   file: 'debug',
 }));
 
-module.exports = { configurations };
+module.exports = configurations;
