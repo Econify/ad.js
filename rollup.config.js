@@ -4,7 +4,7 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const typescript = require('rollup-plugin-typescript');
 const terser = require("rollup-plugin-terser").terser;
-const filesize = require('rollup-plugin-filesize');
+const filesize = require('./rollup-plugins/file-sizes');
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const productionPruning = require('./rollup-plugins/production-pruning');
 const { version } = require('./package.json');
@@ -26,11 +26,9 @@ const BASE_PLUGINS = [
   nodeResolve(),
   commonjs(),
   templateLiteralIndentFix(),
-  filesize({
-    render: function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
-      fileSizesObject[bundle.file] = { minSize, bundleSize, gzipSize, brotliSize };
-      return bundle.file
-    },
+  filesize((fileName, { minSize, gzipSize, brotliSize, bundleSize }) => {
+    fileSizesObject[fileName] = { minSize, bundleSize, gzipSize, brotliSize };
+    return fileName;
   }),
 ];
 
