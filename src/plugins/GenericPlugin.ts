@@ -18,7 +18,7 @@ class GenericPlugin implements IPlugin {
         js
           class ExamplePlugin extends GenericPlugin {
             onCreate() {
-              console.log('Example Plugin Started Succesfully');
+              console.log('Example Plugin Started Successfully');
             }
           }
 
@@ -28,7 +28,7 @@ class GenericPlugin implements IPlugin {
             constructor(ad) {
               super(ad);
 
-              console.log('Example Plugin Started Succesfully');
+              console.log('Example Plugin Started Successfully');
             }
           }
       `);

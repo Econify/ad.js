@@ -8,8 +8,8 @@ specify the plugin directly.
 Example:
 
  ``` 
-  import DFP from 'adjs/networks/DFP';
-  import AutoRender from 'adjs/plugins/AutoRender';
+  import DFP from 'adjs/Networks/DFP';
+  import AutoRender from 'adjs/Plugins/AutoRender';
 
   new AdJS.Page(DFP, {
 	plugins: [
@@ -54,7 +54,7 @@ Description: An ad must be passed into the GenericPlugin class. If your Plugin i
  ``` 
   class ExamplePlugin extends GenericPlugin {
 			onCreate() {
-			  console.log('Example Plugin Started Succesfully');
+			  console.log('Example Plugin Started Successfully');
 			}
 		  }
 
@@ -64,7 +64,7 @@ Description: An ad must be passed into the GenericPlugin class. If your Plugin i
 			constructor(ad) {
 			  super(ad);
 
-			  console.log('Example Plugin Started Succesfully');
+			  console.log('Example Plugin Started Successfully');
 			}
 		  }
  ```

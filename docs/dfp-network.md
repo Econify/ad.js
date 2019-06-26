@@ -11,7 +11,7 @@ If you have installed Ad.js via NPM the test network is available via an esmodul
 __Example__:
 ```js
 import AdJS from 'adjs';
-import DFPNetwork from 'adjs/networks/DFP';
+import DFPNetwork from 'adjs/Networks/DFP';
 
 const page = new AdJS.Page(DFPNetwork);
 ```
@@ -41,14 +41,14 @@ The DFP network is a singleton and takes no arguments
 ## Additional Ad Options
 The DFP network adds one required argument to Ad Options
 
-- path<String> - ad unit path for ad that will be created. If the optional arugment was provided to the DFP provider during configuration, the value passed here will be prefixed with that value
+- path<String> - ad unit path for ad that will be created. If the optional argument was provided to the DFP provider during configuration, the value passed here will be prefixed with that value
 
 ## Examples
 
 __Using Standard Sizes__
 ```js
 const AdJS = require('adjs');
-const DFPNetwork = require('adjs/networks/dfp');
+const DFPNetwork = require('adjs/Networks/DFP');
 
 const page = new AdJS.Page(DFPNetwork);
 
@@ -69,11 +69,11 @@ const ad = new page.Ad(el, {
 __Using Breakpoints__
 ```js
 const AdJS = require('adjs');
-const DFPNetwork = require('adjs/networks/dfp');
+const DFPNetwork = require('adjs/Networks/DFP');
 
 const page = new AdJS.Page(DFPNetwork, {
   plugins: [
-    require('adjs/plugins/responsive')
+    require('adjs/Plugins/responsive')
   ],
 
   breakpoints: {

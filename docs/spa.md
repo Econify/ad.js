@@ -28,16 +28,16 @@ __Implementation Examples:__
 ```js
 import AdJS from 'AdJS';
 
-import DFPProvider from 'adjs/networks/DFP';
+import DFPProvider from 'adjs/Networks/DFP';
 
-import Refresh from 'adjs/plugins/AutoRefresh';
-import AutoRender from 'adjs/plugins/AutoRender';
-import Responsive from 'adjs/plugins/Responsive';
-import Sticky from 'adjs/plugins/Sticky';
-import DeveloperTools from 'adjs/plugins/DeveloperTools';
-import Banner from 'adjs/plugins/Banner';
+import Refresh from 'adjs/Plugins/AutoRefresh';
+import AutoRender from 'adjs/Plugins/AutoRender';
+import Responsive from 'adjs/Plugins/Responsive';
+import Sticky from 'adjs/Plugins/Sticky';
+import DeveloperTools from 'adjs/Plugins/DeveloperTools';
+import Banner from 'adjs/Plugins/Banner'; // THIS DOESN'T EXIST!!
 
-import Krux from 'adjs/vendors/Krux';
+import Krux from 'adjs/Vendors/Krux'; // Doesnt exist yet
 
 const homepageAdPage = new AdJS.Page(DFPNetwork, {
   plugins: [
@@ -80,10 +80,8 @@ const firstBoxAd = homepageAdPage.find('.ad');
 ## Infinite Scroll Example
 ```js
 import AdJS from 'adjs';
-import DFP from 'adjs/networks/DFP';
-import Refresh from 'adjs/plugins/Refresh';
-
-import EventBus from 'adjs/utils/EventBus';
+import DFP from 'adjs/Networks/DFP';
+import Refresh from 'adjs/Plugins/Refresh';
 
 const initialArticlePage = new AdJS.Page(DFP, {
   modules: [Refresh],
@@ -128,7 +126,5 @@ document.addEventListener('transport', (e) => {
   });
 });
 
-// Built In Event Bus
-EventBus.on('transport', (e) => {});
 ```
 

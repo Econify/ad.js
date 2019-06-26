@@ -15,8 +15,8 @@ If you have installed Ad.js via NPM the responsive package is available via an e
 __Example__:
 ```js
 import AdJS from 'adjs';
-import DFP from 'adjs/networks/DFP';
-import Responsive from 'adjs/plugins/Responsive';
+import DFP from 'adjs/Networks/DFP';
+import Responsive from 'adjs/Plugins/Responsive';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
@@ -62,9 +62,9 @@ Configuration via Page (will affect all ads within the page). It is preferred fo
 generally the site's breakpoints will not change) and to define the sizes on each ad implementation.
 ```js
 import AdJS from 'adjs';
-import DFP from 'adjs/networks/DFP';
+import DFP from 'adjs/Networks/DFP';
 
-import Responsive from 'adjs/plugins/Responsive';
+import Responsive from 'adjs/Plugins/Responsive';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
@@ -92,11 +92,11 @@ const ad = new page.createAd(el, {
 });
 ```
 
-Configuraton on an individual Ad
+Configuration on an individual Ad
 ```js
 import AdJS from 'adjs';
-import DFP from 'adjs/networks/DFP';
-import Responsive from 'adjs/plugins/Responsive';
+import DFP from 'adjs/Networks/DFP';
+import Responsive from 'adjs/Plugins/Responsive';
 
 const page = new AdJS.Page(DFP);
 

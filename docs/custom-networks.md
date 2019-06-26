@@ -4,8 +4,8 @@ If you are interacting with an ad platform that is not part of the official Ad.j
 Example Custom Provider:
 
 ```js
-import TestNetwork from 'adjs/networks/Noop';
-import loadScript from 'adjs/utils/loadScript';
+import TestNetwork from 'adjs/Networks/Noop';
+import loadScript from 'adjs/utils/loadScript'; // THIS DOESN'T EXIST IN THE BUNDLE
 
 class ExampleCustomProvider extends TestNetwork {
   static optionalParams = [];

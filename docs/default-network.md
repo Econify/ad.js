@@ -11,7 +11,7 @@ If you have installed Ad.js via NPM the test network is available via an esmodul
 __Example__:
 ```js
 import AdJS from 'adjs';
-import TestNetwork from 'adjs/networks/Noop';
+import TestNetwork from 'adjs/Networks/Noop';
 
 const page = new AdJS.Page(TestNetwork);
 ```
