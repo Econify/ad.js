@@ -4,7 +4,7 @@
   * [Example Code](example-code.md)
 
 * Plugins
-	* [Lazy Load / Auto Render](lazy-load-plugin.md)
+	* [Lazy Load / Auto Render](auto-render-plugin.md)
 	* [Responsive Ads](responsive-plugin.md)
 	* [Auto Refresh](refresh-plugin.md)
 	* [Sticky Ads](sticky-plugin.md)

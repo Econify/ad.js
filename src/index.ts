@@ -31,8 +31,8 @@ const PluginsHandler = {
         specify the plugin directly.
 
         Example:
-          import DFP from 'adjs/networks/DFP';
-          import AutoRender from 'adjs/plugins/AutoRender';
+          import DFP from 'adjs/Networks/DFP';
+          import AutoRender from 'adjs/Plugins/AutoRender';
 
           new AdJS.Page(DFP, {
             plugins: [

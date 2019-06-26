@@ -29,7 +29,7 @@ If your ad is refreshed (and your provider supports ad refresh), a typical lifec
 8. Complete
 
 ## Actions
-Even though most Ad lifecycle actions require network requests and are therefore asynchronous, Ad.js interfaces are synchronous. When async methods are still pending, Ad.js will automatically queue up your action and replay them in the order received. Because of this code like this is safe!
+Even though most Ad lifecycle actions require network requests and are therefore asynchronous, Ad.js interfaces are synchronous. When async methods are still pending, Ad.js will automatically queue up your action and replay them in the order received. As a result, this is safe!
 
 ```js
     const ad = page.find('banner');
@@ -99,20 +99,3 @@ Unfreeze will remove an ad from a frozen state and resume timers. Unfreeze takes
     ad.render(); // does nothing
     ad.unfreeze({ replayEventsWhileFrozen: true }); // calls render 
 ```
-
-## Subscribing to Events
-Every ad in enigma contains an event bus for you to monitor and interact with the ad specifically. TODO @Stephen B fill out event bus meanings. Example:
-
-```js
-    import EVENTS from 'adjs/Events';
-    
-    const ad = new page.Ad(el, options);
-    ad.on(EVENTS.RENDER, function (event) {
-     console.log('rendered into', this, 'because of', event);
-    });
-```
-
-In addition to all of the events in the lifecycle being subscribable, the following events are subscribable as well:
-
-- Breakpoint Change (`on('breakpoint', () => {})`)
-

@@ -1,5 +1,5 @@
 # Maximizing Impressions with AutoRefreshing Ads
-Viewability is a binary metric. Your creative will either generate a "viewable impression" or a "non-viewable impression". The standard metric to determine whether an ad was Viewable is whether the ad was in the viewport of the browser for 2 seconds.
+View-ability is a binary metric. Your creative will either generate a "viewable impression" or a "non-viewable impression". The standard metric to determine whether an ad was Viewable is whether the ad was in the viewport of the browser for 2 seconds.
 
 The Ad.js refresh plugin helps you maximize your impressions per page by refreshing/fetching a new creative after your Ad has been considered as "viewed". By default the AutoRefresh Plugin will only refresh an Ad after 30 seconds of view time.
 
@@ -13,9 +13,9 @@ If you have installed Ad.js via NPM the refresh package is available via an esmo
 __Example__:
 ```js
 import AdJS from 'adjs';
-import DFP from 'adjs/networks/DFP';
+import DFP from 'adjs/Networks/DFP';
 
-import AutoRefresh from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/Plugins/AutoRefresh';
 
 const page = new AdJS.Page(DFP, {
   plugins: [
@@ -62,7 +62,7 @@ The AutoRefresh Plugin adds two options to ad instantiation
 Configuration via Page (will affect all ads within the page). It is common to implement refresh on a page level as your refresh strategy will usually be the same site wide.
 ```js
 import AdJS from 'adjs';
-import AutoRefresh from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/Plugins/AutoRefresh';
 
 const page = new AdJS.Page(Network, {
   plugins: [
@@ -76,12 +76,12 @@ const page = new AdJS.Page(Network, {
 });
 ```
 
-Configuraton on an individual Ad
+Configuration on an individual Ad
 ```js
 import AdJS from 'adjs';
-import DFPNetwork from 'adjs/networks/DFP';
+import DFPNetwork from 'adjs/Networks/DFP';
 
-import AutoRefresh from 'adjs/plugins/AutoRefresh';
+import AutoRefresh from 'adjs/Plugins/AutoRefresh';
 
 const page = new AdJS.Page(DFPNetwork);
 
