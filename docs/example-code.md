@@ -1,6 +1,6 @@
 ### Example Code ###
 
-Both of these examples will require some sort of transpiler e.g. babel, typescript, etc.
+This react example requires some sort of transpiler e.g. babel, typescript, etc.
 See the [README](README.md) for alternative import solutions.
 
 In this example, we will be using all of the `plugins` available and setting them at the bucket level.
@@ -9,7 +9,7 @@ that some of these `plugins` be added at a per ad level (`Sticky`, `AutoRefresh`
 Please see any of the plugins documentation in the [README](README.md) for ad level inclusion.
 
 
-Both vanilla javascript and react.js will use this bucket singleton on init of the application:
+React.js will use this bucket singleton on init of the application:
 
 __AdJsBucketSingleton.js__:
 ```js
@@ -55,7 +55,7 @@ As well as a default ad configuration file:
 __defaultAdConfiguration.js__:
 ```js
   export default {
-    path: "/sports/12345",
+    path: "/123456/sports",
     sizes: {
       mobile: [[300, 250], [300, 600]],
       tablet: [[300, 250], [300, 600]],
@@ -68,8 +68,6 @@ __defaultAdConfiguration.js__:
 ```
 
 Creating ads using the `AdJsBucketSingleton` and `defaultAdConfiguration`
-
-### React.Js Example ###
 
 __Ad.js Class Component__:
 ```js
@@ -142,23 +140,71 @@ __parentContainer__:
   <Ad {...this.props} />
 ```
 
-
 ### Vanilla Javascript Example ###
+As long as your HTML elements exist on page load (SSR), this script at the root of your application
+will fire and execute the ad creations.
 
-__createAd.js__:
+This implemenation will fetch and execute without blocking
+the render of your application. It also removes the requirement of 
+bundling `ad.js` with your project -- relieving the need to redeploy with updates
+to the npm package.
+
+__src/ads.js__
 ```js
-  import bucket from './AdJsBucketSingleton';
-  import defaultOptions from './defaultAdConfiguration';
+/*
+  in markup
+  
+  <div data-ad-slot></div>
+  <div data-ad-slot="banner"></div>
+  <div data-ad-slot="sidebar"></div>
 
-  const createAd = (targetElement, options = null) => {
-    bucket.createAd(targetElement, { ...defaultOptions, ...options }); 
-  }
-```
+  Using values for ad-slot can allow you to customize overrides
+  per ad type
+*/
 
-__script.js__ Fired on load:
-```js
-  import createAd from './pathToCreateAd.js'
+const script = document.createElement('script');
+script.src = 'https://unpkg.com/adjs@latest/umd/bundle.development.js';
+script.async = true;
+script.defer = true;
+script.onload = () => {
+  const { DFP } = window._ADJS.Networks;
+  const { AutoRender, AutoRefresh, Responsive, DeveloperTools, Sticky } = window[`_ADJS`].Plugins;
 
-  const elm = document.getElementById('my-ad-target-1');
-  createAd(elm, {})
+  const adContainers = document.querySelectorAll('[data-ad-slot]');
+
+  const page = new window.AdJS.Page(DFP, {
+    plugins: [AutoRender, AutoRefresh, DeveloperTools, Responsive],
+    defaults: {
+      breakpoints: {
+        mobile: { from: 0, to: 767 },
+        tablet: { from: 768, to: 1039 },
+        desktop: { from: 1040, to: 1359 },
+        largeDesktop: { from: 1360, to: Infinity },
+      },
+      autoRender: true,
+      refreshRateInSeconds: 5000,
+    },
+  });
+
+  Array.prototype.forEach.call(adContainers, elm => {
+    /*
+      this is where you can check for values in the ad-slot
+      const { adType } = elm.dataset;
+      page.createAd(elm, yourConfigurationFile.adConfigurationPerType[adType]);
+    */
+
+    page.createAd(elm, {
+      path: '/123456/sports',
+      plugins: [Sticky],
+      sizes: {
+        mobile: [],
+        tablet: [],
+        desktop: [[300, 250], [300, 600]],
+        largeDesktop: [[300, 250], [300, 600]],
+      },
+    });
+  });
+}
+
+document.head.appendChild(script);
 ```
