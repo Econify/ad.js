@@ -70,14 +70,18 @@ Description: An ad must be passed into the GenericPlugin class. If your Plugin i
  ```
   
 ## Error 5
-Description: Ad does not have an id
-
-  
-## Error 6
-Description: Sizes must be defined.
+Description: Parent element required for sticky plugin.
 
   
 ## Error 7
+Description: Sizes must be defined.
+
+  
+## Error 6
+Description: Ad does not have an id
+
+  
+## Error 8
 Description: Ad Path must be defined.
 
   

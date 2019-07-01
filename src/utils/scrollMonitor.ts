@@ -26,6 +26,7 @@ class ScrollMonitor {
     onFullyEnterViewport?: () => any,
     onExitViewport?: () => any,
   ) => {
+    ScrollMonitor.monitorScroll();
 
     const existingAd = ScrollMonitor.getAdIfExists(id);
 
@@ -110,7 +111,5 @@ class ScrollMonitor {
     return ScrollMonitor.registeredAds[id];
   }
 }
-
-ScrollMonitor.monitorScroll();
 
 export default ScrollMonitor;
