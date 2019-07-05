@@ -66,7 +66,7 @@ The Auto Render Plugin adds two options to ad instantiation
 |Option|Default|Description|
 |---|---|---|
 |autoRender|false|When set to true, Ad.js will automatically render the ad when it enters the viewport (plus the offset provided if any)|
-|offset|0|A measurement in pixels or percentage that Ad.js will use to determine how far away from the viewport to load the ad|
+|renderOffset|0|A measurement in pixels or percentage that Ad.js will use to determine how far away from the viewport to load the ad|
 
 ## Examples
 
@@ -82,7 +82,7 @@ const page = new AdJS.Page(Network, {
 
   defaults: {
     autoLoad: true,
-    offset: 0,
+    renderOffset: 0,
   }
 });
 ```
@@ -99,7 +99,7 @@ const ad = new page.createAd(el, {
     AutoRender
   ],
 
-  offset: -100,
+  renderOffset: -100,
   autoLoad: true,
 });
-``` 
+```
