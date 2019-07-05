@@ -1,7 +1,10 @@
 const fs = require('fs-extra');
 const rollup = require('rollup');
+const fileSize = require('filesize');
+const gzip = require('gzip-size');
+const brotli = require('brotli-size');
 const { promisify } = require('util');
-const { configurations, fileSizesObject } = require('./rollup.config.js');
+const configurations = require('./rollup.config.js');
 
 const fsRead = promisify(fs.readFile).bind(fs);
 const fsWrite = promisify(fs.writeFile).bind(fs);
@@ -53,11 +56,65 @@ async function createAllInclusiveBundles() {
   await fsWrite(`${UMD_DIR}/bundle.production.min.js`, production);
 }
 
+async function generateSizesFile() {
+  const files = await fs.readdir(UMD_DIR);
+
+  const data = await Promise.all(
+    files.map(async (file) => {
+      const path = `${UMD_DIR}/${file}`;
+  
+      if (!path.endsWith('production.min.js')) {
+        return;
+      }
+  
+      const data = await fsRead(path, 'utf8');
+  
+      const [
+        minifiedRaw,
+        gzipRaw,
+        brotliRaw,
+      ] = await Promise.all([
+        fs.stat(path).then(({ size }) => size),
+        gzip(data),
+        brotli(data),
+      ]);
+  
+      return {
+        name: file,
+        sizes: {
+          minified: {
+            formatted: String(minifiedRaw / 1024) + ' KB',
+            raw: minifiedRaw,
+          },
+          brotli: {
+            formatted: fileSize(brotliRaw),
+            raw: brotliRaw,
+          },
+          gzip: {
+            formatted: fileSize(gzipRaw),
+            raw: gzipRaw,
+          },
+        }
+      }
+    })
+  ).then((files) => (
+    files.reduce((obj, file) => {
+      if (file) {
+        obj[file.name] = file.sizes;
+      }
+
+      return obj;
+    }, {}))
+  );
+
+  await fs.writeJson(`${UMD_DIR}/sizes.json`, data)
+};
+
 const startTime = new Date().getTime();
 build()
-  .then(() => fs.writeJson(`${BUILD_DIR}/umd/sizes.json`, fileSizesObject))
   .then(() => copyFiles())
   .then(() => createAllInclusiveBundles())
+  .then(() => generateSizesFile())
   .then(() => {
     const elapsedTime = new Date().getTime() - startTime;
     console.log(`** Build finished in ${elapsedTime}ms **`);
