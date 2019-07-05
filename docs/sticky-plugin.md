@@ -37,7 +37,12 @@ __Example__:
 </html>
 ```
 
-<!-- ## Options -->
+## Options
+The Sticky plugin adds one option to ad instantiation:
+
+|Option|Default|Description|
+|---|---|---|
+|stickyOffset|0|Sticky ads will stick to the top of the window by default with the offset applying to the CSS `top` property to offset ad's fixed position.|
 
 ## Examples
 
@@ -63,6 +68,8 @@ const page = new AdJS.Page(Network);
 const ad = new page.createAd(el, {
   plugins: [
     Sticky
-  ]
+  ],
+
+  stickyOffset: 10
 });
 ```
