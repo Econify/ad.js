@@ -6,9 +6,9 @@ import GenericPlugin from './GenericPlugin';
 class AutoRender extends GenericPlugin {
   public afterCreate() {
     const { container, configuration, el } = this.ad;
-    const { offset = 0 } = configuration;
+    const renderOffset = configuration.renderOffset || configuration.offset || 0;
 
-    ScrollMonitor.subscribe(el.id, container, offset, this.onEnterViewport);
+    ScrollMonitor.subscribe(el.id, container, renderOffset, this.onEnterViewport);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
   }
 

@@ -162,6 +162,8 @@ export interface IAdConfiguration {
   autoRender?: boolean;
   breakpoints?: IAdBreakpoints;
   offset?: number;
+  stickyOffset?: number;
+  renderOffset?: number;
   logging?: boolean;
   overlay?: boolean;
   path?: string;

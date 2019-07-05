@@ -28,4 +28,32 @@ describe('Sticky', () => {
     expect(ad.container.style.top).toBe('0px');
     expect(ad.container.style.position).toBe('sticky');
   });
+
+  it('applies the correct stickyOffset when provided', () => {
+    const dummyContainer: any = document.createElement('div');
+    const dummyEl: any = document.createElement('div');
+
+    dummyContainer.appendChild(dummyEl);
+
+    const ad = {
+      configuration: {
+        breakpoints: {},
+        stickyOffset: 3
+      },
+      container: dummyEl,
+      el: {},
+      network: 'DFP',
+      render: () => { },
+      refresh: jest.fn(() => { }),
+      clear: () => { },
+      destroy: () => { },
+      freeze: () => { },
+      unfreeze: () => { }
+    };
+
+    // @ts-ignore
+    const sticky: any = new Sticky(ad);
+    sticky.onCreate();
+    expect(ad.container.style.top).toBe('3px');
+  })
 });

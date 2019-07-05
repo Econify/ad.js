@@ -25,11 +25,12 @@ class Sticky extends GenericPlugin {
   public originalStyle?: any;
 
   public onCreate() {
-    const { container } = this.ad;
+    const { container, configuration } = this.ad;
+    const { stickyOffset = 0 } = configuration;
     this.originalStyle = container.style;
 
     container.style.position = 'sticky';
-    container.style.top = '0px';
+    container.style.top = `${stickyOffset}px`;
 
     if (container.parentElement) {
       this.boundary = getElementOffset(container.parentElement);
@@ -39,7 +40,7 @@ class Sticky extends GenericPlugin {
         if (re.exec(ua) != null) {
           const rv = parseInt(RegExp.$1, 10);
           if (rv === 11) {
-            this.handleIE();
+            this.handleIE(stickyOffset);
           }
         }
       }
@@ -68,7 +69,7 @@ class Sticky extends GenericPlugin {
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Removed sticky container from ad.`);
   }
 
-  private handleIE() {
+  private handleIE(offset: number) {
     const { container } = this.ad;
 
     const parentElement = container.parentElement;
@@ -80,7 +81,7 @@ class Sticky extends GenericPlugin {
     if (this.boundary && this.boundary.top < window.scrollY) {
       this.boundary = getElementOffset(parentElement);
       container.style.position = 'fixed';
-      container.style.top = '0px';
+      container.style.top = `${offset}px`;
       container.style.transform = 'translateX(-50%)';
     }
 
@@ -97,7 +98,7 @@ class Sticky extends GenericPlugin {
           container.style.transform = 'translateX(-50%)';
         } else {
           container.style.position = 'fixed';
-          container.style.top = '0px';
+          container.style.top = `${offset}px`;
           container.style.transform = 'translateX(-50%)';
         }
       });
