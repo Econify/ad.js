@@ -191,7 +191,7 @@ class Ad implements IAd {
     };
 
     this.id = nextId();
-    this.container = insertElement('div', { style: 'position: relative; display: inline-block;' }, el);
+    this.container = insertElement('div', { style: 'position: relative;' }, el);
     // change this back to temp literal after rollup fix
     this.el = insertElement('div', { id: 'adjs-ad-container-' + this.id }, this.container);
 
