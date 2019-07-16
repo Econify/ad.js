@@ -142,6 +142,10 @@ class DfpAd implements INetworkInstance {
 }
 
 function loadGPT() {
+  if (window.googletag && window.googletag.apiReady) {
+    return;
+  }
+
   loadScript('https://www.googletagservices.com/tag/js/gpt.js', { async: true });
 
   window.googletag = window.googletag || {};
