@@ -160,6 +160,8 @@ export interface ICurrentConfines {
 export interface IAdConfiguration {
   autoRefresh?: boolean;
   autoRender?: boolean;
+  sticky?: boolean;
+
   breakpoints?: IAdBreakpoints;
   offset?: number;
   stickyOffset?: number;
