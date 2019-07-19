@@ -25,6 +25,10 @@ class Sticky extends GenericPlugin {
   public originalStyle?: any;
 
   public onCreate() {
+    if (!this.enabled) {
+      return;
+    }
+
     const { container, configuration } = this.ad;
     const { stickyOffset = 0 } = configuration;
     this.originalStyle = container.style;
@@ -64,6 +68,10 @@ class Sticky extends GenericPlugin {
   }
 
   public onDestroy() {
+    if (!this.enabled) {
+      return;
+    }
+
     this.cleanup();
 
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'Sticky Plugin', `Removed sticky container from ad.`);
@@ -103,6 +111,12 @@ class Sticky extends GenericPlugin {
         }
       });
     });
+  }
+
+  private get enabled() {
+    const { sticky = true } = this.ad.configuration;
+
+    return !!sticky;
   }
 }
 
