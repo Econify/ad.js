@@ -5,14 +5,37 @@ import MockNetwork from 'networks/Mock';
 describe('Ad', () => {
   let page;
   let ad;
+  const el = insertElement('div', {}, document.body);
 
   beforeEach(() => {
-    const el = insertElement('div', {}, document.body);
-
     global.AdJS = AdJS;
     page = new AdJS.Page(MockNetwork);
 
-    ad = page.createAd(el, { sizes: [], breakpoints: {} });
+    ad = page.createAd(el, { sizes: [], breakpoints: {}, targeting: { existing: true } });
+  });
+
+  describe('configuration', () => {
+    it('should have the correct key vals', async () => {
+      const overrides = {
+        someNewKey: 'true',
+        targeting: {
+          newValues: 'moreTrue',
+        },
+      };
+
+      const expected = {
+        sizes: {},
+        breakpoints: {},
+        targeting: {
+          existing: true,
+          newValues: 'moreTrue'
+        },
+        someNewKey: 'true',
+      }
+
+      const ad = page.createAd(el, overrides);
+      expect(ad.configuration).toEqual(expected);
+    });
   });
 
   describe('render()', () => {

@@ -159,6 +159,7 @@ export interface ICurrentConfines {
 }
 
 export interface IAdConfiguration {
+  [key: string]: any;
   autoRefresh?: boolean;
   autoRender?: boolean;
   sticky?: boolean;
