@@ -77,11 +77,11 @@ Description: Parent element required for sticky plugin.
 Description: Ad does not have an id
 
   
-## Error 8
-Description: Ad Path must be defined.
-
-  
 ## Error 7
 Description: Sizes must be defined.
+
+  
+## Error 8
+Description: Ad Path must be defined.
 
   

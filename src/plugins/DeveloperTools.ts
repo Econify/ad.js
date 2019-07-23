@@ -132,11 +132,17 @@ if ('__DEV__') {
     }
 
     private initOverlay() {
-      const { container, el: { id }, configuration: { path } } = this.ad;
+      const { container, el: { id }, configuration: { path, targeting } } = this.ad;
 
-      const title = `slotId: ${id} <br /> path: ${path} <hr />`;
+      let header = `slotId: ${id} <br /> path: ${path}`;
 
-      this.debugOverlay = insertElement('div', { style: OVERLAY_STYLE }, container, title);
+      if (targeting) {
+        const targetingString = Object.keys(targeting).map((key) => key + ': ' + targeting[key]).join(', <br />');
+
+        header = header + '<br />' + 'targeting = <br />' + targetingString;
+      }
+
+      this.debugOverlay = insertElement('div', { style: OVERLAY_STYLE }, container, header.concat('<hr />'));
 
       googletag.cmd.push(() => {
         googletag.pubads().addEventListener(
