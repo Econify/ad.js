@@ -129,6 +129,7 @@ class Ad implements IAd {
   // TODO: Rethink
   public correlatorId?: string;
   public id: number;
+  public isEmpty: boolean = true;
 
   public state: { [key: string]: boolean } = {
     creating: false,

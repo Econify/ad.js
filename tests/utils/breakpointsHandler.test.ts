@@ -56,12 +56,22 @@ describe('breakpointHandler', async () => {
     expect(desktop).toEqual(expected);
   });
 
+  it('returns { sizesSpecified: false } when breakpoints not provided and sizes empty', () => {
+    delete configuration.breakpoints;
+
+    // @ts-ignore
+    global.innerWidth = 500;
+    const mobile = breakpointHandler([], configuration.breakpoints);
+    expected = { sizesSpecified: false };
+    expect(mobile).toEqual(expected);
+  });
+
   it('returns { sizesSpecified: true } when breakpoints not provided', () => {
     delete configuration.breakpoints;
 
     // @ts-ignore
     global.innerWidth = 500;
-    const mobile = breakpointHandler(configuration.sizes, configuration.breakpoints);
+    const mobile = breakpointHandler([[300, 250]], configuration.breakpoints);
     expected = { sizesSpecified: true };
     expect(mobile).toEqual(expected);
   });

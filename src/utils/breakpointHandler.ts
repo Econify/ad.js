@@ -4,9 +4,9 @@ import isBetween from './isBetween';
 const breakpointHandler = (sizes: IAdSizes | any, breakpoints?: IAdBreakpoints): ICurrentConfines => {
   let currentConfines: ICurrentConfines = {};
 
-  if (!breakpoints) {
+  if (Array.isArray(sizes) || !breakpoints) {
     // Ad is not using responsive plugin
-    return { sizesSpecified: true };
+    return { sizesSpecified: !!sizes.length };
   }
 
   Object.keys(breakpoints).forEach((key) => {
