@@ -1,6 +1,6 @@
 {
   "name": "adjs",
-  "version": "2.0.0-beta.13",
+  "version": "2.0.0-beta.14",
   "description": "Ad Library to simplify and optimize integration with ad networks such as DFP",
   "main": "./core.js",
   "types": "./types.d.ts",
