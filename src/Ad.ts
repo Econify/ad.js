@@ -183,13 +183,20 @@ class Ad implements IAd {
      */
     this.promiseStack = this.promiseStack.then(() => this.page.promiseStack);
 
-    this.configuration = {
-      // page Defaults
-      ...this.page.defaults,
+    this.configuration = this.page.defaults;
 
-      // Constructor Overrides
-      ...localConfiguration,
-    };
+    if (localConfiguration) {
+      Object.entries(localConfiguration).forEach(([key, value]) => {
+        if (typeof value === 'object') {
+          this.configuration[key] =  {
+              ...this.configuration[key],
+              ...value,
+          };
+        } else {
+          this.configuration[key] = value;
+        }
+      });
+    }
 
     this.id = nextId();
     this.container = insertElement('div', { style: 'position: relative;' }, el);
