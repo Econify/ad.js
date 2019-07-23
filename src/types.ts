@@ -33,6 +33,7 @@ export interface IAdEventListener {
 export interface IAd {
   id: number;
 
+  isEmpty: boolean;
   configuration: IAdConfiguration;
 
   container: HTMLElement;

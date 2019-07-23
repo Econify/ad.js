@@ -5,6 +5,7 @@ describe('ResponsivePlugin', async () => {
   const ad = {
     configuration: {
       breakpoints: {},
+      sizes: {},
     },
     container: {},
     el: {},
@@ -42,6 +43,11 @@ describe('ResponsivePlugin', async () => {
       // @ts-ignore
       const responsivePlugin = new Responsive(ad);
       let expected: ICurrentConfines = {};
+
+      ad.configuration.sizes = {
+        mobile: [],
+      };
+
       ad.configuration.breakpoints = {
         mobile: { from: 0, to: 767 },
         tablet: { from: 768, to: 999 },

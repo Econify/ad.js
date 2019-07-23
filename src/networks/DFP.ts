@@ -11,22 +11,27 @@ declare global {
 class DfpAd implements INetworkInstance {
   private id: string;
   private slot!: googletag.Slot;
-  private sizes!: AdSizes;
+  private sizes: AdSizes;
   private breakpoints?: IAdBreakpoints;
 
-  constructor(
-    private el: HTMLElement,
-    path: string,
-    sizes: AdSizes,
-    breakpoints?: IAdBreakpoints,
-    targeting?: IAdTargeting,
-  ) {
+  constructor(private ad: IAd) {
     DoubleClickForPublishers.prepare();
 
-    const { id } = el;
+    const {
+      el: { id },
+      configuration: { sizes, targeting, path, breakpoints },
+    } = ad;
 
     if (!id) {
       throw new Error('Ad does not have an id');
+    }
+
+    if (!sizes) {
+      throw new Error('Sizes must be defined.');
+    }
+
+    if (!path) {
+      throw new Error('Ad Path must be defined.');
     }
 
     this.id = id;
@@ -78,6 +83,7 @@ class DfpAd implements INetworkInstance {
 
         googletag.pubads().clear([slot]);
 
+        this.ad.isEmpty = true;
         resolve();
       });
     });
@@ -89,6 +95,8 @@ class DfpAd implements INetworkInstance {
       (resolve) => {
         if (!breakpointHandler(this.sizes, this.breakpoints).sizesSpecified) {
           this.clear().then(resolve);
+
+          return;
         }
 
         googletag.cmd.push(() => {
@@ -99,6 +107,8 @@ class DfpAd implements INetworkInstance {
 
             (event: googletag.events.SlotRenderEndedEvent) => {
               if (event.slot === slot) {
+                this.ad.isEmpty = event.isEmpty;
+
                 dispatchEvent(
                   Number(this.id.substring(this.id.length, this.id.length - 1)),
                   LOG_LEVELS.INFO,
@@ -114,6 +124,8 @@ class DfpAd implements INetworkInstance {
           googletag.pubads().refresh([slot], { changeCorrelator: false });
 
           if (!slot.getContentUrl()) {
+            this.ad.isEmpty = true;
+
             dispatchEvent(
               Number(this.id.substring(this.id.length, this.id.length - 1)),
               LOG_LEVELS.WARN,
@@ -135,6 +147,7 @@ class DfpAd implements INetworkInstance {
 
         googletag.destroySlots([slot]);
 
+        this.ad.isEmpty = true;
         resolve();
       });
     });
@@ -163,18 +176,7 @@ const DoubleClickForPublishers: INetwork = {
   loaded: false,
 
   createAd(ad: IAd): DfpAd {
-    const { el, configuration } = ad;
-    const { sizes, targeting, path, breakpoints } = configuration;
-
-    if (!sizes) {
-      throw new Error('Sizes must be defined.');
-    }
-
-    if (!path) {
-      throw new Error('Ad Path must be defined.');
-    }
-
-    return new DfpAd(el, path, sizes, breakpoints, targeting);
+    return new DfpAd(ad);
   },
 
   async prepare() {
