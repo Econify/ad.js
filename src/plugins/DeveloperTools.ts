@@ -137,9 +137,9 @@ if ('__DEV__') {
       const { container, el: { id }, configuration: { path, targeting } } = this.ad;
 
       const targetingString = targeting ? '<br />' + 'targeting = <br />' +
-        Object.keys(targeting).map((key) => key + ': ' + targeting[key]).join(', <br />') : null;
+        Object.keys(targeting).map((key) => key + ': ' + targeting[key]).join(', <br />') : '';
 
-      const header = `slotId: ${id} <br /> path: ${path}` + (targetingString || '');
+      const header = `slotId: ${id} <br /> path: ${path}` + targetingString;
 
       this.debugOverlay = insertElement('div', { style: OVERLAY_STYLE }, container, header.concat('<hr />'));
 
