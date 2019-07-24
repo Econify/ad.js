@@ -39,10 +39,14 @@ Example:
  ```
   
 ## Error 3
-Description: Sizes must be of type `Array` unless breakpoints have been specified
+Description: Sizes are required
 
   
 ## Error 4
+Description: Sizes must be of type `Array` unless breakpoints have been specified
+
+  
+## Error 5
 Description: An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin
 		and overrides the constructor make sure you are calling "super" and that you are passing in an
 		instance of an ad as the first parameter. Alternatively, you can hook into the onCreate method
@@ -69,19 +73,19 @@ Description: An ad must be passed into the GenericPlugin class. If your Plugin i
 		  }
  ```
   
-## Error 5
+## Error 6
 Description: Parent element required for sticky plugin.
 
   
-## Error 6
-Description: Ad does not have an id
-
-  
-## Error 7
+## Error 8
 Description: Sizes must be defined.
 
   
-## Error 8
+## Error 9
 Description: Ad Path must be defined.
+
+  
+## Error 7
+Description: Ad does not have an id
 
   

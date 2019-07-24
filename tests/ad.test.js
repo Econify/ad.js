@@ -9,29 +9,33 @@ describe('Ad', () => {
 
   beforeEach(() => {
     global.AdJS = AdJS;
-    page = new AdJS.Page(MockNetwork);
+    page = new AdJS.Page(MockNetwork, {
+      defaults: {
+        targeting: { existing: true }
+      }
+    });
 
-    ad = page.createAd(el, { sizes: [], breakpoints: {}, targeting: { existing: true } });
+    ad = page.createAd(el, { sizes: [], breakpoints: {} });
   });
 
   describe('configuration', () => {
     it('should have the correct key vals', async () => {
       const overrides = {
         someNewKey: 'true',
+        sizes: [],
         targeting: {
           newValues: 'moreTrue',
         },
       };
 
       const expected = {
-        sizes: {},
-        breakpoints: {},
+        sizes: [],
         targeting: {
           existing: true,
           newValues: 'moreTrue'
         },
         someNewKey: 'true',
-      }
+      };
 
       const ad = page.createAd(el, overrides);
       expect(ad.configuration).toEqual(expected);
