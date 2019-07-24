@@ -183,20 +183,16 @@ class Ad implements IAd {
      */
     this.promiseStack = this.promiseStack.then(() => this.page.promiseStack);
 
-    this.configuration = this.page.defaults;
+    this.configuration = {
+      ...this.page.defaults,
+      ...localConfiguration,
 
-    if (localConfiguration) {
-      Object.entries(localConfiguration).forEach(([key, value]) => {
-        if (typeof value === 'object') {
-          this.configuration[key] =  {
-              ...this.configuration[key],
-              ...value,
-          };
-        } else {
-          this.configuration[key] = value;
-        }
-      });
-    }
+      // Targeting is the only value that should merge
+      targeting: {
+        ...(this.page.defaults && this.page.defaults.targeting),
+        ...(localConfiguration && localConfiguration.targeting),
+      },
+    };
 
     this.id = nextId();
     this.container = insertElement('div', { style: 'position: relative;' }, el);
