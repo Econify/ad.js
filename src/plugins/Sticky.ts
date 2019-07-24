@@ -25,7 +25,7 @@ class Sticky extends GenericPlugin {
   public originalStyle?: any;
 
   public onCreate() {
-    if (!this.enabled) {
+    if (!this.isEnabled('sticky')) {
       return;
     }
 
@@ -68,7 +68,7 @@ class Sticky extends GenericPlugin {
   }
 
   public onDestroy() {
-    if (!this.enabled) {
+    if (!this.isEnabled('sticky')) {
       return;
     }
 
@@ -111,12 +111,6 @@ class Sticky extends GenericPlugin {
         }
       });
     });
-  }
-
-  private get enabled() {
-    const { sticky = true } = this.ad.configuration;
-
-    return !!sticky;
   }
 }
 

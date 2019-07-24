@@ -30,6 +30,8 @@ if ('__DEV__') {
   text-align: left;
   color: yellow;
   font-size: 12px;
+  z-index: 10000;
+  min-height: 200px;
 `;
   const MESSAGE_STYLE = `
   padding: 5px 0;
@@ -134,13 +136,10 @@ if ('__DEV__') {
     private initOverlay() {
       const { container, el: { id }, configuration: { path, targeting } } = this.ad;
 
-      let header = `slotId: ${id} <br /> path: ${path}`;
+      const targetingString = targeting ? '<br />' + 'targeting = <br />' +
+        Object.keys(targeting).map((key) => key + ': ' + targeting[key]).join(', <br />') : '';
 
-      if (targeting) {
-        const targetingString = Object.keys(targeting).map((key) => key + ': ' + targeting[key]).join(', <br />');
-
-        header = header + '<br />' + 'targeting = <br />' + targetingString;
-      }
+      const header = `slotId: ${id} <br /> path: ${path}` + targetingString;
 
       this.debugOverlay = insertElement('div', { style: OVERLAY_STYLE }, container, header.concat('<hr />'));
 

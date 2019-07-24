@@ -87,6 +87,10 @@ const AdJS = {
   VERSION: '__VERSION__',
 };
 
+if (!isServer()) {
+  (window as any)[`AdJS`] = AdJS;
+}
+
 /*
  * TODO:
  *  Allow a user to queue up commands before
