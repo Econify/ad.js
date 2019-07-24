@@ -36,6 +36,11 @@ class GenericPlugin implements IPlugin {
 
     this.ad = ad;
   }
+
+  public isEnabled(prop: string): boolean {
+    const value = this.ad.configuration[prop] || true;
+    return !!value;
+  }
 }
 
 export default GenericPlugin;

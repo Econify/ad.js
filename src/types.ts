@@ -31,6 +31,7 @@ export interface IAdEventListener {
 }
 
 export interface IAd {
+  [key: string]: any;
   id: number;
 
   isEmpty: boolean;

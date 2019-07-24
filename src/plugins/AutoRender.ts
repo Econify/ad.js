@@ -5,7 +5,7 @@ import GenericPlugin from './GenericPlugin';
 
 class AutoRender extends GenericPlugin {
   public afterCreate() {
-    if (!this.enabled) {
+    if (!this.isEnabled('autoRender')) {
       return;
     }
 
@@ -18,18 +18,12 @@ class AutoRender extends GenericPlugin {
   }
 
   private onEnterViewport = () => {
-    if (!this.enabled) {
+    if (!this.isEnabled('autoRender')) {
       return;
     }
 
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has entered the viewport. Calling render().');
     this.ad.render();
-  }
-
-  private get enabled() {
-    const { autoRender = true } = this.ad.configuration;
-
-    return !!autoRender;
   }
 }
 
