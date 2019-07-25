@@ -38,8 +38,12 @@ class GenericPlugin implements IPlugin {
   }
 
   public isEnabled(prop: string): boolean {
-    const value = this.ad.configuration[prop] || true;
-    return !!value;
+    const value = this.ad.configuration[prop];
+
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    return true;
   }
 }
 
