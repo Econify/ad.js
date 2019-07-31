@@ -3,14 +3,14 @@ By default when an ad is loaded your ad network will provide you a creative that
 (e.g. Desktop, Tablet, Mobile). However should a user resize the viewport by changing the size of the browser, the ad will stay the same
 size. This is problematic in scenarios where full width creatives like a banner ad may fit the design on large desktop, but not on small desktop.
 
-Ad.js's Responsive plugin will monitor the browser's viewport as well as the sizes that your ad requests and will request new creatives from your ad network automatically.
+AdJS's Responsive plugin will monitor the browser's viewport as well as the sizes that your ad requests and will request new creatives from your ad network automatically.
 
 ## Installation
-Depending on your method of implementation, Ad.js packages may be installed via different methods.
+Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.
 
 ### NPM
-If you have installed Ad.js via NPM the responsive package is available via an esmodule import.
+If you have installed AdJS via NPM the responsive package is available via an esmodule import.
 
 __Example__:
 ```js
@@ -26,7 +26,7 @@ const page = new AdJS.Page(DFP, {
 ```
 
 ### Script Tag
-If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
+If you have installed AdJS via a script tag, you will either need to ensure your bundle already
 includes the LazyLoad plugin (preferred) or include the lazy load script in the header.
 
 __Example__:

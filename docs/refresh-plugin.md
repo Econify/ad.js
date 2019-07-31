@@ -1,14 +1,14 @@
 # Maximizing Impressions with AutoRefreshing Ads
 Viewability is a binary metric. Your creative will either generate a "viewable impression" or a "non-viewable impression". The standard metric to determine whether an ad was Viewable is whether the ad was in the viewport of the browser for 2 seconds.
 
-The Ad.js refresh plugin helps you maximize your impressions per page by refreshing/fetching a new creative after your Ad has been considered as "viewed". By default the AutoRefresh Plugin will only refresh an Ad after 30 seconds of view time.
+The AdJS refresh plugin helps you maximize your impressions per page by refreshing/fetching a new creative after your Ad has been considered as "viewed". By default the AutoRefresh Plugin will only refresh an Ad after 30 seconds of view time.
 
 ## Installation
-Depending on your method of implementation, Ad.js packages may be installed via different methods.
+Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.
 
 ### NPM
-If you have installed Ad.js via NPM the refresh package is available via an esmodule import.
+If you have installed AdJS via NPM the refresh package is available via an esmodule import.
 
 __Example__:
 ```js
@@ -25,7 +25,7 @@ const page = new AdJS.Page(DFP, {
 ```
 
 ### Script Tag
-If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
+If you have installed AdJS via a script tag, you will either need to ensure your bundle already
 includes the AutoRefresh plugin (preferred) or include the lazy load script in the header.
 
 __Example__:

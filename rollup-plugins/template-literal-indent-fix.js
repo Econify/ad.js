@@ -1,4 +1,4 @@
-// To be removed from the ad.js repo and
+// To be removed from the adjs repo and
 // published under rollup-plugin-template-literal-indent-fix
 // once tested and usable
 const MagicString = require('magic-string');
