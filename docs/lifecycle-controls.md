@@ -1,4 +1,4 @@
-# Interacting with Ad.js
+# Interacting with AdJS
 There are four methods for you to get a reference to your ad for interaction with the methods below.
 
 1. Assigning to variable:  `const bannerAd = new page.Ad(el, 'banner');`
@@ -7,7 +7,7 @@ There are four methods for you to get a reference to your ad for interaction wit
 4. Lookup via instances array:`page.instances[0]`
 
 ## Lifecycle
-Once your ad has been created, Ad.js provides you a functional interface to interact and control your ads.
+Once your ad has been created, AdJS provides you a functional interface to interact and control your ads.
 
 A typical ad lifecycle goes:
 
@@ -29,7 +29,7 @@ If your ad is refreshed (and your provider supports ad refresh), a typical lifec
 8. Complete
 
 ## Actions
-Even though most Ad lifecycle actions require network requests and are therefore asynchronous, Ad.js interfaces are synchronous. When async methods are still pending, Ad.js will automatically queue up your action and replay them in the order received. Because of this code like this is safe!
+Even though most Ad lifecycle actions require network requests and are therefore asynchronous, AdJS interfaces are synchronous. When async methods are still pending, Ad will automatically queue up your action and replay them in the order received. Because of this code like this is safe!
 
 ```js
     const ad = page.find('banner');
@@ -65,7 +65,7 @@ However should you want to link into the completion of the action you invoke, th
 ```
 
 ### Render
-Whether you have set autoRender to false or you need to explicitly render at a specific point Ad.js provides you with a render method. Simply call render() to force render an ad that has not yet been rendered. Note: Calling render on an already rendered Ad is a noop, however calling render on an ad that has been cleared will render a new ad.
+Whether you have set autoRender to false or you need to explicitly render at a specific point AdJS provides you with a render method. Simply call render() to force render an ad that has not yet been rendered. Note: Calling render on an already rendered Ad is a noop, however calling render on an ad that has been cleared will render a new ad.
 
 ```js
     const ad = new page.Ad(el, { slot: 'ad1' });
@@ -86,7 +86,7 @@ Destroy will remove all listeners, events and actions from the ad including disa
 Freeze will hold all actions to an ad and pause all timers for refresh. Calling any action while an ad is frozen will go into a queue. You can decide whether to replay this queue upon unfreeze or to disregard it. If an ad has been rendered it will remain rendered upon freeze.
 
 ### Unfreeze
-Unfreeze will remove an ad from a frozen state and resume timers. Unfreeze takes a single parameter instructing Ad.js whether to play all actions the ad has received while paused. The default for this param is false. Example:
+Unfreeze will remove an ad from a frozen state and resume timers. Unfreeze takes a single parameter instructing AdJS whether to play all actions the ad has received while paused. The default for this param is false. Example:
 
 ```js
     const ad = new page.Ad(el, { slot: 'adtobefrozen' });

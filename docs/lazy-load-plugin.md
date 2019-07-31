@@ -11,15 +11,15 @@ is located further down the page and the visitor bounces (or leaves) before the 
 the ad is considered a "non-viewable impression". This in result ends up affecting the CPM of the ad unit.
 
 In order to avoid the penalties imposed by loading slow creatives at load time, as well as low viewability scores,
-The Ad.js Auto Render plugin delays the loading of the creative until the creative is in the viewport. This ensures that
+The AdJS Auto Render plugin delays the loading of the creative until the creative is in the viewport. This ensures that
 the creatives only load when the visitor is ready to see them.
 
 ## Installation
-Depending on your method of implementation, Ad.js packages may be installed via different methods.
+Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.
 
 ### NPM
-If you have installed Ad.js via NPM the auto render package is available via an esmodule import.
+If you have installed AdJS via NPM the auto render package is available via an esmodule import.
 
 __Example__:
 ```js
@@ -36,7 +36,7 @@ const page = new AdJS.Page(DFPNetwork, {
 ```
 
 ### Script Tag
-If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
+If you have installed AdJS via a script tag, you will either need to ensure your bundle already
 includes the Auto Render plugin (preferred) or include the auto render script in the header.
 
 __Example__:
@@ -65,8 +65,8 @@ The Auto Render Plugin adds two options to ad instantiation
 
 |Option|Default|Description|
 |---|---|---|
-|autoRender|false|When set to true, Ad.js will automatically render the ad when it enters the viewport (plus the offset provided if any)|
-|renderOffset|0|A measurement in pixels or percentage that Ad.js will use to determine how far away from the viewport to load the ad|
+|autoRender|false|When set to true, AdJS will automatically render the ad when it enters the viewport (plus the offset provided if any)|
+|renderOffset|0|A measurement in pixels or percentage that AdJS will use to determine how far away from the viewport to load the ad|
 
 ## Examples
 

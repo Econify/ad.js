@@ -113,7 +113,7 @@ module.exports = function () {
 
           /*
             Remove all string from errors and replace with urls
-            for the Ad.Js documentation for reference / lookup.
+            for the AdJS documentation for reference / lookup.
           */
           if (node.type === 'NewExpression' && node.callee.name === "Error") {
             if (node.arguments && !node.arguments[0].left) {
