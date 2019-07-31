@@ -3,17 +3,17 @@ It is common to have your ad creatives in the "gutter" or the "rail" of your app
 This will maximize the time that each ad is visible in the viewport.
 
 ## Installation
-Depending on your method of implementation, Ad.js packages may be installed via different methods.
+Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.
 
 ### Usage
 The element which the ad will be bound to must have a set height along with `position: absolute;` or `position: fixed;`.
 
 ### NPM
-If you have installed Ad.js via NPM the Sticky package is available via an esmodule import.
+If you have installed AdJS via NPM the Sticky package is available via an esmodule import.
 
 ### Script Tag
-If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
+If you have installed AdJS via a script tag, you will either need to ensure your bundle already
 includes the Sticky plugin (preferred) or include the Sticky script in the header.
 
 __Example__:

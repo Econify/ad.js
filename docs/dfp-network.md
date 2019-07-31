@@ -2,11 +2,11 @@
 The DFP network is the most commonly used network in production as DFP is the most used ad platform at the time of this being written. Underneath the hood the DFP network utilizes GPT to communicate with DFP.
 
 ## Installation
-Depending on your method of implementation, Ad.js packages may be installed via different methods.
+Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.
 
 ### NPM
-If you have installed Ad.js via NPM the test network is available via an esmodule import.
+If you have installed AdJS via NPM the test network is available via an esmodule import.
 
 __Example__:
 ```js
@@ -17,7 +17,7 @@ const page = new AdJS.Page(DFPNetwork);
 ```
 
 ### Script Tag
-If you have installed Ad.js via a script tag, you will either need to ensure your bundle already
+If you have installed AdJS via a script tag, you will either need to ensure your bundle already
 includes the Noop or Test Network or include the network script in the header.
 
 __Example__:
@@ -110,5 +110,3 @@ const ad = new page.Ad(el, {
   }
 });
 ```
-
-
