@@ -159,7 +159,7 @@ function loadGPT() {
     return;
   }
 
-  loadScript('https://www.googletagservices.com/tag/js/gpt.js', { async: true });
+  loadScript('https://securepubads.g.doubleclick.net/tag/js/gpt.js', { async: true });
 
   window.googletag = window.googletag || {};
   window.googletag.cmd = window.googletag.cmd || [];
