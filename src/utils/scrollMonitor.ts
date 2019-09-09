@@ -88,7 +88,7 @@ class ScrollMonitor {
   private static evaulateCurrentViewability = (ad: IScrollMonitorRegisteredAd, windowHeight: number) => {
     const bounding = ad.element.getBoundingClientRect();
 
-    const inView = (bounding.top + ad.offset) <= windowHeight && (bounding.top + bounding.height) >= 0;
+    const inView = (bounding.top - ad.offset) <= windowHeight && (bounding.top + bounding.height) >= 0;
     const fullyInView = bounding.top >= 0 && bounding.bottom <= windowHeight;
 
     if (fullyInView && !ad.fullyInView) {
