@@ -99,7 +99,7 @@ const ad = new page.createAd(el, {
     AutoRender
   ],
 
-  renderOffset: -100,
+  renderOffset: 100,
   autoLoad: true,
 });
 ```
