@@ -58,7 +58,7 @@ const homepageAdPage = new AdJS.Page(DFPNetwork, {
 });
 
 const bannerAd = new homepageAdPage.Ad('.bannerAd', {
-  offset: -10,
+  offset: 10,
   modules: [Banner],
   fixBannerInMs: 100,
 });
@@ -67,7 +67,7 @@ const boxUnitElements = document.getElementsByClass('ad');
 
 const boxUnitAds = Array.prototype.map.call(boxUnitElements, (el, idx) => {
   const ad = new homepageAdPage.Ad(el, {
-    offset: -50,
+    offset: 50,
     sticky: true,
   });
 });

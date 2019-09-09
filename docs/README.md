@@ -42,7 +42,7 @@ const homepageAdPage = new AdJS.Page(AdJS.Networks.DFP, {
       desktop: { from: 1200, to: Infinity },
     },
     refreshRateInSeconds: 1000,
-    offset: -100,
+    offset: 100,
     targeting: { example: 'true' },
   }
 });
@@ -84,7 +84,7 @@ const el = document.findElementById('example');
 
 const bannerAd = new homepageAdPage.Ad(el, {
   path: '/1234/example/homepage',
-  offset: -10,
+  offset: 10,
 });
 ```
 
