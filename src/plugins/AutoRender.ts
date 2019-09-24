@@ -9,11 +9,14 @@ class AutoRender extends GenericPlugin {
       return;
     }
 
-    const { container, configuration, el } = this.ad;
+    const {
+      container,
+      configuration: { renderOffset, offset, enableByScroll },
+      el: { id } } = this.ad;
 
-    const renderOffset = configuration.renderOffset || configuration.offset || 0;
+    const finalOffset = renderOffset || offset || 0;
 
-    ScrollMonitor.subscribe(el.id, container, renderOffset, this.onEnterViewport);
+    ScrollMonitor.subscribe(id, container, finalOffset, this.onEnterViewport, undefined, undefined, enableByScroll);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
   }
 

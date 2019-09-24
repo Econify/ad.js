@@ -18,6 +18,10 @@ Example:
   });
  ```
   
+## Error 3
+Description: Sizes must be of type `Array` unless breakpoints have been specified
+
+  
 ## Error 2
 Description: The Plugin or Network has not been included in your bundle.
 Please manually include the script tag associated with this plugin or network.
@@ -37,10 +41,6 @@ Example:
 	});
   </script>
  ```
-  
-## Error 3
-Description: Sizes must be of type `Array` unless breakpoints have been specified
-
   
 ## Error 4
 Description: An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin

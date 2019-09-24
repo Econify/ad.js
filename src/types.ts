@@ -164,6 +164,7 @@ export interface IAdConfiguration {
   autoRefresh?: boolean;
   autoRender?: boolean;
   sticky?: boolean;
+  enableByScroll?: boolean;
 
   breakpoints?: IAdBreakpoints;
   offset?: number;
@@ -184,6 +185,8 @@ export interface IScrollMonitorRegisteredAd {
   offset: number;
   inView: boolean;
   fullyInView: boolean;
+  enableByScroll?: boolean;
+  hasViewBeenScrolled: boolean;
   onEnterViewport: any[];
   onFullyEnterViewport: any[];
   onExitViewport: any[];
