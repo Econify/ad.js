@@ -25,6 +25,7 @@ class ScrollMonitor {
     onEnterViewport?: () => any,
     onFullyEnterViewport?: () => any,
     onExitViewport?: () => any,
+    enableByScroll?: boolean,
   ) => {
     ScrollMonitor.monitorScroll();
 
@@ -51,6 +52,8 @@ class ScrollMonitor {
       offset,
       inView: false,
       fullyInView: false,
+      enableByScroll,
+      hasViewBeenScrolled: false,
       onEnterViewport: onEnterViewport ? [onEnterViewport] : [],
       onFullyEnterViewport: onFullyEnterViewport ? [onFullyEnterViewport] : [],
       onExitViewport: onExitViewport ? [onExitViewport] : [],
@@ -80,12 +83,17 @@ class ScrollMonitor {
     const windowHeight = window.innerHeight;
 
     Object.entries(ScrollMonitor.registeredAds).forEach(([key, ad]) => {
+      ad.hasViewBeenScrolled = true;
       ScrollMonitor.evaulateCurrentViewability(ad, windowHeight);
     });
 
   }, ScrollMonitor.throttleDuration)
 
   private static evaulateCurrentViewability = (ad: IScrollMonitorRegisteredAd, windowHeight: number) => {
+    if (ad.enableByScroll && !ad.hasViewBeenScrolled) {
+      return;
+    }
+
     const bounding = ad.element.getBoundingClientRect();
 
     const inView = (bounding.top - ad.offset) <= windowHeight && (bounding.top + bounding.height) >= 0;

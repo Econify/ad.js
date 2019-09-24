@@ -67,6 +67,7 @@ The Auto Render Plugin adds two options to ad instantiation
 |---|---|---|
 |autoRender|false|When set to true, AdJS will automatically render the ad when it enters the viewport (plus the offset provided if any)|
 |renderOffset|0|A measurement in pixels or percentage that AdJS will use to determine how far away from the viewport to load the ad|
+|enableByScroll|false|If enabled, offsets which evaluate to in view on load will not allow execution until user scrolls|
 
 ## Examples
 
@@ -83,6 +84,7 @@ const page = new AdJS.Page(Network, {
   defaults: {
     autoLoad: true,
     renderOffset: 0,
+    enableByScroll: false,
   }
 });
 ```
