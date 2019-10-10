@@ -72,7 +72,7 @@ if ('__DEV__') {
     }
 
     public beforeRefresh() {
-      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Ad render has completed.');
+      dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'DeveloperTools Plugin', 'Refresh has been called on ad.');
     }
 
     public onRefresh() {
