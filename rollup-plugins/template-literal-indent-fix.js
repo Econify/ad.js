@@ -14,7 +14,7 @@ function cleanText(str) {
 // However we can save 2 characters for every four spaces by converting them to
 // tabs
 function convertSpacesToTabs(str) {
-  return str.replace(/    /g, '\t');
+  return str.replace(/ {4}/g, '\t');
 }
 
 // Remove an initial new line and trailing new line from the string
@@ -23,14 +23,14 @@ function clearEntryAndExitLines(str) {
 }
 
 function removeIndent(str) {
-	// remove the shortest leading indentation from each line
-	const match = str.match(/^[^\S\n]*(?=\S)/gm);
-	const indent = match && Math.min(...match.map(el => el.length));
-	if (indent) {
-		const regexp = new RegExp(`^.{${indent}}`, 'gm');
-		return str.replace(regexp, '');
-	}
-	return str;
+  // remove the shortest leading indentation from each line
+  const match = str.match(/^[^\S\n]*(?=\S)/gm);
+  const indent = match && Math.min(...match.map(el => el.length));
+  if (indent) {
+    const regexp = new RegExp(`^.{${indent}}`, 'gm');
+    return str.replace(regexp, '');
+  }
+  return str;
 }
 
 function createNewNode(originalNode) {
@@ -49,12 +49,12 @@ function createNewNode(originalNode) {
 
   const innerText = nodes.map((node) => {
     switch (node.type) {
-      case 'TemplateElement':
-        return node.value.raw;
-      case 'Identifier':
-        return '${' + node.name + '}';
-      default:
-        return node.value;
+    case 'TemplateElement':
+      return node.value.raw;
+    case 'Identifier':
+      return '${' + node.name + '}';
+    default:
+      return node.value;
     }
   }).join('');
 
@@ -88,4 +88,4 @@ module.exports = function () {
       };
     }
   };
-}
+};

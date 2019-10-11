@@ -3,7 +3,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const typescript = require('rollup-plugin-typescript');
-const terser = require("rollup-plugin-terser").terser;
+const terser = require('rollup-plugin-terser').terser;
 const filesize = require('rollup-plugin-filesize');
 const templateLiteralIndentFix = require('./rollup-plugins/template-literal-indent-fix');
 const productionPruning = require('./rollup-plugins/production-pruning');
@@ -29,7 +29,7 @@ const BASE_PLUGINS = [
   filesize({
     render: function (options, bundle, { minSize, gzipSize, brotliSize, bundleSize }) {
       fileSizesObject[bundle.file] = { minSize, bundleSize, gzipSize, brotliSize };
-      return bundle.file
+      return bundle.file;
     },
   }),
 ];
