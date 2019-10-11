@@ -53,6 +53,8 @@ function createNewNode(originalNode) {
         return node.value.raw;
       case 'Identifier':
         return '${' + node.name + '}';
+    case 'LogicalExpression':
+      return '${' + node.left.name + node.operator + node.right.raw + '}';
       default:
         return node.value;
     }
