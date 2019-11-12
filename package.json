@@ -21,7 +21,7 @@
     "url": "git+https://github.com/econify/ad.js.git"
   },
   "author": "Stephen Baldwin <s@econify.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/econify/ad.js/issues"
   },
