@@ -11,12 +11,20 @@ class AutoRender extends GenericPlugin {
 
     const {
       container,
-      configuration: { renderOffset, offset, enableByScroll },
+      configuration: { renderOffset, offset, enableByScroll, clearOnExitViewport },
       el: { id } } = this.ad;
 
     const finalOffset = renderOffset || offset || 0;
 
-    ScrollMonitor.subscribe(id, container, finalOffset, this.onEnterViewport, undefined, undefined, enableByScroll);
+    ScrollMonitor.subscribe(
+      id,
+      container,
+      finalOffset,
+      this.onEnterViewport,
+      undefined,
+      clearOnExitViewport ? this.onExitViewport : undefined,
+      enableByScroll,
+    );
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
   }
 
@@ -30,9 +38,7 @@ class AutoRender extends GenericPlugin {
   }
 
   private onExitViewport = () => {
-    const { clearOnExitViewport } = this.ad.configuration;
-
-    if (!this.isEnabled('autoRender') || !clearOnExitViewport) {
+    if (!this.isEnabled('autoRender')) {
       return;
     }
 
