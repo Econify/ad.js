@@ -28,6 +28,17 @@ class AutoRender extends GenericPlugin {
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has entered the viewport. Calling render().');
     this.ad.render();
   }
+
+  private onExitViewport = () => {
+    const { clearOnExitViewport } = this.ad.configuration;
+
+    if (!this.isEnabled('autoRender') || !clearOnExitViewport) {
+      return;
+    }
+
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has exited the viewport. Calling clear().');
+    this.ad.clear();
+  }
 }
 
 export default AutoRender;
