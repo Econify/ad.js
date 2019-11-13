@@ -165,6 +165,7 @@ export interface IAdConfiguration {
   autoRender?: boolean;
   sticky?: boolean;
   enableByScroll?: boolean;
+  clearOnExitViewport?: boolean;
 
   breakpoints?: IAdBreakpoints;
   offset?: number;
