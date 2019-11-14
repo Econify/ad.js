@@ -25,7 +25,6 @@ class AutoRender extends GenericPlugin {
       clearOnExitViewport ? this.onExitViewport : undefined,
       enableByScroll,
     );
-
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
   }
 
