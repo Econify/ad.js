@@ -14,6 +14,10 @@ In order to avoid the penalties imposed by loading slow creatives at load time, 
 The AdJS Auto Render plugin delays the loading of the creative until the creative is in the viewport. This ensures that
 the creatives only load when the visitor is ready to see them.
 
+## External Dependencies
+This Plugin utilizes IntersectionObserver which is only fully supported in modern browsers.
+If you require support for older browsers, please be sure to include a polyfill in your application.
+
 ## Installation
 Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.
@@ -68,6 +72,7 @@ The Auto Render Plugin adds two options to ad instantiation
 |autoRender|false|When set to true, AdJS will automatically render the ad when it enters the viewport (plus the offset provided if any)|
 |renderOffset|0|A measurement in pixels or percentage that AdJS will use to determine how far away from the viewport to load the ad|
 |enableByScroll|false|If enabled, offsets which evaluate to in view on load will not allow execution until user scrolls|
+|clearOnExitViewport|false|If enabled, ad will be cleared when scrolled back out of view|
 
 ## Examples
 
@@ -85,6 +90,7 @@ const page = new AdJS.Page(Network, {
     autoLoad: true,
     renderOffset: 0,
     enableByScroll: false,
+    clearOnExitViewport: false,
   }
 });
 ```

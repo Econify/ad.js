@@ -1,6 +1,6 @@
 import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
-import ScrollMonitor from '../utils/scrollMonitor';
+import ITXObserver from '../utils/intersectionObserver';
 import GenericPlugin from './GenericPlugin';
 
 class AutoRender extends GenericPlugin {
@@ -11,12 +11,21 @@ class AutoRender extends GenericPlugin {
 
     const {
       container,
-      configuration: { renderOffset, offset, enableByScroll },
+      configuration: { renderOffset, offset, enableByScroll, clearOnExitViewport },
       el: { id } } = this.ad;
 
     const finalOffset = renderOffset || offset || 0;
 
-    ScrollMonitor.subscribe(id, container, finalOffset, this.onEnterViewport, undefined, undefined, enableByScroll);
+    ITXObserver.subscribe(
+      id,
+      container,
+      finalOffset,
+      this.onEnterViewport,
+      undefined,
+      clearOnExitViewport ? this.onExitViewport : undefined,
+      enableByScroll,
+    );
+
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', `Ad's scroll monitor has been created.`);
   }
 
@@ -27,6 +36,15 @@ class AutoRender extends GenericPlugin {
 
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has entered the viewport. Calling render().');
     this.ad.render();
+  }
+
+  private onExitViewport = () => {
+    if (!this.isEnabled('autoRender')) {
+      return;
+    }
+
+    dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRender Plugin', 'Ad has exited the viewport. Calling clear().');
+    this.ad.clear();
   }
 }
 
