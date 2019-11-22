@@ -25,12 +25,12 @@ async function build() {
     const bundle = await rollup.rollup(inputOptions);
     await bundle.write(outputOptions);
   }));
-};
+}
 
 async function copyFiles() {
   return Promise.all(FILES_TO_COPY.map(async (file) => {
-    await fs.copy(file.path, `${BUILD_DIR}/${file.name}`)
-  }))
+    await fs.copy(file.path, `${BUILD_DIR}/${file.name}`);
+  }));
 }
 
 async function createAllInclusiveBundles() {

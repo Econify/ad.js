@@ -14,13 +14,12 @@ const errorFile = fs.createWriteStream('./docs/error.md');
 errorFile.write('# Common Errors\n');
 errorFile.end();
 
-let errorCounter = 1;
 let errors = [];
 
 const stringifyTemplateLiteral = (node) => {
   if (node.expressions.length) {
     throw new Error('Not yet configured for embedded variables in TemplateLiterals');
-  };
+  }
 
   let containsCodeBlock = false;
 
@@ -30,16 +29,16 @@ const stringifyTemplateLiteral = (node) => {
     }
   ).join('');
 
-  let formatted = stringified.split(" ").map(word => {
-    if (word.includes("Example:")) {
+  let formatted = stringified.split(' ').map(word => {
+    if (word.includes('Example:')) {
       containsCodeBlock = true;
-      return word + "\n ``` \n";
+      return word + '\n ``` \n';
     } else {
       return word;
     }
-  }).join(" ");
+  }).join(' ');
 
-  return containsCodeBlock ? formatted + "\n ```" : formatted;
+  return containsCodeBlock ? formatted + '\n ```' : formatted;
 };
 
 const formatMessage = (node) => {
@@ -47,19 +46,18 @@ const formatMessage = (node) => {
 
   const formattedOutput = args.reduce((acc, el) => {
     switch (el.type) {
-      case 'TemplateLiteral':
-        const str = stringifyTemplateLiteral(el);
-        return `${acc} ${stringifyTemplateLiteral(el)}`;
-      case 'Literal':
-        return `${acc} ${el.value}\n`
-      default:
-        console.log(el.type);
-        return '';
+    case 'TemplateLiteral':
+      return `${acc} ${stringifyTemplateLiteral(el)}`;
+    case 'Literal':
+      return `${acc} ${el.value}\n`;
+    default:
+      console.log(el.type);
+      return '';
     }
   }, 'Description:');
 
   return formattedOutput;
-}
+};
 
 const createErrorDocumentation = (node) => {
   const errorMessage = formatMessage(node);
@@ -82,12 +80,12 @@ ${errorMessage}
 
     return errors.indexOf(errorMessage);
   }
-}
+};
 
 const generateUrlFor = (node) => {
   const errorID = createErrorDocumentation(node);
-  return `${ERROR_LINK_FUNCTION_NAME}(${errorID})`
-}
+  return `${ERROR_LINK_FUNCTION_NAME}(${errorID})`;
+};
 
 const createNewNode = (originalNode) => {
   const newNode = {};
@@ -99,7 +97,7 @@ const createNewNode = (originalNode) => {
   newNode.value = generateUrlFor(originalNode);
 
   return newNode;
-}
+};
 
 module.exports = function () {
   return {
@@ -115,7 +113,7 @@ module.exports = function () {
             Remove all string from errors and replace with urls
             for the AdJS documentation for reference / lookup.
           */
-          if (node.type === 'NewExpression' && node.callee.name === "Error") {
+          if (node.type === 'NewExpression' && node.callee.name === 'Error') {
             if (node.arguments && !node.arguments[0].left) {
               const { start, end, value } = createNewNode(node);
 
@@ -133,7 +131,7 @@ module.exports = function () {
             s.overwrite(node.start, node.alternate ? node.alternate.start : node.end, '');
           }
 
-          if (node.callee && node.callee.name === "dispatchEvent") {
+          if (node.callee && node.callee.name === 'dispatchEvent') {
             s.remove(node.start, node.end);
           }
         }
@@ -147,4 +145,4 @@ module.exports = function () {
       };
     }
   };
-}
+};

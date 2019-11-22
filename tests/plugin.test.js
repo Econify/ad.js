@@ -23,7 +23,6 @@ const TEST_PLUGIN = {
 describe('Plugin', () => {
   describe('hooks', () => {
     let ad;
-    let plugin;
 
     beforeEach(() => {
       const el = insertElement('div', {}, document.body);
