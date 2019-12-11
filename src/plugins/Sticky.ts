@@ -23,6 +23,7 @@ class Sticky extends GenericPlugin {
   public listener?: any;
   public boundary?: IBoundary;
   public originalStyle?: any;
+  public originalStyleCssText?: any;
 
   public onCreate() {
     if (!this.isEnabled('sticky')) {
@@ -31,7 +32,16 @@ class Sticky extends GenericPlugin {
 
     const { container, configuration } = this.ad;
     const { stickyOffset = 0 } = configuration;
-    this.originalStyle = container.style;
+
+    this.originalStyle = {};
+
+    // Clone to avoid container.style value assigment overriding original style values
+    Object.entries(container.style).forEach(([_, cssProperty]) => {
+      this.originalStyle[cssProperty] = container.style.getPropertyValue(cssProperty);
+    });
+
+    // Simplify style restoration on destroy
+    this.originalStyleCssText = container.style.cssText;
 
     container.style.position = 'sticky';
     container.style.top = `${stickyOffset}px`;
@@ -58,9 +68,7 @@ class Sticky extends GenericPlugin {
   public cleanup() {
     const { container } = this.ad;
 
-    container.style.position = this.originalStyle.position;
-    container.style.top = this.originalStyle.top;
-    container.style.transform = this.originalStyle.transform;
+    container.style.cssText = this.originalStyleCssText;
 
     if (this.listener) {
       window.removeEventListener('scroll', this.listener);
