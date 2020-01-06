@@ -1,6 +1,6 @@
 import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
-import ScrollMonitor from '../utils/scrollMonitor';
+import ITXObserver from '../utils/intersectionObserver';
 import GenericPlugin from './GenericPlugin';
 
 class AutoRender extends GenericPlugin {
@@ -16,7 +16,7 @@ class AutoRender extends GenericPlugin {
 
     const finalOffset = renderOffset || offset || 0;
 
-    ScrollMonitor.subscribe(
+    ITXObserver.subscribe(
       id,
       container,
       finalOffset,

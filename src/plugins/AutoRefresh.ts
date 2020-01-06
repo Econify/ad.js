@@ -1,6 +1,6 @@
 import { LOG_LEVELS } from '../types';
 import dispatchEvent from '../utils/dispatchEvent';
-import ScrollMonitor from '../utils/scrollMonitor';
+import ITXObserver from '../utils/intersectionObserver';
 import GenericPlugin from './GenericPlugin';
 
 const ONE_SECOND = 1000;
@@ -19,18 +19,18 @@ class AutoRefresh extends GenericPlugin {
   }
 
   public beforeClear() {
-    ScrollMonitor.unsubscribe(this.ad.el.id);
+    ITXObserver.unsubscribe(this.ad.el.id);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability monitor has been removed.');
   }
 
   public beforeDestroy() {
-    ScrollMonitor.unsubscribe(this.ad.el.id);
+    ITXObserver.unsubscribe(this.ad.el.id);
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Ad viewability monitor has been removed.');
   }
 
   private startMonitoringViewability(): void {
     const { container, configuration: { offset = 0 }, el } = this.ad;
-    ScrollMonitor.subscribe(
+    ITXObserver.subscribe(
       el.id,
       container,
       offset,

@@ -3,6 +3,10 @@ Viewability is a binary metric. Your creative will either generate a "viewable i
 
 The AdJS refresh plugin helps you maximize your impressions per page by refreshing/fetching a new creative after your Ad has been considered as "viewed". By default the AutoRefresh Plugin will only refresh an Ad after 30 seconds of view time.
 
+## External Dependencies
+This Plugin utilizes IntersectionObserver which is only fully supported in modern browsers.
+If you require support for older browsers, please be sure to include a polyfill in your application.
+
 ## Installation
 Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.

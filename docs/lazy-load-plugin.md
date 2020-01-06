@@ -14,6 +14,10 @@ In order to avoid the penalties imposed by loading slow creatives at load time, 
 The AdJS Auto Render plugin delays the loading of the creative until the creative is in the viewport. This ensures that
 the creatives only load when the visitor is ready to see them.
 
+## External Dependencies
+This Plugin utilizes IntersectionObserver which is only fully supported in modern browsers.
+If you require support for older browsers, please be sure to include a polyfill in your application.
+
 ## Installation
 Depending on your method of implementation, AdJS packages may be installed via different methods.
 Please follow the directions for your relevant method.

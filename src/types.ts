@@ -181,14 +181,45 @@ export interface IAdConfiguration {
   targeting?: IAdTargeting;
 }
 
-export interface IScrollMonitorRegisteredAd {
+export interface IIntersectionObserverRegisteredAd {
   element: HTMLElement;
   offset: number;
   inView: boolean;
   fullyInView: boolean;
   enableByScroll?: boolean;
-  hasViewBeenScrolled: boolean;
   onEnterViewport: any[];
   onFullyEnterViewport: any[];
   onExitViewport: any[];
+}
+
+interface IBounds {
+  readonly height: number;
+  readonly width: number;
+  readonly top: number;
+  readonly left: number;
+  readonly right: number;
+  readonly bottom: number;
+}
+
+export interface IIntersectionObserverEntry {
+  readonly time: number;
+  readonly rootBounds: IBounds;
+  readonly boundingClientRect: IBounds;
+  readonly intersectionRect: IBounds;
+  readonly intersectionRatio: number;
+  readonly target: Element;
+}
+
+export type IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => void;
+
+export declare class IIntersectionObserver {
+  public readonly root: Element | null;
+  public readonly rootMargin: string;
+  public readonly thresholds?: any;
+  constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit);
+
+  public observe(target: Element): void;
+  public unobserve(target: Element): void;
+  public disconnect(): void;
+  public takeRecords(): IntersectionObserverEntry[];
 }
