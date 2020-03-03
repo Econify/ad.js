@@ -1,6 +1,6 @@
 import throttle from '../../src/utils/throttle';
 
-describe('throttle', async () => {
+describe('throttle', () => {
   it('does not invoke callback for every attempt', async (done) => {
     let callCount: number = 0;
 

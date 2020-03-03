@@ -1,7 +1,7 @@
 import { ICurrentConfines } from '../../src/types';
 import breakpointHandler from '../../src/utils/breakpointHandler';
 
-describe('breakpointHandler', async () => {
+describe('breakpointHandler', () => {
   let expected: ICurrentConfines = {};
   const configuration: any = {
     breakpoints: {

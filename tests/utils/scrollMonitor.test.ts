@@ -1,6 +1,6 @@
 import ScrollMonitor from '../../src/utils/scrollMonitor';
 
-describe('.ScrollMonitor Static Class', async () => {
+describe('.ScrollMonitor Static Class', () => {
   describe('.subscribe', () => {
     it('adds cbs to existing ad if another plugin has already subscribed it', () => {
       const element = document.createElement('div');
