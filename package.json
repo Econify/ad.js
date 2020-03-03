@@ -65,12 +65,6 @@
       "jsx",
       "json",
       "node"
-    ],
-    "coverageReporters": [
-      "json",
-      "lcovonly",
-      "text",
-      "clover"
     ]
   },
   "husky": {
