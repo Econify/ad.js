@@ -53,7 +53,7 @@ class DfpAd implements INetworkInstance {
           Number(this.id.substring(this.id.length, this.id.length - 1)),
           LOG_LEVELS.INFO,
           'DFP Network',
-          `Targeting detected for ad. Adding to configuration.`,
+          'Targeting detected for ad. Adding to configuration.',
         );
       }
 
@@ -114,7 +114,7 @@ class DfpAd implements INetworkInstance {
                   Number(this.id.substring(this.id.length, this.id.length - 1)),
                   LOG_LEVELS.INFO,
                   'DFP Network',
-                  `Ad slot has been rendered.`,
+                  'Ad slot has been rendered.',
                 );
 
                 resolve();
@@ -131,7 +131,7 @@ class DfpAd implements INetworkInstance {
               Number(this.id.substring(this.id.length, this.id.length - 1)),
               LOG_LEVELS.WARN,
               'DFP Network',
-              `Ad sizes missing. Bypassing ad.`,
+              'Ad sizes missing. Bypassing ad.',
             );
             resolve();
           }
