@@ -1,7 +1,7 @@
 import Responsive from '../../src/plugins/Responsive';
 import { ICurrentConfines } from '../../src/types';
 
-describe('ResponsivePlugin', async () => {
+describe('ResponsivePlugin', () => {
   const ad = {
     configuration: {
       breakpoints: {},

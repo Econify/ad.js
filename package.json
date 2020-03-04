@@ -1,6 +1,6 @@
 {
   "name": "adjs",
-  "version": "2.0.0-beta.27",
+  "version": "2.0.0-beta.28",
   "description": "Ad Library to simplify and optimize integration with ad networks such as DFP",
   "main": "./core.js",
   "types": "./types.d.ts",
@@ -36,7 +36,7 @@
     "fs-extra": "^8.0.1",
     "http-server": "^0.12.1",
     "husky": "^1.0.0-rc.13",
-    "jest": "^23.4.1",
+    "jest": "^25.1.0",
     "lodash.orderby": "^4.6.0",
     "magic-string": "^0.25.2",
     "nodemon": "^1.19.1",
@@ -45,10 +45,10 @@
     "rollup-plugin-filesize": "^6.1.1",
     "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-terser": "^4.0.4",
+    "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
     "source-map-loader": "^0.2.3",
-    "ts-jest": "^23.0.1",
+    "ts-jest": "^25.2.1",
     "ts-loader": "^4.4.2",
     "tslint": "^5.11.0",
     "typescript": "^3.5.1"
@@ -65,8 +65,7 @@
       "jsx",
       "json",
       "node"
-    ],
-    "coverageReporters": ["json", "lcovonly", "text", "clover"]
+    ]
   },
   "husky": {
     "hooks": {

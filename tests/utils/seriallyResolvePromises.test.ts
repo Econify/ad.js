@@ -1,6 +1,6 @@
 import seriallyResolvePromises from '../../src/utils/seriallyResolvePromises';
 
-describe('seriallyResolvePromises', async () => {
+describe('seriallyResolvePromises', () => {
   it('resolves promises in order', async () => {
     const orderedArray: number[] = [];
     const testPromise1 = () => {
