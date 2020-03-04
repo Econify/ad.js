@@ -18,10 +18,6 @@ Example:
   });
  ```
   
-## Error 3
-Description: Sizes must be of type `Array` unless breakpoints have been specified
-
-  
 ## Error 2
 Description: The Plugin or Network has not been included in your bundle.
 Please manually include the script tag associated with this plugin or network.
@@ -41,6 +37,10 @@ Example:
 	});
   </script>
  ```
+  
+## Error 3
+Description: Sizes must be of type `Array` unless breakpoints have been specified
+
   
 ## Error 4
 Description: An ad must be passed into the GenericPlugin class. If your Plugin inherits from GenericPlugin
@@ -69,6 +69,10 @@ Description: An ad must be passed into the GenericPlugin class. If your Plugin i
 		  }
  ```
   
+## Error 5
+Description: Parent element required for sticky plugin.
+
+  
 ## Error 6
 Description: Ad does not have an id
 
@@ -79,9 +83,5 @@ Description: Sizes must be defined.
   
 ## Error 8
 Description: Ad Path must be defined.
-
-  
-## Error 5
-Description: Parent element required for sticky plugin.
 
   
