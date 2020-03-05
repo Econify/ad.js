@@ -18,6 +18,7 @@ phases:
       - LOCAL_VERSION=$(node -e "console.log(require('./package.json').version)")
       - if [ -z $LOCAL_VERSION ]; then echo "Version is missing from package.json. Exiting build."; exit 1; fi
       - |
+        set -e
         if [ $LOCAL_VERSION = $CURRENT_PUBLISHED_VERSION ]; then
           echo "Version is unchanged. NPM publish is not required."
         else
