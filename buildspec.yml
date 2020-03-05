@@ -6,6 +6,7 @@ phases:
       nodejs: 12
     commands:
       - npm install
+      - yum update -y && yum install -y jq
   pre_build:
     commands:
       - npm run lint
@@ -15,15 +16,13 @@ phases:
       - echo 'Verifying npm publish is required'
       - CURRENT_PUBLISHED_VERSION=$(npm info adjs version)
       - if [ -z $CURRENT_PUBLISHED_VERSION ]; then echo "Could not find latest published version. Exiting build."; exit 1; fi
-      - LOCAL_VERSION=$(node -e "console.log(require('./package.json').version)")
+      - LOCAL_VERSION=$(cat package.json | jq '.version' | tr -d '"' | tr -d '\n')
       - if [ -z $LOCAL_VERSION ]; then echo "Version is missing from package.json. Exiting build."; exit 1; fi
       - |
+        set -e
         if [ $LOCAL_VERSION = $CURRENT_PUBLISHED_VERSION ]; then
           echo "Version is unchanged. NPM publish is not required."
         else
           echo "New version detected. Publishing to NPM."
-          sudo apt-get update
-          sudo apt-get install build-essential -y
-          wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz && tar xzf jq-1.5.tar.gz && cd jq-1.5 && ./configure && make && make install && cd .. 
           NPM_TOKEN=$(aws ssm get-parameter --name npm-publish-token --with-decryption | jq '.Parameter.Value') npm run release
         fi
