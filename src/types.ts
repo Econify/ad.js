@@ -166,7 +166,7 @@ export interface IAdConfiguration {
   sticky?: boolean;
   enableByScroll?: boolean;
   clearOnExitViewport?: boolean;
-
+  fluid?: boolean;
   breakpoints?: IAdBreakpoints;
   offset?: number;
   stickyOffset?: number;

@@ -45,11 +45,11 @@
     <footer>
       <hr>
       <img src="http://www.econify.com/assets/econify_logo.png">
-      <small>Copyright &copy; 2018-2019 Econify, LLC. All Rights Reserved.</small>
+      <small>Copyright &copy; 2020 Econify, LLC. All Rights Reserved.</small>
     </div>
 
     <!-- All inclusive Development --->
-    <!-- <script type="text/javascript" src="http://localhost:8080/build/umd/bundle.development.js"></script> -->
+    <script type="text/javascript" src="http://localhost:8080/build/umd/bundle.development.js"></script>
     
     <!-- All inclusive Production --->
     <!-- <script type="text/javascript" src="http://localhost:8080/build/umd/bundle.production.min.js"></script> -->
@@ -64,13 +64,13 @@
     <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.responsive.development.js"></script> -->
 
     <!-- Production modular --->
-    <script type="text/javascript" src="http://localhost:8080/build/umd/core.production.min.js"></script>
+    <!-- <script type="text/javascript" src="http://localhost:8080/build/umd/core.production.min.js"></script>
     <script type="text/javascript" src="http://localhost:8080/build/umd/networks.dfp.production.min.js"></script>
     <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.developertools.production.min.js"></script>
     <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.autorender.production.min.js"></script>
     <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.sticky.production.min.js"></script>
     <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.autorefresh.production.min.js"></script>
-    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.responsive.production.min.js"></script>
+    <script type="text/javascript" src="http://localhost:8080/build/umd/plugins.responsive.production.min.js"></script> -->
 
     <script type="text/javascript">
       // import. (manipulated)
@@ -88,9 +88,9 @@
             tablet: { from: 758, to: 999 },
             desktop: { from: 1000, to: Infinity },
           },
-          refreshRateInSeconds: 30,
-          offset: 100,
-          targeting: { example: 'true' },
+          refreshRateInSeconds: 100,
+          // offset: 100,
+          // targeting: { example: 'true' },
         },
       });
 
@@ -98,7 +98,7 @@
 
       // monetize.
       const ad = mainPage.createAd(el, {
-        path: '/123456/sports',
+        path: `/3833/motortrend.primedia.com/homepage__`,
 
         /*
           for use without breakpoints
@@ -110,8 +110,10 @@
           ],
         */
 
+        fluid: true,
+        // sizes: [['fluid']],
         sizes: {
-          mobile: [],
+          mobile: ['fluid'],
           tablet: [
             [300, 250],
             [300, 600],
@@ -125,7 +127,17 @@
         },
         refreshOnBreakpoint: true,
         targeting: {
-          example: 'true',
+          fluid: 'mobile_header',
+          chan: 'test',
+          site: 'motortrend',
+          sect: 'homepage',
+          subs: '',
+          dyn: '',
+          subss: '',
+          k: 'Index',
+          car: 'new',
+          make: '',
+          model: '',
         }
       });
     </script>
