@@ -1,9 +1,9 @@
 import { ICurrentConfines } from '../types';
 import { LOG_LEVELS } from '../types';
 import breakpointHandler from '../utils/breakpointHandler';
+import debounce from '../utils/debounce';
 import dispatchEvent from '../utils/dispatchEvent';
 import isBetween from '../utils/isBetween';
-import throttle from '../utils/throttle';
 import GenericPlugin from './GenericPlugin';
 
 class Responsive extends GenericPlugin {
@@ -21,8 +21,7 @@ class Responsive extends GenericPlugin {
 
     this.determineCurrentBreakpoint();
 
-    this.listener = () => {
-      throttle(() => {
+    this.listener = debounce(() => {
         const { from = 0, to = 1 } = this.currentConfines;
 
         if (isBetween(window.innerWidth, from, to)) {
@@ -40,7 +39,6 @@ class Responsive extends GenericPlugin {
 
         this.ad.refresh();
       }, this.THROTTLE_DURATION);
-    };
 
     window.addEventListener(this.EVENT_KEY, this.listener);
   }
