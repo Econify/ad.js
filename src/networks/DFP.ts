@@ -39,9 +39,7 @@ class DfpAd implements INetworkInstance {
     this.breakpoints = breakpoints;
 
     googletag.cmd.push(() => {
-      const adSizes = Array.isArray(sizes) ? sizes : [0, 0];
-
-      this.slot = googletag.defineSlot(path, adSizes, this.id);
+      this.slot = googletag.defineSlot(path,  Array.isArray(sizes) ? sizes : [0, 0], this.id);
 
       if (targeting) {
         Object.entries(targeting)
