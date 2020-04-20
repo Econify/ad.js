@@ -19,7 +19,7 @@ class DfpAd implements INetworkInstance {
 
     const {
       el: { id },
-      configuration: { sizes, targeting, path, breakpoints, fluid },
+      configuration: { sizes, targeting, path, breakpoints },
     } = ad;
 
     if (!id) {
