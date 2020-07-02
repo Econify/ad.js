@@ -19,7 +19,7 @@ class DfpAd implements INetworkInstance {
 
     const {
       el: { id },
-      configuration: { sizes, targeting, path, breakpoints },
+      configuration: { sizes, targeting, path, breakpoints, collapsible },
     } = ad;
 
     if (!id) {
@@ -39,7 +39,11 @@ class DfpAd implements INetworkInstance {
     this.breakpoints = breakpoints;
 
     googletag.cmd.push(() => {
-      this.slot = googletag.defineSlot(path,  Array.isArray(sizes) ? sizes : [0, 0], this.id);
+      this.slot = googletag.defineSlot(path, Array.isArray(sizes) ? sizes : [0, 0], this.id);
+
+      if (collapsible) {
+        this.slot.setCollapseEmptyDiv(true, true);
+      }
 
       if (targeting) {
         Object.entries(targeting)

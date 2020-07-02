@@ -110,3 +110,27 @@ const ad = new page.Ad(el, {
   }
 });
 ```
+
+
+__Using Collapsible Ads__
+```js
+const AdJS = require('adjs');
+const DFPNetwork = require('adjs/networks/dfp');
+
+const page = new AdJS.Page(DFPNetwork);
+
+const ad = new page.Ad(el, {
+  path: '/example/adunit/path',
+
+  targeting: {
+    age: 30,
+    gender: 'female'
+  },
+
+  sizes: [
+    [300, 250],
+  ],
+
+  collapsible: true,
+});
+```
