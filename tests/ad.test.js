@@ -26,6 +26,7 @@ describe('Ad', () => {
         targeting: {
           newValues: 'moreTrue',
         },
+        collapsible: true,
       };
 
       const expected = {
@@ -35,6 +36,7 @@ describe('Ad', () => {
           newValues: 'moreTrue'
         },
         someNewKey: 'true',
+        collapsible: true,
       };
 
       const ad = page.createAd(el, overrides);
