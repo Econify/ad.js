@@ -11,6 +11,8 @@ class AutoRefresh extends GenericPlugin {
 
   // SetInterval Reference
   private timerReference?: number;
+  // Number of times the ad refreshed.
+  private refreshCount: number = 0;
 
   public afterRender() {
     dispatchEvent(this.ad.id, LOG_LEVELS.INFO, 'AutoRefresh Plugin', 'Adding monitoring for ad.');
@@ -47,7 +49,7 @@ class AutoRefresh extends GenericPlugin {
       return;
     }
 
-    const { refreshRateInSeconds = 30 } = this.ad.configuration;
+    const { refreshRateInSeconds = 30, refreshLimit = null } = this.ad.configuration;
     dispatchEvent(
       this.ad.id,
       LOG_LEVELS.INFO,
@@ -59,8 +61,10 @@ class AutoRefresh extends GenericPlugin {
       this.timeInView += 1;
 
       // Determine whether the ad should refresh
-      if (!this.isRefreshing && this.timeInView >= refreshRateInSeconds) {
+      if (!this.isRefreshing && this.timeInView >= refreshRateInSeconds
+        && (refreshLimit === null || this.refreshCount < refreshLimit)) {
         this.isRefreshing = true;
+        this.refreshCount += 1;
 
         dispatchEvent(
           this.ad.id,
