@@ -177,6 +177,7 @@ export interface IAdConfiguration {
   plugins?: IPluginConstructorOrSingleton[];
   refreshOnBreakpoint?: boolean;
   refreshRateInSeconds?: number;
+  refreshLimit?: number;
   sizes?: AdSizes;
   targeting?: IAdTargeting;
 }

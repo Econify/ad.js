@@ -61,10 +61,15 @@ class AutoRefresh extends GenericPlugin {
       this.timeInView += 1;
 
       // Determine whether the ad should refresh
-      if (!this.isRefreshing && this.timeInView >= refreshRateInSeconds
-        && (refreshLimit === null || this.refreshCount < refreshLimit)) {
+      const underRefreshLimit = (refreshLimit === null || this.refreshCount < refreshLimit);
+      if (!this.isRefreshing && this.timeInView >= refreshRateInSeconds && underRefreshLimit) {
         this.isRefreshing = true;
         this.refreshCount += 1;
+
+        // Once we hit the limit, clear the interval.
+        if (this.refreshCount === refreshLimit) {
+          clearInterval(this.timerReference);
+        }
 
         dispatchEvent(
           this.ad.id,
