@@ -93,7 +93,7 @@ class DfpAd implements INetworkInstance {
   }
 
   // TODO: Clean up event listeners
-  public refresh(): Promise<void> {
+  public refresh(resetCorrelator: boolean = false): Promise<void> {
     return new Promise(
       (resolve) => {
         if (!breakpointHandler(this.sizes, this.breakpoints).sizesSpecified) {
@@ -124,7 +124,7 @@ class DfpAd implements INetworkInstance {
             },
           );
 
-          googletag.pubads().refresh([slot], { changeCorrelator: false });
+          googletag.pubads().refresh([slot], { changeCorrelator: resetCorrelator });
 
           if (!slot.getContentUrl()) {
             this.ad.isEmpty = true;

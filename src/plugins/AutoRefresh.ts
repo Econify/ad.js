@@ -49,7 +49,7 @@ class AutoRefresh extends GenericPlugin {
       return;
     }
 
-    const { refreshRateInSeconds = 30, refreshLimit = null } = this.ad.configuration;
+    const { refreshRateInSeconds = 30, refreshLimit = null, refreshResetsCorrelator = false } = this.ad.configuration;
     dispatchEvent(
       this.ad.id,
       LOG_LEVELS.INFO,
@@ -78,7 +78,7 @@ class AutoRefresh extends GenericPlugin {
           `Ad viewability met. Refreshing Ad and resetting timer.`,
         );
 
-        await this.ad.refresh();
+        await this.ad.refresh(refreshResetsCorrelator);
 
         this.timeInView = 0;
         this.isRefreshing = false;

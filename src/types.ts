@@ -44,7 +44,7 @@ export interface IAd {
   slot: googletag.Slot;
 
   render(): Promise<void>;
-  refresh(): Promise<void>;
+  refresh(resetCorrelator?: boolean): Promise<void>;
   clear(): Promise<void>;
   destroy(): Promise<void>;
 
@@ -111,7 +111,7 @@ export interface INetworkArguments {
 
 export interface INetworkInstance {
   render: () => Promise<void>;
-  refresh?: () => Promise<void>;
+  refresh?: (resetCorrelator?: boolean) => Promise<void>;
   clear: () => Promise<void>;
   destroy: () => Promise<void>;
   [key: string]: any;
@@ -178,6 +178,7 @@ export interface IAdConfiguration {
   refreshOnBreakpoint?: boolean;
   refreshRateInSeconds?: number;
   refreshLimit?: number;
+  refreshResetsCorrelator?: boolean;
   sizes?: AdSizes;
   targeting?: IAdTargeting;
 }
