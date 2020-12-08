@@ -56,6 +56,7 @@ The AutoRefresh Plugin adds two options to ad instantiation
 |---|---|---|
 |refreshRateInSeconds|30|Duration the ad must be in view (in seconds) before refreshing the unit. 30 Seconds is recommended. If set to 0, the ad will not refresh|
 |refreshLimit|null|Allows you to specify a maximum number of times the ad slot can be refreshed|
+|refreshResetsCorrelator|false|If true, requests the network to reset the correlator when refreshing|
 
 ## Examples
 
@@ -71,7 +72,8 @@ const page = new AdJS.Page(Network, {
 
   defaults: {
     refreshRateInSeconds: 30,
-    refreshLimit: 3
+    refreshLimit: 3,
+    refreshResetsCorrelator: false
   }
 });
 ```
@@ -91,6 +93,7 @@ const ad = new page.createAd(el, {
   ],
 
   refreshRateInSeconds: 30,
-  refreshLimit: 3
+  refreshLimit: 3,
+  refreshResetsCorrelator: false
 });
 ``` 

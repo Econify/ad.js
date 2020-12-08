@@ -268,11 +268,11 @@ class Ad implements IAd {
   }
 
   @attachAsLifecycleMethod
-  public async refresh(): Promise<void> {
+  public async refresh(refreshCorrelator: boolean = false): Promise<void> {
     await this.page.setAsActive();
 
     if (typeof this.networkInstance.refresh !== 'undefined') {
-      await this.networkInstance.refresh();
+      await this.networkInstance.refresh(refreshCorrelator);
     } else {
       await this.networkInstance.destroy();
 
