@@ -14,7 +14,8 @@
     "server": "echo \"Demo is available http://localhost:8080/demo\" && http-server -p 8080",
     "start": "nodemon --exec \"npm run build && npm run server\" --kill-all --watch ./src -e ts",
     "test": "NODE_PATH=./src jest --coverage ./tests --no-cache",
-    "ts": "tsc --pretty"
+    "ts": "tsc --pretty",
+    "docs:dsr": "cd website && npm start"
   },
   "repository": {
     "type": "git",

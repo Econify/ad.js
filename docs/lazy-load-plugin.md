@@ -1,4 +1,10 @@
-# Deferred Loading of Ads
+---
+id: lazy-load-plugin
+sidebar_label: Lazy Load / Auto Render
+title: Deferred Loading of Ads
+---
+
+<!-- # Deferred Loading of Ads -->
 The creatives (ads) provided by the ad network are notorious for being non-performant. When non-performant
 creatives are loaded when the page initially loads, the page speed is impacted. Google Page Speed Score
 is used to help deterimine ranking in search enging rankings. Sites with higher scores are rewarded while sites

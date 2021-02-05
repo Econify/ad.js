@@ -1,4 +1,10 @@
-# Interacting with AdJS
+---
+id: lifecycle-controls
+sidebar_label: Usage
+title: Interacting with AdJS
+---
+
+<!-- # Interacting with AdJS -->
 There are four methods for you to get a reference to your ad for interaction with the methods below.
 
 1. Assigning to variable:  `const bannerAd = new page.Ad(el, 'banner');`

@@ -1,4 +1,10 @@
-# Rolling your own Network Interface
+---
+id: custom-networks
+title:  Rolling your own Network Interface
+sidebar_label: Custom Networks
+---
+
+<!-- # Rolling your own Network Interface -->
 If you are interacting with an ad platform that is not part of the official AdJS library, you can create a custom provider. It is recommended that your custom provider inherit from the AdJS “default provider” to make sure that you avoid missing any interface methods. Even if you choose not to inherit from `Default` it is beneficial to view the source of `Default` (link) and `DFP` (link) as an example.
 
 Example Custom Provider:

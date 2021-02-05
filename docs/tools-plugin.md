@@ -1,12 +1,17 @@
-# Developer Tools
+---
+id: tools-plugin
+title: Developer Tools
+---
+
+<!-- # Developer Tools -->
 
 Debugging advertisements is notably non-trivial. One of the biggest benefits of using AdJS is the `DeveloperTools` module.
 When included in your `Page` or `Ad` you will see all pertinent information available for your ads both in the console and in ad overlays.
 
-![Overlay 1](./img/overlay-1.png)
-![Overlay 1](./img/overlay-2.png)
+![Overlay 1](assets/overlay-1.png)
+![Overlay 1](assets/overlay-2.png)
 <br />
-![logs](./img/logs.png)
+![logs](assets/logs.png)
 
 When creating a page or ad, you can choose to turn on one or both available features as ```overlay: boolean, logging: boolean``` 
 

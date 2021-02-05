@@ -1,4 +1,9 @@
-# Test Network
+---
+id: default-network
+title: Test Network
+sidebar-label: Lazy Load / Auto Render
+---
+<!--- # Test Network --->
 The default provider in AdJS is what most providers inherit from. At its core it is an [interface of noops](https://github.com/Econify/ad.js/blob/master/src/networks/Noop.ts). Use the default provider while you’re in development mode or on an environment that should not make requests to your actual ad platform.
 
 ## Installation

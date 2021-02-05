@@ -1,0 +1,8 @@
+{
+  "docs": {
+    "Getting Started": ["readme", "lifecycle-controls"],
+    "Plugins": ["lazy-load-plugin"],
+    "Networks":["default-network"],
+    "Advanced Usage": ["custom-networks"]
+  }
+}

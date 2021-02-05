@@ -1,4 +1,10 @@
-# Quick Start
+---
+id: readme
+title: Quick Start
+---
+
+<!-- # Quick Start -->
+
 AdJS is an ad library that aims to simplify and optimize client integrations with ad networks such as DFP. AdJS accomplishes these goals by presenting developers a simple to use and easy to understand DSL with plugins to increase viewability and impressions such as Auto Refresh, Sticky Ads, Lazy Loading of Ads and automatic Breakpoint Refresh.
 
 ## Installation
@@ -17,7 +23,7 @@ Note: Using this import, please make sure to also include the scripts for all pl
 
 | Argument                    | Default | Description                                                                                                                                                                                                                                                                                                                                                              |
 | --------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| network (required argument) | None    | The network argument expects an object that is able to communicate with your ad provider that adheres to AdJS network interface (link). Common Ad platforms are already included within AdJS such as DFP.Provider.Default.<br><br>See [here](README?id=networks-eg-dfp) for built in providers and required options<br>See here for examples of custom providers (link). |
+| network (required argument) | None    | The network argument expects an object that is able to communicate with your ad provider that adheres to AdJS network interface (link). Common Ad platforms are already included within AdJS such as DFP.Provider.Default.<br><br>See [here](#networks-eg-dfp) for built in providers and required options<br>See here for examples of custom providers (link). |
 | plugins (optional)          | None    | An array of modules that you’d like to leverage from AdJS that adhere to the Plugin Interface. Most features of AdJS are separated into modules/plugins to ensure that the size of your package is as small as possible                                                                                                                                                  |
 | vendors (optional)          | None    | An array of objects that conform to the vendor interface spec. See here (link)                                                                                                                                                                                                                                                                                           |
 | defaults (optional)         | None    | An object of default values that you’d like passed into every ad on creation<br><br>See here for ad options (link)                                                                                                                                                                                                                                                       |
@@ -88,7 +94,6 @@ const bannerAd = new homepageAdPage.Ad(el, {
   offset: 10,
 });
 ```
-
 ## Networks (e.g. DFP)
 
 In AdJS a network is a module that enables AdJS to communicate with the ad platform (DFP, etc). Sometimes a network is built upon a low level library that the ad platform itself has provided (e.g. GPT).
